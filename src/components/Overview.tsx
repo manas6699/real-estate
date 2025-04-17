@@ -24,12 +24,11 @@ const Overview = () => {
 
                     <p className='lg:w-2/3 p-2'>
                       The legacy continues with an elevated living experience at the heart of Action Area I, strategically located on Major Arterial Road, directly opposite to Novotel. This latest development in Newtown – the Smart Green City 
+            – redefines modern aspirations with expansive living spaces, panoramic views and a thoughtfully curated selection of premium amenities. At its core lies a sanctuary of lush greenery, seamlessly blending nature with contemporary living. 
                     </p>
 
-                  <Image src={Inside} alt="flat image" className="lg:w-1/3 w-full p-2" />
-                  <p className='lg:w-2/3 p-2'>
-                      – redefines modern aspirations with expansive living spaces, panoramic views and a thoughtfully curated selection of premium amenities. At its core lies a sanctuary of lush greenery, seamlessly blending nature with contemporary living. 
-                  </p>
+                  <Image src={Inside} alt="flat image" className="lg:w-5/8 w-full p-2" />
+
               </div>
 
              

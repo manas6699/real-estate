@@ -11,17 +11,17 @@ import Footer from '@/components/Footer'
 
 const Home = () => {
   return (
-    <div>
-        <Navbar/>
-        <HeroSection/>
-      <PropertyInfoSection/>
-      <Overview/>
-      <MagicCard/>
-      <Highlights/>
-      <Amenities/>
-      <Gallery/>
-      <Footer/>
-    </div>
+    <>
+      <Navbar />
+      <HeroSection />
+      <PropertyInfoSection />
+      <Overview />
+      <MagicCard />
+      <Highlights />
+      <Amenities />
+      <Gallery />
+      <Footer />
+    </>
   )
 }
 
