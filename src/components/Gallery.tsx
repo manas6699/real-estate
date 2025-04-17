@@ -30,7 +30,16 @@ const Gallery = () => {
                     </div>
                 ))}
             </div>
+            <div className="flex-1 mt-14">
+                <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed text-center">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga blanditiis cumque
+                    exercitationem nostrum illo nulla ad fugiat aliquam debitis magni. Lorem ipsum
+                    dolor sit, amet consectetur adipisicing elit. Corporis, saepe fugit nesciunt
+                    quasi aperiam cum repellendus accusamus ea molest
+                </p>
+            </div>
         </section>
+
         <section className="w-full px-4 py-10 bg-gray-100">
             <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Floor Plans</h2>
 

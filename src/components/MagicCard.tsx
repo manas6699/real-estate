@@ -22,83 +22,79 @@ export default function MagicCard() {
     }
 
     return (
-        <section className='p-10 mx-auto flex flex-col items-center justify-center'>
+        <section className='p-5 lg:p-10 mx-auto flex flex-col items-center justify-center'>
             <h1 className='text-xl md:text-4xl font-bold mb-5'>
                 Town Square - Key Metrics
             </h1>
-            <div className="w-3/4 rounded-3xl bg-gradient-to-tr from-lime-400 to-green-600 p-6 text-white transition-transform duration-300 hover:scale-[1.02]">
+            <div className="w-full max-w-8xl mx-auto rounded-3xl 
+            bg-gradient-to-tr from-lime-400 to-green-600 p-4 md:p-6 text-white transition-transform duration-300 
+            hover:scale-[1.02]">
                 {/* Header */}
-                <div className="flex p-5">
-
-                    <h2 className="text-xl md:text-2xl font-bold">Project Status</h2>
-
-                    <div className='p-2 bg-orange-600 rounded-md ml-3'>
-                        <p className='text-sm font-semibold'>
-                            NEW
-                        </p>
+                <div className="flex flex-wrap items-center gap-3 px-3 sm:px-5 pb-3">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Project Status</h2>
+                    <div className="p-1.5 sm:p-2 bg-orange-600 rounded-md">
+                        <p className="text-xs sm:text-sm font-semibold">NEW</p>
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full bg-white/20 rounded-full h-3 mb-6  overflow-hidden">
+                <div className="w-full bg-white/20 rounded-full h-2.5 sm:h-3 mb-4 sm:mb-6 overflow-hidden mx-3 sm:mx-5">
                     <div
                         className="h-full bg-white rounded-full transition-all duration-700"
                         style={{ width: `${progress}%` }}
                     ></div>
                 </div>
 
-                <div className='px-5'>
-                    <p>
-                        Units Sold : <span className='font-semibold'> 70%</span>
+                <div className="px-3 sm:px-5 mb-4">
+                    <p className="text-sm sm:text-base">
+                        Units Sold : <span className="font-semibold">70%</span>
                     </p>
                 </div>
 
-                {/* 3 Column Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5">
+                {/* 3 Column Stats Row 1 */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-3 sm:px-5 py-2">
                     <div className="flex flex-col gap-1">
-                        <Coins className="text-yellow-300 w-6 h-6" />
-                        <span className="text-lg font-semibold">6.29 Acre</span>
+                        <Coins className="text-white w-6 h-6 font-bold" />
+                        <span className="text-base sm:text-lg font-semibold">6.29 Acre</span>
                         <span className="text-xs text-white/80">Total Land Area</span>
                     </div>
-                    <div className="flex flex-col  gap-1">
-                        <TrendingUp className="text-green-300 w-6 h-6" />
-                        <span className="text-lg font-semibold">Apartment</span>
+                    <div className="flex flex-col gap-1">
+                        <TrendingUp className="text-white w-6 h-6 font-bold" />
+                        <span className="text-base sm:text-lg font-semibold">Apartment</span>
                         <span className="text-xs text-white/80">Residence Typology</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Rocket className="text-pink-300 w-6 h-6" />
-                        <span className="text-lg font-semibold">1,815 - 3,953 sq ft</span>
+                        <Rocket className="text-white w-6 h-6 font-bold" />
+                        <span className="text-base sm:text-lg font-semibold">1,815 - 3,953 sq ft</span>
                         <span className="text-xs text-white/80">Remaining</span>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5">
+
+                {/* 3 Column Stats Row 2 */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-3 sm:px-5 py-2">
                     <div className="flex flex-col gap-1">
-                        <Coins className="text-yellow-300 w-6 h-6" />
-                        <span className="text-lg font-semibold">7</span>
+                        <Coins className="text-white w-6 h-6 font-bold" />
+                        <span className="text-base sm:text-lg font-semibold">7</span>
                         <span className="text-xs text-white/80">Total No. of Blocks</span>
                     </div>
-                    <div className="flex flex-col  gap-1">
-                        <TrendingUp className="text-green-300 w-6 h-6" />
-                        <span className="text-lg font-semibold">B+G+15,B+G+19, B+G+24</span>
+                    <div className="flex flex-col gap-1">
+                        <TrendingUp className="text-white w-6 h-6 font-bold" />
+                        <span className="text-base sm:text-lg font-semibold">B+G+15, B+G+19, B+G+24</span>
                         <span className="text-xs text-white/80">Floors</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Rocket className="text-pink-300 w-6 h-6" />
-                        <span className="text-lg font-semibold">300</span>
+                        <Rocket className="text-white w-6 h-6 font-bold" />
+                        <span className="text-base sm:text-lg font-semibold">300</span>
                         <span className="text-xs text-white/80">No of Units</span>
                     </div>
                 </div>
 
-
-
-                <div className="w-full flex max-w-sm items-center justify-between bg-white rounded-xl shadow-md p-4 gap-4">
-                    <label
-                        htmlFor="number"
-                        className="text-xs font-bold text-gray-700"
-                    >
+                {/* RERA ID Input with Copy Button */}
+                <div className="w-full flex flex-col sm:flex-row sm:items-center gap-3
+                bg-white rounded-xl shadow-md p-4 mt-4 sm:max-w-md">
+                    <label htmlFor="number" className="text-xs font-bold text-gray-700">
                         RERA ID
                     </label>
-
                     <div className="relative flex-1">
                         <input
                             id="number"
@@ -119,8 +115,8 @@ export default function MagicCard() {
                         </button>
                     </div>
                 </div>
-
             </div>
+
         </section>
     )
 }
