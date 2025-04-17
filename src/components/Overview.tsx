@@ -9,7 +9,7 @@ const Overview = () => {
   return (
     <div>
           <section
-              className="relative w-full h-screen bg-cover bg-center"
+              className="relative w-full h-screen md:h-screen lg:h-screen bg-cover bg-center"
               style={{ backgroundImage: 'url("/assets/bg-2.png")' }}
           >
               {/* Overlay */}
@@ -30,8 +30,6 @@ const Overview = () => {
                   <Image src={Inside} alt="flat image" className="lg:w-5/8 w-full p-2" />
 
               </div>
-
-             
           </section>
     </div>
   )
