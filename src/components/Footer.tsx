@@ -1,6 +1,9 @@
-// components/Footer.tsx
 
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+
+import Image from 'next/image';
+import Logo from '../../public/assets/logo-transparent.png'
+import Link from "next/link";
 
 const Footer = () => {
     return (
@@ -8,9 +11,11 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
                 {/* Company Info */}
                 <div>
-                    <h3 className="text-xl font-semibold mb-4">YourCompany</h3>
+                    <Link href="/" className="text-xl font-bold text-gray-800">
+                        <Image src={Logo} alt="Logo" width={100} height={100} />
+                    </Link>
                     <p className="text-sm text-gray-400">
-                        Empowering your digital journey with innovation and precision.
+                        Real Estate Leader in Kolkata, India. We provide the best properties for your needs.
                     </p>
                 </div>
 
@@ -28,9 +33,9 @@ const Footer = () => {
                 {/* Contact Info */}
                 <div>
                     <h4 className="text-lg font-semibold mb-3">Contact</h4>
-                    <p className="text-sm text-gray-400">Email: info@yourcompany.com</p>
-                    <p className="text-sm text-gray-400">Phone: +91 98765 43210</p>
-                    <p className="text-sm text-gray-400">Address: New Town, Kolkata, India</p>
+                    <p className="text-sm text-gray-400">Email: info@mmr.com</p>
+                    <p className="text-sm text-gray-400">Phone: +91 98309 47144</p>
+                    <p className="text-sm text-gray-400">Address: Kasba, Kolkata, India</p>
                 </div>
 
                 {/* Social Media */}
@@ -47,7 +52,7 @@ const Footer = () => {
 
             {/* Footer Bottom */}
             <div className="mt-10 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
-                © {new Date().getFullYear()} YourCompany. All rights reserved.
+                © {new Date().getFullYear()} MMR . All rights reserved.
             </div>
         </footer>
     );
