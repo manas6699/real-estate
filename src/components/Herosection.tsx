@@ -116,9 +116,9 @@ export default function HeroSection() {
 
                 {/* Contact */}
                 <a
-                    href="/contact"
+                    href="tel:9830947144"
                     className="bg-pink-600 text-white p-3 rounded-full shadow-lg hover:bg-pink-700 transition"
-                    title="Contact Us"
+                    title="Call Us"
                 >
                     <Phone size={24} />
                 </a>
