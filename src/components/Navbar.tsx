@@ -13,7 +13,7 @@ export default function Navbar() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        message: ''
+        phone: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -86,12 +86,12 @@ export default function Navbar() {
                                         required
                                         className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
                                     />
-                                    <textarea
-                                        name="message"
-                                        value={formData.message}
+                                    <input
+                                        type="number"
+                                        name="phone"
+                                        value={formData.phone}
                                         onChange={handleChange}
-                                        placeholder="Your Message"
-                                        rows={3}
+                                        placeholder="Your phone"
                                         required
                                         className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
                                     />
