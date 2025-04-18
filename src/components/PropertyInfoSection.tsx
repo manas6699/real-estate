@@ -16,11 +16,7 @@ export default function PropertyInfoSection() {
                         <p className="text-gray-600 font-medium">Possession Date</p>
                         <p className="text-lg font-semibold">Dec 2025</p>
                     </div>
-                    <div className="flex items-center justify-center">
-                        <button className="bg-blue-800 text-white text-lg font-semibold py-3 px-6 rounded-xl hover:bg-blue-700 transition">
-                            Instant Call-Back
-                        </button>
-                    </div>
+                    
                 </div>
             </div>
         </section>
