@@ -2,29 +2,55 @@
 
 import { useState } from 'react';
 import { X } from 'lucide-react'; // Optional: Use lucide-react or any icon lib
-
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link';
 import { Phone } from 'lucide-react'; // Optional: Use lucide-react or any icon lib
 import Image from 'next/image';
 import Logo from '../../public/assets/logo.png'
+
+type BrochureFormData = {
+    name: string;
+    email: string;
+    phone: string;
+    source: string;
+};
+
 export default function Navbar() {
 
-    const [open, setOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: ''
-    });
+    const [isOpen, setIsOpen] = useState(false);
+        const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '' , source:'town square' });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Handle enquiry logic (API call etc.)
-        console.log(formData);
-        setOpen(false); // close modal after submission
+
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const response = await axios.post<{ message: string; lead: unknown }>(
+                'https://split-wise-clone-085p.onrender.com/api/mmr/leads',
+                formData
+            );
+
+            toast.success('Our Team will reach out to you very soon!');
+            setFormData({ name: '', email: '', phone: '', source: 'town square' });
+            setIsOpen(false);
+
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                const message =
+                    error.response?.data?.message ||
+                    'Failed to submit. Please try again.';
+                toast.error(message);
+            } else {
+                toast.error('An unknown error occurred.');
+            }
+            console.error('Submission error:', error);
+        }
     };
     return (
         <nav className="w-full bg-white shadow-md py-4">
@@ -46,19 +72,19 @@ export default function Navbar() {
                 {/* Right: Enquire Now button */}
                 <div>
                     <button
-                        onClick={() => setOpen(true)}
+                        onClick={() => setIsOpen(true)}
                         className="bg-[#de3163] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#c42553] transition"
                     >
                         Enquire Now
                     </button>
 
                     {/* Modal */}
-                    {open && (
+                    {isOpen && (
                         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
                             <div className="bg-white rounded-xl w-full max-w-md p-6 relative shadow-lg">
                                 {/* Close Icon */}
                                 <button
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => setIsOpen(false)}
                                     className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
                                 >
                                     <X className="w-5 h-5" />
@@ -91,7 +117,7 @@ export default function Navbar() {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        placeholder="Your phone"
+                                        placeholder="Your phone number(10 Digit)"
                                         required
                                         className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
                                     />
@@ -106,6 +132,9 @@ export default function Navbar() {
                             </div>
                         </div>
                     )}
+
+                    {/* Toast Messages */}
+                    <ToastContainer position="top-center" autoClose={3000} />
                 </div>
             </div>
         </nav>
