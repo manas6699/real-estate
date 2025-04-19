@@ -2,11 +2,20 @@
 
 import React from 'react'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 import Hero from '@/componentsMorya/Hero'
 
 import Info from '@/componentsMorya/Info'
 
+
+import Map from '@/componentsMorya/MapView'
+
+import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
+
+import MagicCard from '@/componentsMorya/MagicCard'
+import Amenities from '@/componentsMorya/Amenities'
+import Gallery from '@/componentsMorya/Gallery'
 
 
 export const metadata= {
@@ -20,6 +29,12 @@ const page = () => {
         <Navbar source="morya"/>
         <Hero/>
         <Info/>
+        <Map/>
+        <MagicCard/>
+        <DownloadBrochure/>
+        <Amenities/>
+        <Gallery/>
+        <Footer/>
     </div>
   )
 }
