@@ -15,9 +15,13 @@ import { X } from 'lucide-react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
+import Loader from '@/components/loader'
+
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [loading , setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -36,6 +40,7 @@ const Home = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await axios.post<{ message: string; lead: unknown }>(
@@ -58,6 +63,7 @@ const Home = () => {
       }
       console.error('Submission error:', error);
     }
+    setLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,11 +129,14 @@ const Home = () => {
 
 
                 <button
-                  type='submit'
-                  className="bg-[#de3163] hover:bg-[#c42553] w-full text-white py-2 rounded-md mt-2"
+                  type="submit"
+                  disabled={loading}
+                  className={`bg-[#de3163] hover:bg-[#c42553] w-full text-white py-2 rounded-md mt-2 flex items-center justify-center transition-all ${loading ? 'opacity-70 cursor-not-allowed' : ''
+                    }`}
                 >
-                  Enquire Now
+                  {loading ? <Loader size={20} color="border-white" /> : 'Enquire Now'}
                 </button>
+
               </form>
 
             </div>
