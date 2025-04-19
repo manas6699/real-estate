@@ -7,7 +7,6 @@ import Hero from '@/componentsMorya/Hero'
 
 import Info from '@/componentsMorya/Info'
 
-import Location from '@/componentsMorya/Location'
 
 
 export const metadata= {
@@ -21,7 +20,6 @@ const page = () => {
         <Navbar source="morya"/>
         <Hero/>
         <Info/>
-        <Location/>
     </div>
   )
 }
