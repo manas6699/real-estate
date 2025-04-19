@@ -9,7 +9,7 @@ export default function MagicCard() {
     const progress = 70 // Example progress percentage
 
     const [copied, setCopied] = useState(false)
-    const number = '9876543210'
+    const number = 'WBRERA/P/NOR/2023/000063'
 
     const handleCopy = async () => {
         try {

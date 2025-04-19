@@ -17,10 +17,14 @@ type BrochureFormData = {
     source: string;
 };
 
-export default function Navbar() {
+type sourceType = {
+    source : string;
+}
+
+export default function Navbar(source: sourceType) {
 
     const [isOpen, setIsOpen] = useState(false);
-        const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '' , source:'town square' });
+        const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '' , source:source.source });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +41,7 @@ export default function Navbar() {
             );
 
             toast.success('Our Team will reach out to you very soon!');
-            setFormData({ name: '', email: '', phone: '', source: 'town square' });
+            setFormData({ name: '', email: '', phone: '', source: source.source });
             setIsOpen(false);
 
         } catch (error: unknown) {
