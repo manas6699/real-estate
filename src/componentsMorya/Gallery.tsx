@@ -58,7 +58,7 @@ const Gallery = () => {
                 formData
             );
 
-            toast.success('Brochure request submitted successfully!');
+            toast.success('You Floor Plan is ready to download!');
             setFormData({ name: '', email: '', phone: '', source: 'morya' });
             setIsOpen(false);
 
