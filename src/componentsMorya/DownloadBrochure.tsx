@@ -32,7 +32,7 @@ export default function DownloadBrochureButton() {
             );
 
             toast.success('Brochure request submitted successfully!');
-            setFormData({ name: '', email: '', phone: '', source: 'town square' });
+            setFormData({ name: '', email: '', phone: '', source: 'morya' });
             setIsOpen(false);
 
             // Trigger the download
