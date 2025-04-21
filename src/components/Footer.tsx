@@ -1,5 +1,5 @@
 
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 
 import Image from 'next/image';
 import Logo from '../../public/assets/logo-transparent.png'
@@ -42,10 +42,8 @@ const Footer = () => {
                 <div>
                     <h4 className="text-lg font-semibold mb-3">Follow Us</h4>
                     <div className="flex space-x-4">
-                        <a href="#" className="hover:text-blue-500"><Facebook /></a>
-                        <a href="#" className="hover:text-sky-400"><Twitter /></a>
-                        <a href="#" className="hover:text-pink-500"><Instagram /></a>
-                        <a href="#" className="hover:text-blue-300"><Linkedin /></a>
+                        <a href="https://www.facebook.com/profile.php?id=61573050645360" className="hover:text-blue-500"><Facebook /></a>
+                        <a href="https://www.instagram.com/mmrrealtyllp/" className="hover:text-pink-500"><Instagram /></a>
                     </div>
                 </div>
             </div>
