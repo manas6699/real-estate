@@ -35,14 +35,15 @@ const Footer = () => {
                     <h4 className="text-lg font-semibold mb-3">Contact</h4>
                     <p className="text-sm text-gray-400">Email: info@mmr.com</p>
                     <p className="text-sm text-gray-400">Phone: +91 98309 47144</p>
-                    <p className="text-sm text-gray-400">Address: Kasba, Kolkata, India</p>
                 </div>
 
                 {/* Social Media */}
                 <div>
                     <h4 className="text-lg font-semibold mb-3">Follow Us</h4>
                     <div className="flex space-x-4">
-                        <a href="https://www.facebook.com/profile.php?id=61573050645360" className="hover:text-blue-500"><Facebook /></a>
+                        <a href="https://www.facebook.com/profile.php?id=61573050645360" className="hover:text-blue-500">
+                            <Facebook />
+                        </a>
                         <a href="https://www.instagram.com/mmrrealtyllp/" className="hover:text-pink-500"><Instagram /></a>
                     </div>
                 </div>
