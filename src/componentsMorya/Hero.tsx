@@ -8,7 +8,7 @@ import Image from 'next/image';
 const Hero = () => {
   return (
     <div>
-      <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/hero-2.jpg")' }}>
+      <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/hero-2.png")' }}>
         
         <section className="flex flex-col md:flex-row items-center justify-between w-full px-6 md:px-12 py-8 md:py-16">
           {/* Image Section - 75% width on medium+ screens */}
@@ -25,7 +25,7 @@ const Hero = () => {
           {/* Text Section - 100% width on mobile, 25% on desktop */}
           <div className="w-full md:w-2/5 flex flex-col justify-center text-center md:text-left px-4 md:px-6 mt-8 md:mt-0">
             <h1 className="text-4xl md:text-8xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r 
-            from-yellow-300 to-green-300">
+            from-pink-500  to-purple-900">
               Morya
             </h1>
 
