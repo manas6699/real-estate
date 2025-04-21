@@ -33,7 +33,7 @@ const Footer = () => {
                 {/* Contact Info */}
                 <div>
                     <h4 className="text-lg font-semibold mb-3">Contact</h4>
-                    <p className="text-sm text-gray-400">Email: info@mmr.com</p>
+                    <p className="text-sm text-gray-400">Email: Info@mmrrealty.in</p>
                     <p className="text-sm text-gray-400">Phone: +91 98309 47144</p>
                 </div>
 
