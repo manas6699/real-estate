@@ -2,17 +2,17 @@ import React from 'react'
 
 import { Phone, MessageCircle } from 'lucide-react';
 
-import HeroImage from '../../public/assets/morya/1.jpg';
+import HeroImage from '../../public/assets/morya/2.jpg';
 import Image from 'next/image';
 
 const Hero = () => {
   return (
     <div>
-      <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/hero-morya.png")' }}>
-
+      <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/hero-2.jpg")' }}>
+        
         <section className="flex flex-col md:flex-row items-center justify-between w-full px-6 md:px-12 py-8 md:py-16">
           {/* Image Section - 75% width on medium+ screens */}
-          <div className="relative w-full md:w-3/4 h-64 md:h-[75vh] rounded-3xl overflow-hidden">
+          <div className="relative w-full md:w-3/5 h-64 md:h-[75vh] rounded-3xl overflow-hidden">
             <Image
               src={HeroImage}
               alt="Hero"
@@ -23,10 +23,15 @@ const Hero = () => {
           </div>
 
           {/* Text Section - 100% width on mobile, 25% on desktop */}
-          <div className="w-full md:w-1/4 flex flex-col justify-center text-center md:text-left px-4 md:px-6 mt-8 md:mt-0">
-            <h1 className="text-4xl md:text-8xl font-bold text-gray-800 mb-4">Morya</h1>
-            <p className="text-base md:text-lg text-gray-600">
+          <div className="w-full md:w-2/5 flex flex-col justify-center text-center md:text-left px-4 md:px-6 mt-8 md:mt-0">
+            <h1 className="text-4xl md:text-8xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r 
+            from-yellow-300 to-green-300">
+              Morya
+            </h1>
+
+            <p className="text-base md:text-lg text-white">
               Discover luxurious living and elegant spaces with Morya. Your future home awaits in the heart of comfort and style.
+              Experience unmatched convenience with top-tier amenities and seamless connectivity.
             </p>
           </div>
         </section>
