@@ -17,14 +17,14 @@ L.Icon.Default.mergeOptions({
 export default function CustomMap() {
     return (
         <div className="h-[400px] w-full rounded-lg overflow-hidden">
-            <MapContainer center={[22.5726, 88.3639]} zoom={13} scrollWheelZoom={false} className="h-full w-full">
+            <MapContainer center={[22.5010, 88.3268]} zoom={13} scrollWheelZoom={false} className="h-full w-full">
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <Marker position={[22.5726, 88.3639]}>
                     <Popup>
-                        Welcome to Kolkata 🏙️ <br /> The City of Joy.
+                        Welcome to Morya 🏙️ <br /> 
                     </Popup>
                 </Marker>
             </MapContainer>
