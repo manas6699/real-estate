@@ -24,12 +24,11 @@ const Hero = () => {
 
           {/* Text Section - 100% width on mobile, 25% on desktop */}
           <div className="w-full md:w-2/5 flex flex-col justify-center text-center md:text-left px-4 md:px-6 mt-8 md:mt-0">
-            <h1 className="text-4xl md:text-8xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r 
-            from-pink-500  to-purple-900">
+            <h1 className="text-4xl md:text-8xl font-bold mb-4 text-white">
               Morya
             </h1>
 
-            <p className="text-base md:text-lg text-white">
+            <p className="text-base md:text-lg text-white font-extrabold">
               Discover luxurious living and elegant spaces with Morya. Your future home awaits in the heart of comfort and style.
               Experience unmatched convenience with top-tier amenities and seamless connectivity.
             </p>
