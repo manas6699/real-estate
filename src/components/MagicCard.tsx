@@ -27,7 +27,8 @@ export default function MagicCard() {
                 Town Square - Key Metrics
             </h1>
             <div className="w-full max-w-8xl mx-auto rounded-3xl 
-            bg-gradient-to-tr from-lime-400 to-green-600 p-4 md:p-6 text-white transition-transform duration-300 
+            bg-gradient-to-tr from-lime-400 to-green-600 
+            p-4 md:p-6 text-white transition-transform duration-300 
             hover:scale-[1.02]">
                 {/* Header */}
                 <div className="flex flex-wrap items-center gap-3 px-3 sm:px-5 pb-3">

@@ -27,7 +27,7 @@ export default function MagicCard() {
                 Morya - Key Metrics
             </h1>
             <div className="w-full max-w-8xl mx-auto rounded-3xl 
-            bg-gradient-to-r from-pink-500 to-yellow-500
+            bg-gradient-to-tr from-lime-400 to-green-600 
              p-4 md:p-6 text-white transition-transform duration-300 
             hover:scale-[1.02]">
                 {/* Header */}
