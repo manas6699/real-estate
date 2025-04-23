@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 import { FileDown, X } from 'lucide-react';
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 const localImages = [
@@ -38,18 +40,46 @@ const Gallery = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        phone: ''
+        phone: '',
+        source:'emami'
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log(formData);
-        setIsOpen(false); // Close modal after submission
+
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const response = await axios.post<{ message: string; lead: unknown }>(
+                'https://split-wise-clone-085p.onrender.com/api/mmr/leads',
+                formData
+            );
+
+            toast.success('Brochure request submitted successfully!');
+            setFormData({ name: '', email: '', phone: '', source: 'emami' });
+            setIsOpen(false);
+
+            // Trigger the download
+            const link = document.createElement('a');
+            link.href = 'pdfs/Emami Aamod Floor Plans.pdf'; // Path in the public folder
+            link.download = 'Emami Aamod Floor Plans.pdf'; // Suggested filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                const message =
+                    error.response?.data?.message ||
+                    'Failed to submit. Please try again.';
+                toast.error(message);
+            } else {
+                toast.error('An unknown error occurred.');
+            }
+            console.error('Submission error:', error);
+        }
     };
     return (
         <>
@@ -117,7 +147,7 @@ const Gallery = () => {
                     <div className="flex-1">
                         <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed">
                             Discover spacious layouts designed with purpose and perfection. 
-                            The floor plans at Town Square blend intelligent design with indulgent comfort, offering 
+                            The floor plans represents intelligent design with indulgent comfort, offering 
                             expansive living spaces tailored to elevate every moment. 
                             Choose a layout that matches your lifestyle — where every square foot speaks luxury.
                         </p>
