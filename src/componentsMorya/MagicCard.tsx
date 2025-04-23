@@ -80,7 +80,7 @@ export default function MagicCard() {
                     </div>
                     <div className="flex flex-col gap-1">
                         <Boxes className='text-white w-6 h-6 font-bold' />
-                        <span className="text-base sm:text-lg font-semibold">B+G+15, B+G+19, B+G+24</span>
+                        <span className="text-base sm:text-lg font-semibold">B+G+18</span>
                         <span className="text-xs text-white/80">Floors</span>
                     </div>
                     <div className="flex flex-col gap-1">
