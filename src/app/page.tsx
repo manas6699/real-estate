@@ -92,7 +92,7 @@ const Home = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 <input
                   type="email"
@@ -101,7 +101,7 @@ const Home = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 <input
                   type="tel"
@@ -110,7 +110,7 @@ const Home = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
 
 

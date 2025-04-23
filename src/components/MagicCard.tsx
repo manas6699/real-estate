@@ -1,6 +1,7 @@
 'use client'
 
-import { Coins, TrendingUp, Rocket } from 'lucide-react'
+
+import { LandPlot, House, TentTree, Cuboid, Boxes, Combine } from 'lucide-react'
 
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
@@ -55,17 +56,17 @@ export default function MagicCard() {
                 {/* 3 Column Stats Row 1 */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-3 sm:px-5 py-2">
                     <div className="flex flex-col gap-1">
-                        <Coins className="text-white w-6 h-6 font-bold" />
+                        <LandPlot className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">6.29 Acre</span>
                         <span className="text-xs text-white/80">Total Land Area</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <TrendingUp className="text-white w-6 h-6 font-bold" />
+                        <House className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">Apartment</span>
                         <span className="text-xs text-white/80">Residence Typology</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Rocket className="text-white w-6 h-6 font-bold" />
+                        <TentTree className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">1,815 - 3,953 sq ft</span>
                         <span className="text-xs text-white/80">Remaining</span>
                     </div>
@@ -74,17 +75,17 @@ export default function MagicCard() {
                 {/* 3 Column Stats Row 2 */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-3 sm:px-5 py-2">
                     <div className="flex flex-col gap-1">
-                        <Coins className="text-white w-6 h-6 font-bold" />
+                        <Cuboid className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">7</span>
                         <span className="text-xs text-white/80">Total No. of Blocks</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <TrendingUp className="text-white w-6 h-6 font-bold" />
+                        <Combine className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">B+G+15, B+G+19, B+G+24</span>
                         <span className="text-xs text-white/80">Floors</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Rocket className="text-white w-6 h-6 font-bold" />
+                        <Boxes className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">300</span>
                         <span className="text-xs text-white/80">No of Units</span>
                     </div>
