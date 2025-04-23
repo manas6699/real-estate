@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
+import Navbar from '@/components/Navbar';
+import HeroSection from '@/components/Herosection';
+import PropertyInfoSection from '@/components/PropertyInfoSection';
+import Overview from '@/components/Overview';
+import MagicCard from '@/components/MagicCard';
+import Highlights from '@/components/Highlights';
+import Amenities from '@/components/Amenities';
+import Gallery from '@/components/Gallery';
+import Footer from '@/components/Footer';
 import { X } from 'lucide-react';
 
 import axios from 'axios';
@@ -19,7 +27,7 @@ const Home = () => {
     name: '',
     email: '',
     phone: '',
-    source: 'mmr-homepage',
+    source: 'Town-Square',
   });
 
   useEffect(() => {
@@ -41,7 +49,7 @@ const Home = () => {
       );
 
       toast.success('Our Team will reach out to you very soon!');
-      setFormData({ name: '', email: '', phone: '', source: "mmr-homepage" });
+      setFormData({ name: '', email: '', phone: '', source: "Town-Square" });
       setShowModal(false);
 
     } catch (error: unknown) {
@@ -64,9 +72,15 @@ const Home = () => {
 
   return (
     <>
-      <div>
-        MMR Realty HomePage
-      </div>
+      <Navbar source="Town-square"/>
+      <HeroSection />
+      <PropertyInfoSection />
+      <Overview />
+      <MagicCard />
+      <Highlights />
+      <Amenities />
+      <Gallery />
+      <Footer />
 
       {/* Modal */}
       {
