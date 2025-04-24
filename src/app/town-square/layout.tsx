@@ -13,8 +13,8 @@ const poppins = Poppins({
 
 
 export const metadata = {
-    title: 'Luxury Living at Town Square – Newtown’s Premier Residences',
-    description: 'Town Square in Newtown offers luxury apartments with expansive open spaces, world-class amenities, and refined design for a serene and sophisticated lifestyle.',
+    title: 'Town Square, Kolkata | 3 & 4 BHK | Residential Apartments.',
+    description: 'Town Square offers 3, 3.5, 4 & 5 BHK (Duplex) Premium Apartments with the most promising and vibrant location near Biswa Bangla Gate and Opposite to Novotel Hotel.',
     verification: {
         google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w', // Just the code, not full meta tag
     },

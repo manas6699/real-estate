@@ -14,7 +14,7 @@ const poppins = Poppins({
 
 export const metadata = {
     title: "Emami Aamod New Alipore , Kolkata | Luxury Apartment, 3&4BHK",
-    description: "Emami Aamod, New Alipore – 3 & 4 BHK from ₹2.90 Cr. Luxury living with pools, gym, clubhouse & more. For those who deserve elegance, comfort & class.",
+    description: "Emami Aamod in New Alipore offers 3&4 BHK with servant rooms from ₹2.90 Cr onwards. Total 233 units with 4 Luxury Towers,  pools, gym, clubhouse & more...",
   verification: {
     google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w', // Just the code, not full meta tag
   },
