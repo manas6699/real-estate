@@ -11,13 +11,6 @@ import DownloadBrochure from '@/components/emami/DownloadBrochure'
 import Footer from '@/components/Footer'
 
 
-export const metadata = {
-  title: "Emami",
-  description: "Emami Real Estate Projec Estate Projec Estate Projec Estate Projec Estate Projec Estate Projec Estate Project",
-  verification: {
-    google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w', // Just the code, not full meta tag
-  },
-};
 
 
 const Home = () => {
