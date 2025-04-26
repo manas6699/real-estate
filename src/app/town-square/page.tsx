@@ -16,6 +16,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
 import Loader from '@/components/loader'
+import MapView from '@/components/town-square/MapView';
 
 
 
@@ -79,6 +80,7 @@ const Home = () => {
       <PropertyInfoSection />
       <Overview />
       <MagicCard />
+      <MapView/>
       <Highlights />
       <Amenities />
       <Gallery />

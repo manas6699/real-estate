@@ -39,8 +39,8 @@ export default function MapView() {
             {/* Map Section */}
             <div className="lg:w-1/2 w-full h-[400px] rounded-xl overflow-hidden shadow">
                 <DynamicMap 
-                    coordinates={[22.4928, 88.3396]} 
-                    popupText="Morya Phase 1" 
+                    coordinates={[22.5792, 88.4720]} 
+                    popupText="Town-square" 
                 />
             </div>
 
