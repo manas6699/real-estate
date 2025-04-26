@@ -1,4 +1,9 @@
+
+'use client';
 import React from 'react'
+
+import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
 
 import {
     Building2,
@@ -10,9 +15,10 @@ import {
     MapPin,
     UserCheck,
 } from 'lucide-react';
-import Image from 'next/image';
 
-import MapImage from '../../../public/assets/map.png'
+const DynamicMap = dynamic(() => import('@/components/Map'), {
+    ssr: false, // 👈 This ensures it's only rendered on the client
+});
 
 const MapView = () => {
 
@@ -65,7 +71,12 @@ const MapView = () => {
           <div className="flex flex-col lg:flex-row gap-8 p-6 md:p-12 w-full">
               {/* Map Section */}
               
-                  <Image alt='map' src={MapImage} />
+              <div className="lg:w-1/2 w-full h-[500px] rounded-xl overflow-hidden shadow">
+                <DynamicMap 
+                    coordinates={[22.5050, 88.3275]} 
+                    popupText="Emami" 
+                />
+            </div>
               
 
               {/* Features Section */}
