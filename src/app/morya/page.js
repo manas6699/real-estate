@@ -19,6 +19,7 @@ import GalleryMorya from '@/componentsMorya/GalleryMorya'
 import FloorPlans from '@/componentsMorya/FloorPlans'
 import FloorPlansDownload from '@/componentsMorya/FloorPlansDownload'
 import Form from '@/components/Form'
+import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 
 
 
@@ -43,6 +44,7 @@ const page = () => {
             <Form source="morya"/>
           </div>
         </div>
+          <MobileMagicHiddenForm/>
 
         <Footer/>
     </div>

@@ -64,7 +64,7 @@ export default function Form({ source }: FormProps) {
                     onChange={handleChange}
                     placeholder="Your Name"
                     required
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
                 />
                 <input
                     type="email"
@@ -73,7 +73,7 @@ export default function Form({ source }: FormProps) {
                     onChange={handleChange}
                     placeholder="Email Address"
                     required
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
                 />
                 <input
                     type="tel"
@@ -83,7 +83,7 @@ export default function Form({ source }: FormProps) {
                     placeholder="Your phone number (10 Digit)"
                     pattern="[0-9]{10}"
                     required
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
                 />
 
                 <button
