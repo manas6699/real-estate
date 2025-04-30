@@ -36,8 +36,7 @@ const page = () => {
               <Gallery/>
               
           </div>
-          <div className="hidden md:block md:w-1/4 md:h-screen md:bg-white md:p-6 md:sticky md:top-0 md:border-l md:border-gray-300">
-            <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
+          <div className="hidden sm:block sm:w-2/5 md:w-1/4 h-screen bg-white p-4 sm:p-6 sticky top-0 border-l border-gray-300">
             <Form source="morya"/>
           </div>
         </div>

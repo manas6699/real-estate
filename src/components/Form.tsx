@@ -50,40 +50,50 @@ export default function Form({ source }: FormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Your Name"
-                required
-                className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
-            />
-            <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email Address"
-                required
-                className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
-            />
-            <input
-                type="number"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Your phone number (10 Digit)"
-                required
-                className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
-            />
-            <button
-                type="submit"
-                className="bg-[#de3163] hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
+        <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
+            <form
+                onSubmit={handleSubmit}
+                className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
             >
-                Submit
-            </button>
-        </form>
+                <h2 className="text-2xl font-semibold text-center mb-2 text-gray-800">Contact Us</h2>
+
+                <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your Name"
+                    required
+                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+                <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                    required
+                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+                <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Your phone number (10 Digit)"
+                    pattern="[0-9]{10}"
+                    required
+                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+
+                <button
+                    type="submit"
+                    className="bg-[#de3163] hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
+                >
+                    Submit
+                </button>
+            </form>
+        </div>
+
     );
 }
