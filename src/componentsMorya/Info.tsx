@@ -1,7 +1,7 @@
 // components/PropertyInfoSection.js
 export default function Info() {
     return (
-        <section className="px-4 bg-green-50">
+        <section >
             <div className="bg-white rounded-2xl shadow-xl  mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6">
                     <div>

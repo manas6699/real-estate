@@ -15,7 +15,8 @@ import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
 
 import MagicCard from '@/componentsMorya/MagicCard'
 import Amenities from '@/componentsMorya/Amenities'
-import Gallery from '@/componentsMorya/Gallery'
+import GalleryMorya from '@/componentsMorya/GalleryMorya'
+import FloorPlans from '@/componentsMorya/FloorPlans'
 import Form from '@/components/Form'
 
 
@@ -33,7 +34,8 @@ const page = () => {
               <MagicCard/>
               <DownloadBrochure/>
               <Amenities/>
-              <Gallery/>
+              <GalleryMorya/>
+              <FloorPlans/>
               
           </div>
           <div className="hidden sm:block sm:w-2/5 md:w-1/4 h-screen bg-white p-4 sm:p-6 sticky top-0 border-l border-gray-300">
