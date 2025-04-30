@@ -1,4 +1,4 @@
-
+'use client';
 
 import React from 'react'
 import Navbar from '@/components/Navbar'
@@ -16,28 +16,31 @@ import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
 import MagicCard from '@/componentsMorya/MagicCard'
 import Amenities from '@/componentsMorya/Amenities'
 import Gallery from '@/componentsMorya/Gallery'
+import Form from '@/components/Form'
 
 
-export const metadata= {
-  title: "4 & 3 BHK Apartments in Tolly gunge | Sugam Morya Phase 2",
-  description: "Sugam Morya in Tollygunge offers premium 3, 3.5  & 4  BHK homes with lush open areas, elegant design, and top-tier amenities on the prestigious BL Shah Road.",
-  verification: {
-    google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w', // Just the code, not full meta tag
-  },
-};
 
 const page = () => {
   return (
     <div>
-        <Navbar source="morya"/>
-        <Hero/>
-        <Info/>
-        <Map/>
-        <MagicCard/>
-        <DownloadBrochure/>
-        <Amenities/>
-        <Gallery/>
-        <Footer/>
+        <div className="flex flex-col md:flex-row h-screen">
+        {/* Left scrollable content */}
+          <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
+              <Navbar source="morya"/>
+              <Hero/>
+              <Info/>
+              <Map/>
+              <MagicCard/>
+              <DownloadBrochure/>
+              <Amenities/>
+              <Gallery/>
+              <Footer/>
+          </div>
+          <div className="hidden md:block md:w-1/4 md:h-screen md:bg-white md:p-6 md:sticky md:top-0 md:border-l md:border-gray-300">
+            <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
+            <Form source="morya"/>
+          </div>
+        </div>
     </div>
   )
 }
