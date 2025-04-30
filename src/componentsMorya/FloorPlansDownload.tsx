@@ -1,37 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 
 import { FileDown, X } from 'lucide-react';
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
-const localImages = [
-    '/assets/morya/1.jpg',
-    '/assets/morya/2.jpg',
-    '/assets/morya/3.jpg',
-    '/assets/morya/4.jpg',
-    '/assets/morya/5.jpg',
-    '/assets/morya/6.jpg',
-    '/assets/morya/7.jpg',
-    '/assets/morya/8.jpg',
-    '/assets/morya/9.jpg'
-];
-
-
-const floorplans = [
-    '/assets/floorplanmorya/1a.jpg',
-    '/assets/floorplanmorya/2a.jpg',
-    '/assets/floorplanmorya/3a.jpg',
-    '/assets/floorplanmorya/4a.jpg',
-    '/assets/floorplanmorya/5a.jpg',
-    '/assets/floorplanmorya/6a.jpg',
-    '/assets/floorplanmorya/7a.jpg',
-    '/assets/floorplanmorya/8a.jpg',
-    '/assets/floorplanmorya/9a.jpg'
-]
 
 
 const Gallery = () => {
@@ -83,49 +57,7 @@ const Gallery = () => {
     };
     return (
         <>
-            <section className="w-full px-4 py-10">
-                <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Gallery</h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {localImages.map((src, index) => (
-                        <div key={index} className="relative w-full aspect-video overflow-hidden rounded-xl shadow-md">
-                            <Image
-                                src={src}
-                                alt={`Gallery ${index + 1}`}
-                                fill
-                                className="object-cover hover:scale-105 transition-transform duration-300"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                priority={index < 3} // optional: prioritize loading first 3 images
-                            />
-                        </div>
-                    ))}
-                </div>
-                <div className="flex-1 mt-14">
-                    <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed text-center">
-                        Morya has been thoughtfully curated to create an ideal escape where contemporary meets family-friendly.
-                        It is home to 384 families with world class amenities and great connectivity
-                    </p>
-                </div>
-            </section>
-
-            <section className="w-full px-4 py-10 bg-gray-100">
-                <h2 className="text-6xl font-bold text-center mb-8 text-gray-800">Floor Plans</h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-5 gap-8">
-                    {floorplans.map((src, index) => (
-                        <div key={index} className="relative w-full aspect-video overflow-hidden rounded-xl shadow-md">
-                            <Image
-                                src={src}
-                                alt={`Gallery ${index + 1}`}
-                                fill
-                                className="object-cover hover:scale-105 transition-transform duration-300"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                priority={index < 3} // optional: prioritize loading first 3 images
-                            />
-                        </div>
-                    ))}
-                </div>
-            </section>
+           
 
             <div>
                 {/* Main Section */}
