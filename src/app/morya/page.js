@@ -34,13 +34,15 @@ const page = () => {
               <DownloadBrochure/>
               <Amenities/>
               <Gallery/>
-              <Footer/>
+              
           </div>
           <div className="hidden md:block md:w-1/4 md:h-screen md:bg-white md:p-6 md:sticky md:top-0 md:border-l md:border-gray-300">
             <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
             <Form source="morya"/>
           </div>
         </div>
+
+        <Footer/>
     </div>
   )
 }
