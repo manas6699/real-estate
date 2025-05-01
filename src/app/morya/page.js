@@ -27,7 +27,6 @@ const page = () => {
   return (
     <div>
         <div className="flex flex-col md:flex-row h-screen">
-        {/* Left scrollable content */}
           <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
               <Navbar source="morya"/>
               <Hero/>
@@ -44,7 +43,7 @@ const page = () => {
             <Form source="morya"/>
           </div>
         </div>
-          <MobileMagicHiddenForm/>
+          <MobileMagicHiddenForm source="morya"/>
 
         <Footer/>
     </div>

@@ -50,7 +50,7 @@ export default function MagicCard() {
 
                 <div className="px-3 sm:px-5 mb-4">
                     <p className="text-sm sm:text-base">
-                        Units Sold : <span className="font-semibold">70%</span>
+                        Units Sold : <span className="font-semibold">20%</span>
                     </p>
                 </div>
 

@@ -1,42 +1,38 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 
 import { FileDown, X } from 'lucide-react';
 import axios from "axios";
 import { toast } from "react-toastify";
+import ImageGallery from "../ImageGallery";
+
+// import Loader from '@/components/loader'
 
 
-const localImages = [
-    '/assets/emami/image 12.png',
-    '/assets/emami/image 13.png',
-    '/assets/emami/image 14.png',
-    '/assets/emami/image 15.png',
-    '/assets/emami/image 16.png',
-    '/assets/emami/image 17.png',
-    '/assets/emami/image 18.png',
-    '/assets/emami/image 19.png',
-    '/assets/emami/image 20.png',
-];
 
 
 const floorplans = [
-    '/assets/emami-floor-plans/image 20.png',
-    '/assets/emami-floor-plans/image 21.png',
-    '/assets/emami-floor-plans/image 22.png',
-    '/assets/emami-floor-plans/image 23.png',
-    '/assets/emami-floor-plans/image 24.png',
-    '/assets/emami-floor-plans/image 25.png',
-    '/assets/emami-floor-plans/image 26.png',
-    '/assets/emami-floor-plans/image 27.png',
-    '/assets/emami-floor-plans/image 19.png'
+    '/assets/emami-floor-plans/a19.webp',
+    '/assets/emami-floor-plans/a20.webp',
+    '/assets/emami-floor-plans/a21.webp',
+    '/assets/emami-floor-plans/a22.webp',
+    '/assets/emami-floor-plans/a23.webp',
+    '/assets/emami-floor-plans/a24.webp',
+    '/assets/emami-floor-plans/a25.webp',
+    '/assets/emami-floor-plans/a26.webp',
+    '/assets/emami-floor-plans/a27.webp',
+    '/assets/emami-floor-plans/a28.webp',
+    '/assets/emami-floor-plans/a29.webp',
+    '/assets/emami-floor-plans/a30.webp',
+    '/assets/emami-floor-plans/a31.webp',
 ]
 
 
 const Gallery = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    // const [loading , setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -83,50 +79,12 @@ const Gallery = () => {
     };
     return (
         <>
+    
+
         <section className="w-full px-4 py-10">
-            <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Gallery</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {localImages.map((src, index) => (
-                    <div key={index} className="relative w-full aspect-video overflow-hidden rounded-xl shadow-md">
-                        <Image
-                            src={src}
-                            alt={`Gallery ${index + 1}`}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={index < 3} // optional: prioritize loading first 3 images
-                        />
-                    </div>
-                ))}
-            </div>
-            <div className="flex-1 mt-14">
-                <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed text-center">
-                        Step into a visual symphony of elegance and grandeur. 
-                        The Gallery at Emami-AAMOD unveils every detail of luxury living — from majestic architecture to 
-                        opulent interiors — crafted for those who desire nothing but the finest. See where sophistication 
-                        meets serenity.
-                </p>
-            </div>
-        </section>
-
-        <section className="w-full px-4 py-10 bg-gray-100">
             <h2 className="text-6xl font-bold text-center mb-8 text-gray-800">Floor Plans</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-5 gap-8">
-                {floorplans.map((src, index) => (
-                    <div key={index} className="relative w-full aspect-video overflow-hidden rounded-xl shadow-md">
-                        <Image
-                            src={src}
-                            alt={`Gallery ${index + 1}`}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={index < 3} // optional: prioritize loading first 3 images
-                        />
-                    </div>
-                ))}
-            </div>
+                <ImageGallery images={floorplans} />
         </section>
         
         <div>
