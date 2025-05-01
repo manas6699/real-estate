@@ -4,6 +4,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
+import Loader from '@/components/loader';
+import {LEADS_ENDPOINT} from '@/config/api';
+
 
 type BrochureFormData = {
     name: string;
@@ -24,6 +27,8 @@ export default function Form({ source }: FormProps) {
         source: '', // Empty initially
     });
 
+    const [loading , setLoading] = useState(false);
+
     // 🔥 useEffect to set source only on client
     useEffect(() => {
         setFormData((prev) => ({ ...prev, source }));
@@ -36,10 +41,12 @@ export default function Form({ source }: FormProps) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await axios.post('https://split-wise-clone-085p.onrender.com/api/mmr/leads', formData);
+            setLoading(true);
+            await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Our Team will reach out to you very soon!');
             setFormData({ name: '', email: '', phone: '', source });
         } catch (error: unknown) {
+            setLoading(false);
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.message || 'Failed to submit. Please try again.';
                 toast.error(message);
@@ -92,7 +99,13 @@ export default function Form({ source }: FormProps) {
                     type="submit"
                     className="bg-[#de3163] cursor-pointer hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
                 >
-                    Submit
+                    {loading ? (
+                        <div className="flex justify-center items-center">
+                            <Loader color='white' />
+                        </div>
+                    ) : (
+                        <>Submit</>
+                    )}
                 </button>
             </form>
         </div>
