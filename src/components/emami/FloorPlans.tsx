@@ -24,7 +24,6 @@ const floorplans = [
     '/assets/emami-floor-plans/a27.webp',
     '/assets/emami-floor-plans/a28.webp',
     '/assets/emami-floor-plans/a29.webp',
-    '/assets/emami-floor-plans/a30.webp',
     '/assets/emami-floor-plans/a31.webp',
 ]
 
