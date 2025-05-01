@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface ImageGalleryProps {
@@ -10,17 +10,33 @@ interface ImageGalleryProps {
 const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-    const handlePrev = () => {
-        if (selectedIndex !== null) {
-            setSelectedIndex((selectedIndex - 1 + images.length) % images.length);
-        }
+    const handleClose = () => {
+        setSelectedIndex(null);
     };
 
-    const handleNext = () => {
+    useEffect(() => {
         if (selectedIndex !== null) {
-            setSelectedIndex((selectedIndex + 1) % images.length);
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'ArrowLeft') {
+                    setSelectedIndex(prev =>
+                        prev !== null ? (prev - 1 + images.length) % images.length : null
+                    );
+                } else if (e.key === 'ArrowRight') {
+                    setSelectedIndex(prev =>
+                        prev !== null ? (prev + 1) % images.length : null
+                    );
+                } else if (e.key === 'Escape') {
+                    handleClose();
+                }
+            };
+
+            window.addEventListener('keydown', handleKeyDown);
+
+            return () => {
+                window.removeEventListener('keydown', handleKeyDown);
+            };
         }
-    };
+    }, [selectedIndex, images.length]); // dependencies are now minimal and stable
 
     return (
         <div>
@@ -42,20 +58,25 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                 ))}
             </div>
 
-
             {/* Modal Viewer */}
             {selectedIndex !== null && (
                 <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
                     <button
                         className="absolute top-4 right-4 text-white text-3xl font-bold"
-                        onClick={() => setSelectedIndex(null)}
+                        onClick={handleClose}
+                        aria-label="Close"
                     >
                         &times;
                     </button>
 
                     <button
-                        onClick={handlePrev}
+                        onClick={() =>
+                            setSelectedIndex(
+                                (selectedIndex - 1 + images.length) % images.length
+                            )
+                        }
                         className="absolute left-4 text-white text-3xl font-bold px-4"
+                        aria-label="Previous"
                     >
                         &#8592;
                     </button>
@@ -71,8 +92,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                     </div>
 
                     <button
-                        onClick={handleNext}
+                        onClick={() =>
+                            setSelectedIndex((selectedIndex + 1) % images.length)
+                        }
                         className="absolute right-4 text-white text-3xl font-bold px-4"
+                        aria-label="Next"
                     >
                         &#8594;
                     </button>
