@@ -4,8 +4,6 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
-import ContactImage from '../../public/assets/contact.png'
-import Image from 'next/image';
 
 type BrochureFormData = {
     name: string;
@@ -53,13 +51,13 @@ export default function Form({ source }: FormProps) {
     };
 
     return (
-        <div className="flex flex-col gap-4 justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
-            <Image src={ContactImage} alt='contact-image'/>
+        <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
+           
             <form
                 onSubmit={handleSubmit}
-                className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
+                className="bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
             >
-                <h2 className="text-2xl font-semibold text-center mb-2 text-gray-800">Contact Us</h2>
+                <h2 className="text-2xl font-semibold text-center mb-2 text-white">Contact Us</h2>
 
                 <input
                     type="text"
@@ -68,7 +66,7 @@ export default function Form({ source }: FormProps) {
                     onChange={handleChange}
                     placeholder="Your Name"
                     required
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
+                    className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
                 />
                 <input
                     type="email"
@@ -77,7 +75,7 @@ export default function Form({ source }: FormProps) {
                     onChange={handleChange}
                     placeholder="Email Address"
                     required
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
+                    className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
                 />
                 <input
                     type="tel"
@@ -87,12 +85,12 @@ export default function Form({ source }: FormProps) {
                     placeholder="Your phone number (10 Digit)"
                     pattern="[0-9]{10}"
                     required
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
+                    className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
                 />
 
                 <button
                     type="submit"
-                    className="bg-[#de3163] hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
+                    className="bg-[#de3163] cursor-pointer hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
                 >
                     Submit
                 </button>
