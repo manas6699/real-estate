@@ -75,12 +75,12 @@ export default function Navbar(source: sourceType) {
 
                 {/* Right: Enquire Now button */}
                 <div>
-                    <button
+                    {/* <button
                         onClick={() => setIsOpen(true)}
                         className="bg-[#de3163] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#c42553] transition"
                     >
                         Enquire Now
-                    </button>
+                    </button> */}
 
                     {/* Modal */}
                     {isOpen && (
