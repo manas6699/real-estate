@@ -10,6 +10,8 @@ import FloorPlans from '@/components/emami/FloorPlans'
 import DownloadBrochure from '@/components/emami/DownloadBrochure'
 import GalleryEmami from '@/components/emami/GalleryEmami'
 import About from '@/components/emami/About'
+import Overview from '@/components/emami/Overview'
+import PaymentPlan from '@/components/emami/PaymentPlan'
 import Footer from '@/components/Footer'
 import Form from '@/components/Form'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
@@ -29,7 +31,9 @@ const Home = () => {
                         <MapView/>
                         <About/>
                         <MagicCard/>
+                        <Overview/>
                         <DownloadBrochure/>
+                        <PaymentPlan/>
                         <GalleryEmami/>
                         <FloorPlans/>
                     </div>
