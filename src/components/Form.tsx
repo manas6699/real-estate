@@ -4,6 +4,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
+import ContactImage from '../../public/assets/contact.png'
+import Image from 'next/image';
+
 type BrochureFormData = {
     name: string;
     email: string;
@@ -50,7 +53,8 @@ export default function Form({ source }: FormProps) {
     };
 
     return (
-        <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
+        <div className="flex flex-col gap-4 justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
+            <Image src={ContactImage} alt='contact-image'/>
             <form
                 onSubmit={handleSubmit}
                 className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
