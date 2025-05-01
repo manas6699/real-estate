@@ -14,10 +14,13 @@ const images = [
 
 export default function GalleryMorya() {
     return (
+        <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-white">
         <div className="p-6">
-            <h1 className="text-4xl text-center font-bold mb-10">Gallery</h1>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                Gallery
+            </h2>
             <div className="flex-1 mt-14 mb-16">
-                <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed text-center">
+                <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed">
                     Step into a visual symphony of elegance and grandeur.
                     The Gallery at Emami-AAMOD unveils every detail of luxury living — from majestic architecture to
                     opulent interiors — crafted for those who desire nothing but the finest. See where sophistication
@@ -26,5 +29,6 @@ export default function GalleryMorya() {
             </div>
             <ImageGallery images={images} />
         </div>
+        </section>
     );
 }

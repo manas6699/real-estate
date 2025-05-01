@@ -6,8 +6,8 @@ import Emami from '../../../public/assets/emami/eami-logo.webp'
 const About = () => {
   return (
     <div>
-          <section className="p-6 sm:p-10">
-              <h1 className="text-blue-400 text-center text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
+          <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-white">
+              <h1 className="text-blue-400 text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
                   About Emami Realty
               </h1>
 

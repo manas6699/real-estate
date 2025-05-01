@@ -83,8 +83,8 @@ const Gallery = () => {
         <>
     
 
-        <section className="w-full px-4 py-10">
-            <h2 className="text-6xl font-bold text-center mb-8 text-gray-800">Floor Plans</h2>
+            <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-white">
+            <h2 className="text-3xl font-bold  mb-8 text-gray-800">Floor Plans</h2>
 
                 <ImageGallery images={floorplans} />
         </section>

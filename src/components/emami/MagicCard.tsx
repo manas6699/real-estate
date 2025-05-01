@@ -24,12 +24,12 @@ export default function MagicCard() {
     }
 
     return (
-        <section className='p-5 lg:p-10 mx-auto flex flex-col items-center justify-center'>
+        <section className='p-5 lg:p-10 mx-auto flex flex-col  justify-center'>
             <h1 className='text-xl md:text-4xl font-bold mb-5'>
                 EMAMI AAMOD - Key Metrics
             </h1>
             <div className="w-full max-w-8xl mx-auto rounded-3xl 
-            bg-gradient-to-tr from-teal-400 to-purple-600 
+            bg-gradient-to-tr from-blue-600 to-purple-900 
             p-4 md:p-6 text-white transition-transform duration-300 
             hover:scale-[1.02]">
                 {/* Header */}
@@ -61,17 +61,17 @@ export default function MagicCard() {
                         <span className="text-base sm:text-lg font-semibold">
                             4.2 Acre
                         </span>
-                        <span className="text-xs text-white/80">Total Land Area</span>
+                        <span className="text-lg text-white/80">Total Land Area</span>
                     </div>
                     <div className="flex flex-col gap-1">
                         <House className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">Apartment</span>
-                        <span className="text-xs text-white/80">Residence Typology</span>
+                        <span className="text-lg text-white/80">Residence Typology</span>
                     </div>
                     <div className="flex flex-col gap-1">
                         <TentTree className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">2,243 - 2,724 sq ft</span>
-                        <span className="text-xs text-white/80">Super Builtup Area</span>
+                        <span className="text-lg text-white/80">Super Builtup Area</span>
                     </div>
                 </div>
 
@@ -80,17 +80,17 @@ export default function MagicCard() {
                     <div className="flex flex-col gap-1">
                         <Cuboid className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">4</span>
-                        <span className="text-xs text-white/80">Total No. of Blocks</span>
+                        <span className="text-lg text-white/80">Total No. of Blocks</span>
                     </div>
                     <div className="flex flex-col gap-1">
                         <Boxes className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">G+25, G+17</span>
-                        <span className="text-xs text-white/80">Floors</span>
+                        <span className="text-lg text-white/80">Floors</span>
                     </div>
                     <div className="flex flex-col gap-1">
                         <Combine className="text-white w-6 h-6 font-bold" />
                         <span className="text-base sm:text-lg font-semibold">233</span>
-                        <span className="text-xs text-white/80">No of Units</span>
+                        <span className="text-lg text-white/80">No of Units</span>
                     </div>
                 </div>
 

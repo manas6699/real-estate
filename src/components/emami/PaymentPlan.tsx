@@ -19,7 +19,7 @@ const PaymentPlan = () => {
   return (
     <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-white">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
           Emami Aamod - Payment Plans
         </h2>
 
