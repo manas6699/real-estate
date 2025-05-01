@@ -10,6 +10,7 @@ const About = () => {
               <h1 className="text-blue-400 text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
                   About Emami Realty
               </h1>
+              
 
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
                   <Image

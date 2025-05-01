@@ -69,9 +69,9 @@ export default function Info() {
                         <div>
                             <button
                                 onClick={() => setIsOpen(true)}
-                                className="bg-[#de3163] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#c42553] transition"
+                                className="bg-[#a40076] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#000000] transition"
                             >
-                                Enquire Now
+                                Instant Call Back ⚡
                             </button>
 
                             {/* Modal */}

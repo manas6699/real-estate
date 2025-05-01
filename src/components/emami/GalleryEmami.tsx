@@ -16,9 +16,9 @@ export default function GalleryMorya() {
     return (
         <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-white">
         <div className="p-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                <h1 className="text-blue-400 text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
                 Gallery
-            </h2>
+            </h1>
             <div className="flex-1 mt-14 mb-16">
                 <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed">
                     Step into a visual symphony of elegance and grandeur.
