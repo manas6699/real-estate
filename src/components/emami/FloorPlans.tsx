@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ImageGallery from "../ImageGallery";
 
-// import Loader from '@/components/loader'
+import Loader from '@/components/loader'
 
 
 
@@ -32,7 +32,7 @@ const floorplans = [
 const Gallery = () => {
 
     const [isOpen, setIsOpen] = useState(false);
-    // const [loading , setLoading] = useState(false);
+    const [loading , setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -46,6 +46,7 @@ const Gallery = () => {
 
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true)
 
         try {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -57,6 +58,7 @@ const Gallery = () => {
             toast.success('Brochure request submitted successfully!');
             setFormData({ name: '', email: '', phone: '', source: 'emami' });
             setIsOpen(false);
+            setLoading(false);
 
             // Trigger the download
             const link = document.createElement('a');
@@ -66,6 +68,7 @@ const Gallery = () => {
             link.click();
             document.body.removeChild(link);
         } catch (error: unknown) {
+            setLoading(false);
             if (axios.isAxiosError(error)) {
                 const message =
                     error.response?.data?.message ||
@@ -161,7 +164,13 @@ const Gallery = () => {
                                     type="submit"
                                     className="mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition-all cursor-pointer"
                                 >
-                                    Submit & Download
+                                    {loading ? (
+                                        <div className="flex justify-center items-center">
+                                            <Loader />
+                                        </div>
+                                    ) : (
+                                        <>Submit & Download</>
+                                    )}
                                 </button>
                             </form>
                         </div>
