@@ -28,9 +28,9 @@ const Home = () => {
                         <Navbar source="emami"/>
                         <Hero/>
                         <Info/>
+                        <MagicCard/>
                         <MapView/>
                         <About/>
-                        <MagicCard/>
                         <Overview/>
                         <DownloadBrochure/>
                         <PaymentPlan/>
