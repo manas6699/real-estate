@@ -1,6 +1,7 @@
 
 
 import React from 'react';
+import EnquireBtn from '@/components/EnquireBtn';
 
 const PaymentPlan = () => {
   const plans = [
@@ -57,6 +58,10 @@ const PaymentPlan = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className='mt-5'>
+          <EnquireBtn source='emami'/>
+
         </div>
       </div>
     </section>
