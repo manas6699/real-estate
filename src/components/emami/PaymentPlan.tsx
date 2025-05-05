@@ -60,7 +60,7 @@ const PaymentPlan = () => {
           </table>
         </div>
         <div className='mt-5'>
-          <EnquireBtn source='emami'/>
+          <EnquireBtn source='emami' btntext='Instant Call Back ⚡'/>
 
         </div>
       </div>
