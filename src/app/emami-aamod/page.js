@@ -17,8 +17,6 @@ import Form from '@/components/Form'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 
 
-
-
 const Home = () => {
     return (
         

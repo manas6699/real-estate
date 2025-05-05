@@ -22,7 +22,7 @@ export default function MagicCard() {
     }
 
     return (
-        <section className='p-5 lg:p-10 mx-auto flex flex-col items-center justify-center'>
+        <section className='p-5 lg:p-10 mx-auto flex flex-col'>
             <h1 className='text-xl md:text-4xl font-bold mb-5'>
                 Morya - Key Metrics
             </h1>

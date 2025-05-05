@@ -1,15 +1,19 @@
 import ImageGallery from '@/components/ImageGallery';
 
 const images = [
-    '/assets/floorplanmorya/1a.jpg',
-    '/assets/floorplanmorya/2a.jpg',
-    '/assets/floorplanmorya/3a.jpg',
-    '/assets/floorplanmorya/4a.jpg',
-    '/assets/floorplanmorya/5a.jpg',
-    '/assets/floorplanmorya/6a.jpg',
-    '/assets/floorplanmorya/7a.jpg',
-    '/assets/floorplanmorya/8a.jpg',
-    '/assets/floorplanmorya/9a.jpg'
+    '/assets/morya/morya-fp-1.webp',
+    '/assets/morya/morya-fp-2.webp',
+    '/assets/morya/morya-fp-3.webp',
+    '/assets/morya/morya-fp-4.webp',
+    '/assets/morya/morya-fp-5.webp',
+    '/assets/morya/morya-fp-6.webp',
+    '/assets/morya/morya-fp-7.webp',
+    '/assets/morya/morya-fp-8.webp',
+    '/assets/morya/morya-fp-10.webp',
+    '/assets/morya/morya-fp-11.webp',
+    '/assets/morya/morya-fp-12.webp',
+    '/assets/morya/morya-fp-13.webp',
+    '/assets/morya/morya-fp-14.webp',
 ];
 
 export default function GalleryMorya() {
