@@ -16,6 +16,7 @@ import About from '@/componentsMorya/About'
 import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
 
 import MagicCard from '@/componentsMorya/MagicCard'
+import PaymentPlan from '@/componentsMorya/PaymentPlan'
 import Overview from '@/componentsMorya/Overview'
 import Amenities from '@/componentsMorya/Amenities'
 import GalleryMorya from '@/componentsMorya/GalleryMorya'
@@ -38,6 +39,7 @@ const page = () => {
               <Map/>
               <About/>
               <Overview/>
+              <PaymentPlan/>
               <DownloadBrochure/>
               <Amenities/>
               <GalleryMorya/>
