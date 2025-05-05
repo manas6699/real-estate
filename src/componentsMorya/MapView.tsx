@@ -1,14 +1,11 @@
 // components/MapView.tsx
 'use client';
 
-import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 
 import { Building2, ShieldCheck, Trees, ParkingCircle } from 'lucide-react';
 
-const DynamicMap = dynamic(() => import('@/components/Map'), {
-    ssr: false, // 👈 This ensures it's only rendered on the client
-});
+
 
 const features = [
     {
