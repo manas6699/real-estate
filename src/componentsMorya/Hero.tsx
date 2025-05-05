@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Phone, MessageCircle } from 'lucide-react';
 
-import HeroImage from '../../public/assets/morya/2.jpg';
+import HeroImage from '../../public/assets/morya/morya-gallery-1.webp';
 import Image from 'next/image';
 
 const Hero = () => {
@@ -28,7 +28,7 @@ const Hero = () => {
               Morya
             </h1>
 
-            <p className="text-base md:text-lg text-white font-extrabold">
+            <p className="text-sm md:text-lg text-white font-extrabold">
               Discover luxurious living and elegant spaces with Morya. Your future home awaits in the heart of comfort and style.
               Experience unmatched convenience with top-tier amenities and seamless connectivity.
             </p>

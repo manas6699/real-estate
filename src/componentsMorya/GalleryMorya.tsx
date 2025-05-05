@@ -1,15 +1,17 @@
 import ImageGallery from '@/components/ImageGallery';
 
 const images = [
-    '/assets/morya/1.jpg',
-    '/assets/morya/2.jpg',
-    '/assets/morya/3.jpg',
-    '/assets/morya/4.jpg',
-    '/assets/morya/5.jpg',
-    '/assets/morya/6.jpg',
-    '/assets/morya/7.jpg',
-    '/assets/morya/8.jpg',
-    '/assets/morya/9.jpg'
+    '/assets/morya/morya-gallery-1.webp',
+    '/assets/morya/morya-gallery-2.webp',
+    '/assets/morya/morya-gallery-3.webp',
+    '/assets/morya/morya-gallery-4.webp',
+    '/assets/morya/morya-gallery-5.webp',
+    '/assets/morya/morya-gallery-6.webp',
+    '/assets/morya/morya-gallery-7.webp',
+    '/assets/morya/morya-gallery-8.webp',
+    '/assets/morya/morya-gallery-9.webp',
+    '/assets/morya/morya-gallery-10.webp',
+    '/assets/morya/morya-gallery-11.webp',
 ];
 
 export default function GalleryMorya() {

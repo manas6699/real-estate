@@ -11,9 +11,12 @@ import Info from '@/componentsMorya/Info'
 
 import Map from '@/componentsMorya/MapView'
 
+import About from '@/componentsMorya/About'
+
 import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
 
 import MagicCard from '@/componentsMorya/MagicCard'
+import Overview from '@/componentsMorya/Overview'
 import Amenities from '@/componentsMorya/Amenities'
 import GalleryMorya from '@/componentsMorya/GalleryMorya'
 import FloorPlans from '@/componentsMorya/FloorPlans'
@@ -31,21 +34,22 @@ const page = () => {
               <Navbar source="morya"/>
               <Hero/>
               <Info/>
-              <Map/>
               <MagicCard/>
+              <Map/>
+              <About/>
+              <Overview/>
               <DownloadBrochure/>
               <Amenities/>
               <GalleryMorya/>
               <FloorPlans/>
               <FloorPlansDownload/>
+              <Footer/>
           </div>
           <div className="hidden sm:block sm:w-2/5 md:w-1/4 h-screen bg-white p-4 sm:p-6 sticky top-0 border-l border-gray-300">
             <Form source="morya"/>
           </div>
         </div>
           <MobileMagicHiddenForm source="morya"/>
-
-        <Footer/>
     </div>
   )
 }
