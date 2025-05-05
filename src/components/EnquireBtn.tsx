@@ -17,14 +17,18 @@ type BrochureFormData = {
     source: string;
 };
 
-type sourceType = {
+type EnquireBtnProps = {
     source: string;
-}
+    btntext: string;
+};
 
-const EnquireBtn = (source: sourceType) => {
+const EnquireBtn = ({source , btntext}: EnquireBtnProps) => {
+
+    console.log('btntext prop:', btntext);
+
 
     const [isOpen, setIsOpen] = useState(false);
-    const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source.source });
+    const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source });
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,7 +47,7 @@ const EnquireBtn = (source: sourceType) => {
             );
 
             toast.success('Our Team will reach out to you very soon!');
-            setFormData({ name: '', email: '', phone: '', source: source.source });
+            setFormData({ name: '', email: '', phone: '', source: source });
             setIsOpen(false);
             setLoading(false);
 
@@ -66,7 +70,7 @@ const EnquireBtn = (source: sourceType) => {
               onClick={() => setIsOpen(true)}
               className="bg-[#de3163] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#c42553] transition"
           >
-              Enquire Now
+              {btntext}
           </button>
 
           {/* Modal */}
