@@ -1,14 +1,8 @@
-// components/MapView.tsx
-'use client';
 
-import dynamic from 'next/dynamic';
-import 'leaflet/dist/leaflet.css';
 
 import { Building2, ShieldCheck, Trees, ParkingCircle } from 'lucide-react';
 
-const DynamicMap = dynamic(() => import('@/components/Map'), {
-    ssr: false, // 👈 This ensures it's only rendered on the client
-});
+
 
 const features = [
     {
@@ -38,10 +32,11 @@ export default function MapView() {
         <div className="flex flex-col lg:flex-row gap-8 p-6 md:p-12 w-full">
             {/* Map Section */}
             <div className="lg:w-1/2 w-full h-[400px] rounded-xl overflow-hidden shadow">
-                <DynamicMap 
-                    coordinates={[22.5792, 88.4720]} 
-                    popupText="Town-square" 
-                />
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29466.96318242458!2d88.43278944092941!3d22.602639555758927!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0275b04600bf99%3A0x10dffe9f070054e0!2sTOWN%20SQUARE%20-%20Srijan%20Realty!5e0!3m2!1sen!2sin!4v1746525183982!5m2!1sen!2sin" 
+                    width="600" height="450"
+                    loading="lazy" >
+                 </iframe>
             </div>
 
             {/* Features Section */}
