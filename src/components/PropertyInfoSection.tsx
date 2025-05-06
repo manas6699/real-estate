@@ -1,3 +1,4 @@
+import EnquiryBtn from '@/components/EnquireBtn';
 // components/PropertyInfoSection.js
 export default function PropertyInfoSection() {
     return (
@@ -16,7 +17,9 @@ export default function PropertyInfoSection() {
                         <p className="text-gray-600 font-medium">Possession Date</p>
                         <p className="text-lg font-semibold">Dec 2027</p>
                     </div>
-                    
+                    <div>
+                        <EnquiryBtn source="town-square" btntext='Instant Call Back ⚡' />
+                    </div>
                 </div>
             </div>
         </section>
