@@ -68,7 +68,7 @@ const EnquireBtn = ({source , btntext}: EnquireBtnProps) => {
       <div>
           <button
               onClick={() => setIsOpen(true)}
-              className="bg-[#de3163] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#c42553] transition"
+              className="bg-[#de3163] text-white text-xs lg:text-lg px-5 py-2 rounded-md font-semibold hover:bg-[#000000] transition"
           >
               {btntext}
           </button>
