@@ -51,7 +51,9 @@ export default function MapView() {
                     {features.map((feature, idx) => (
                         <div
                             key={idx}
-                            className="flex flex-col items-center text-center bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition"
+                            className="flex flex-col 
+                              items-center text-center bg-gray-50 p-4 rounded-lg 
+                              hover:shadow-md transition shadow-[0_4px_12px_rgba(255,221,0,0.6)]"
                         >
                             <div className="mb-2">{feature.icon}</div>
                             <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
