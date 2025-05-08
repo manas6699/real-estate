@@ -14,6 +14,7 @@ import Form from '@/components/Form';
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm';
 import About from '@/components/town-square/About';
 import FloorPlans from '@/components/town-square/FloorPlans';
+import PaymentPlan from '@/components/town-square/PaymentPlan';
 
 
 
@@ -30,6 +31,7 @@ const Home = () => {
           <MapView />
           <About/>
           <Overview />
+          <PaymentPlan/>
           <Highlights />
           <Amenities />
           <Gallery />
