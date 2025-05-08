@@ -14,13 +14,13 @@ import {
 } from "lucide-react";
 
 const amenities = [
+  { icon: <Droplet className="text-sky-500 w-7 h-7" />, label: "Rainwater Harvesting" },
   { icon: <Wifi className="text-blue-500 w-7 h-7" />, label: "High-Speed Wi-Fi" },
   { icon: <ShieldCheck className="text-green-500 w-7 h-7" />, label: "24x7 Security" },
   { icon: <Car className="text-indigo-500 w-7 h-7" />, label: "Spacious Parking" },
+  { icon: <Trees className="text-green-700 w-7 h-7" />, label: "Green Landscape" },
   { icon: <Dumbbell className="text-red-500 w-7 h-7" />, label: "Modern Gym" },
   { icon: <Sun className="text-yellow-500 w-7 h-7" />, label: "Sun Deck" },
-  { icon: <Droplet className="text-sky-500 w-7 h-7" />, label: "Rainwater Harvesting" },
-  { icon: <Trees className="text-green-700 w-7 h-7" />, label: "Green Landscape" },
   { icon: <MonitorPlay className="text-pink-500 w-7 h-7" />, label: "Mini Theatre" },
   { icon: <Users className="text-orange-500 w-7 h-7" />, label: "Community Hall" },
   { icon: <Coffee className="text-amber-600 w-7 h-7" />, label: "Cafe Lounge" },

@@ -1,11 +1,11 @@
 
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/town-square/Herosection';
-import PropertyInfoSection from '@/components/PropertyInfoSection';
-import Overview from '@/components/Overview';
-import MagicCard from '@/components/MagicCard';
-import Highlights from '@/components/Highlights';
-import Amenities from '@/components/Amenities';
+import PropertyInfoSection from '@/components/town-square/PropertyInfoSection';
+import Overview from '@/components/town-square/Overview';
+import MagicCard from '@/components/town-square/MagicCard';
+import Highlights from '@/components/town-square/Highlights';
+import Amenities from '@/components/town-square/Amenities';
 import Gallery from '@/components/town-square/Gallery';
 import Footer from '@/components/Footer';
 
@@ -29,13 +29,13 @@ const Home = () => {
           <PropertyInfoSection />
           <MagicCard />
           <MapView />
-          <About/>
+          <About />
           <Overview />
-          <PaymentPlan/>
+          <PaymentPlan />
           <Highlights />
           <Amenities />
           <Gallery />
-          <FloorPlans/>
+          <FloorPlans />
           <MobileMagicHiddenForm source="town-square" />
           <Footer />
         </div>
