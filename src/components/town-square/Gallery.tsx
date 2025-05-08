@@ -1,17 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 
 import { FileDown, X } from 'lucide-react';
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import ImageGallery from '@/components/ImageGallery';
 
-const localImages = [
+
+const images = [
     '/assets/attachments/1.jpg',
     '/assets/attachments/2.jpg',
-    '/assets/attachments/3.jpg',
     '/assets/attachments/4.jpg',
     '/assets/attachments/5.jpg',
     '/assets/attachments/6.jpg',
@@ -24,17 +24,7 @@ const localImages = [
 ];
 
 
-const floorplans = [
-    '/assets/floor/1a.jpg',
-    '/assets/floor/2a.jpg',
-    '/assets/floor/3a.jpg',
-    '/assets/floor/4a.jpg',
-    '/assets/floor/5a.jpg',
-    '/assets/floor/6a.jpg',
-    '/assets/floor/7a.jpg',
-    '/assets/floor/8a.jpg',
-    '/assets/floor/9a.jpg'
-]
+
 
 
 const Gallery = () => {
@@ -86,51 +76,12 @@ const Gallery = () => {
     };
     return (
         <>
-        <section className="w-full px-4 py-10">
-            <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Gallery</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {localImages.map((src, index) => (
-                    <div key={index} className="relative w-full aspect-video overflow-hidden rounded-xl shadow-md">
-                        <Image
-                            src={src}
-                            alt={`Gallery ${index + 1}`}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={index < 3} // optional: prioritize loading first 3 images
-                        />
-                    </div>
-                ))}
+            <div className="py-4 px-12">
+                <h1 className="p-4 text-4xl font-bold mb-10">Gallery</h1>
+                <ImageGallery images={images} />
             </div>
-            <div className="flex-1 mt-14">
-                <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed text-center">
-                        Step into a visual symphony of elegance and grandeur. 
-                        The Gallery at Town Square unveils every detail of luxury living — from majestic architecture to 
-                        opulent interiors — crafted for those who desire nothing but the finest. See where sophistication 
-                        meets serenity.
-                </p>
-            </div>
-        </section>
 
-        <section className="w-full px-4 py-10 bg-gray-100">
-            <h2 className="text-6xl font-bold text-center mb-8 text-gray-800">Floor Plans</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-5 gap-8">
-                {floorplans.map((src, index) => (
-                    <div key={index} className="relative w-full aspect-video overflow-hidden rounded-xl shadow-md">
-                        <Image
-                            src={src}
-                            alt={`Gallery ${index + 1}`}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={index < 3} // optional: prioritize loading first 3 images
-                        />
-                    </div>
-                ))}
-            </div>
-        </section>
+       
         
         <div>
                 {/* Main Section */}

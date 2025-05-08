@@ -17,7 +17,7 @@ const images = [
 export default function GalleryMorya() {
     return (
         <div className="p-6">
-            <h1 className="text-4xl text-center font-bold mb-10">Gallery</h1>
+            <h1 className="text-4xl  font-bold mb-10">Gallery</h1>
             <ImageGallery images={images} />
         </div>
     );

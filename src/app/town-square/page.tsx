@@ -1,28 +1,24 @@
 
 import Navbar from '@/components/Navbar';
-import HeroSection from '@/components/Herosection';
+import HeroSection from '@/components/town-square/Herosection';
 import PropertyInfoSection from '@/components/PropertyInfoSection';
 import Overview from '@/components/Overview';
 import MagicCard from '@/components/MagicCard';
 import Highlights from '@/components/Highlights';
 import Amenities from '@/components/Amenities';
-import Gallery from '@/components/Gallery';
+import Gallery from '@/components/town-square/Gallery';
 import Footer from '@/components/Footer';
 
 import MapView from '@/components/town-square/MapView';
 import Form from '@/components/Form';
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm';
 import About from '@/components/town-square/About';
+import FloorPlans from '@/components/town-square/FloorPlans';
 
 
 
 
 const Home = () => {
-
-
-
-
-
   return (
     <>
       <div className="flex flex-col md:flex-row h-screen">
@@ -37,6 +33,7 @@ const Home = () => {
           <Highlights />
           <Amenities />
           <Gallery />
+          <FloorPlans/>
           <MobileMagicHiddenForm source="town-square" />
           <Footer />
         </div>
