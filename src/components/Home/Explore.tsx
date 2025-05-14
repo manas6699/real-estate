@@ -12,24 +12,24 @@ type Property = {
 const properties: Property[] = [
     {
         id: 1,
-        name: "Modern Villa",
+        name: "Town Square",
         price: "₹ 1,200,000",
         location: "Kolkata",
-        imageUrl: "/assets/emami/1.webp",
+        imageUrl: "/assets/town-square/g1.jpeg",
     },
     {
         id: 2,
-        name: "Luxury Apartment",
+        name: "Emami Aamod",
         price: "₹ 850,000",
         location: "Kolkata",
-        imageUrl: "/assets/emami/1.webp",
+        imageUrl: "/assets/emami/4.webp",
     },
     {
         id: 3,
-        name: "Cozy Cottage",
+        name: "Morya",
         price: "₹ 430,000",
         location: "Kolkata",
-        imageUrl: "/assets/emami/1.webp",
+        imageUrl: "/assets/morya/morya-gallery-3.webp",
     },
 ];
 const Explore = () => {
