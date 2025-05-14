@@ -85,6 +85,23 @@ export default function Navbar(source: sourceType) {
                     >
                         <Instagram className="w-5 h-5 lg:w-6 lg:h-6" />
                     </a>
+
+                    <a
+                        href="https://wa.me/919830947144"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-green-500 transition-colors duration-300"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-5 h-5 lg:w-6 lg:h-6 fill-current text-gray-800 hover:text-green-500"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M16.7 13.3c-.3-.1-1.7-.9-2-1s-.5-.1-.7.2c-.2.3-.8 1-1 1.1s-.4.2-.7.1c-.3-.1-1.3-.5-2.4-1.6s-1.6-2.1-1.7-2.4c-.1-.3 0-.5.1-.7.1-.1.9-1 1.1-1.3.1-.2.2-.4.2-.6s-.1-.4-.2-.6c-.1-.1-.7-1.7-1-2.3s-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9 0 1.6 1.2 3.2 1.4 3.4.2.3 2.3 3.6 5.6 4.8.8.3 1.4.5 1.8.6.8.3 1.5.3 2 .2.6-.1 1.7-.7 2-1.3.3-.6.3-1.1.2-1.3-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.4 5L2 22l5-1.3c1.5.8 3.2 1.3 5 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z" />
+                        </svg>
+                    </a>
+
+
                 </div>
 
                 {/* Right: Enquire Now button */}
