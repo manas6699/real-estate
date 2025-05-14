@@ -16,7 +16,8 @@
     "next": "15.3.0",
     "react": "^19.0.0-rc.1",
     "react-dom": "^19.0.0-rc.1",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "swiper": "^11.2.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
