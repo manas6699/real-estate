@@ -50,7 +50,7 @@ export default function Team() {
                             />
                         </div>
                         <div className="p-6">
-                            <h3 className="text-xl font-semibold mb-2 text-gray-800">
+                            <h3 className="text-2xl underline font-semibold mb-2 text-gray-800">
                                 {member.name}
                             </h3>
                             <p className="text-gray-600 whitespace-pre-line text-sm leading-relaxed">

@@ -33,16 +33,19 @@ const Hero = () => {
                         {
                             name: 'Price Range',
                             options: [
-                                { label: 'Below ₹50L', value: '0-50' },
                                 { label: '₹50L - ₹1Cr', value: '50-100' },
-                                { label: 'Above ₹1Cr', value: '100+' },
+                                { label: '₹1Cr - ₹2Cr ', value: '101-200' },
+                                { label: '₹2Cr - ₹3Cr ', value: '201-300' },
+                                { label: '₹3Cr - ₹4Cr ', value: '301-400' },
+                                { label: '₹4Cr - ₹5Cr ', value: '401-500' },
+                                { label: '₹5Cr - ₹20Cr ', value: '501-2000' },
                             ],
                         },
                         {
-                            name: 'Flat/Villa',
+                            name: 'Flat/Bungalaw',
                             options: [
                                 { label: 'Flat', value: 'flat' },
-                                { label: 'Villa', value: 'villa' },
+                                { label: 'Bungalaw', value: 'Bungalaw' },
                             ],
                         },
                         {

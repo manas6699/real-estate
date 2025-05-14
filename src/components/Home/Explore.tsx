@@ -5,6 +5,7 @@ type Property = {
     id: number;
     name: string;
     price: string;
+    location:string;
     imageUrl: string;
 };
 
@@ -13,18 +14,21 @@ const properties: Property[] = [
         id: 1,
         name: "Modern Villa",
         price: "₹ 1,200,000",
+        location: "Kolkata",
         imageUrl: "/assets/emami/1.webp",
     },
     {
         id: 2,
         name: "Luxury Apartment",
         price: "₹ 850,000",
+        location: "Kolkata",
         imageUrl: "/assets/emami/1.webp",
     },
     {
         id: 3,
         name: "Cozy Cottage",
         price: "₹ 430,000",
+        location: "Kolkata",
         imageUrl: "/assets/emami/1.webp",
     },
 ];
@@ -53,6 +57,7 @@ const Explore = () => {
                           <div className="p-4 h-1/3 flex flex-col justify-between">
                               <h2 className="text-lg font-semibold">{property.name}</h2>
                               <p className="text-gray-600">{property.price}</p>
+                              <p className="text-gray-600">{property.location}</p>
                           </div>
                       </div>
                   ))}
