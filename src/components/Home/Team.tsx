@@ -24,7 +24,7 @@ const teamMembers = [
 const salesteamMembers = [
     { name: "Hiranmoy Halder", image: "/assets/sales/hiranmoy.jpg" },
     { name: "Swayam Jaiswal", image: "/assets/sales/swayam.jpg" },
-    { name: "Ankit Soshi", image: "/assets/sales/ankit.jpg" },
+    { name: "Ankit Joshi", image: "/assets/sales/ankit.jpg" },
     { name: "Rahul Jha", image: "/assets/sales/rahul.jpg" },
     { name: "Kaushik Jana", image: "/assets/sales/kaushik.jpg" },
 ];
