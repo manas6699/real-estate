@@ -37,7 +37,7 @@ const ChooseUs = () => {
 
                     {/* Feature 1 */}
                     <div className="flex items-start gap-4">
-                        <div className="p-2 bg-gray-100 rounded-xl">
+                        <div className="p-2 bg-amber-100 rounded-xl">
                             <Search className="w-6 h-6 text-gray-800" />
                         </div>
                         <div>
@@ -51,7 +51,7 @@ const ChooseUs = () => {
 
                     {/* Feature 2 */}
                     <div className="flex items-start gap-4">
-                        <div className="p-2 bg-gray-100 rounded-xl">
+                        <div className="p-2 bg-green-200 rounded-xl">
                             <Users className="w-6 h-6 text-gray-800" />
                         </div>
                         <div>
@@ -65,7 +65,7 @@ const ChooseUs = () => {
 
                     {/* Feature 3 */}
                     <div className="flex items-start gap-4">
-                        <div className="p-2 bg-gray-100 rounded-xl">
+                        <div className="p-2 bg-purple-200 rounded-xl">
                             <KeyRound className="w-6 h-6 text-gray-800" />
                         </div>
                         <div>

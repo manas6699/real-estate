@@ -1,9 +1,11 @@
+import Footer from "@/components/Footer";
 import ChooseUs from "@/components/Home/ChooseUs";
 import Explore from "@/components/Home/Explore";
 import Hero from "@/components/Home/Hero";
 import Navbar from "@/components/Home/Navbar";
 import RecentProperties from "@/components/Home/RecentProperties";
 import StatsSection from "@/components/Home/StatsSection";
+import Team from "@/components/Home/Team";
 
 const Home = () => {
   
@@ -16,6 +18,8 @@ const Home = () => {
       <StatsSection/>
       <RecentProperties/>
       <ChooseUs/>
+      <Team/>
+      <Footer/>
     </>
   );
 };
