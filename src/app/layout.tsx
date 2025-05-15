@@ -16,6 +16,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "MMR Realty LLP: Top Real Estate Consultant in Kolkata",
   description: "Kolkata’s trusted property Consultant & Real Estate Agency for stress-free Buying, Selling & Renting. HERA and RERA Approved.",
+  verification: {
+    google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w', // Just the code, not full meta tag
+  },
 };
 
 export default function RootLayout({
