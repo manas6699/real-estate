@@ -14,8 +14,8 @@ const poppins = Poppins({
 
 
 export const metadata: Metadata = {
-  title: "Luxury Living at Town Square – Newtown’s Premier Residences",
-  description: "Town Square in Newtown offers luxury apartments with expansive open spaces, world-class amenities, and refined design for a serene and sophisticated lifestyle.",
+  title: "MMR Realty LLP: Top Real Estate Consultant in Kolkata",
+  description: "Kolkata’s trusted property Consultant & Real Estate Agency for stress-free Buying, Selling & Renting. HERA and RERA Approved.",
 };
 
 export default function RootLayout({
