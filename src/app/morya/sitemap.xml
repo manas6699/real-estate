@@ -9,7 +9,23 @@
 
 <url>
   <loc>https://www.mmrrealty.co.in/</loc>
-  <lastmod>2025-05-15T06:04:23+00:00</lastmod>
+  <lastmod>2025-05-16T12:42:15+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://www.mmrrealty.co.in/town-square</loc>
+  <lastmod>2025-05-16T12:42:15+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.mmrrealty.co.in/emami-aamod</loc>
+  <lastmod>2025-05-16T12:42:15+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.mmrrealty.co.in/morya</loc>
+  <lastmod>2025-05-16T12:42:15+00:00</lastmod>
+  <priority>0.80</priority>
 </url>
 
 
