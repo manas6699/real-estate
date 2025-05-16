@@ -7,6 +7,7 @@ type Property = {
     price: string;
     location:string;
     imageUrl: string;
+    redirectingRoute:string;
 };
 
 const properties: Property[] = [
@@ -16,6 +17,7 @@ const properties: Property[] = [
         price: "₹ 1,200,000",
         location: "Kolkata",
         imageUrl: "/assets/town-square/g1.jpeg",
+        redirectingRoute:"/town-square"
     },
     {
         id: 2,
@@ -23,6 +25,7 @@ const properties: Property[] = [
         price: "₹ 850,000",
         location: "Kolkata",
         imageUrl: "/assets/emami/4.webp",
+        redirectingRoute:"/emami-aamod"
     },
     {
         id: 3,
@@ -30,6 +33,7 @@ const properties: Property[] = [
         price: "₹ 430,000",
         location: "Kolkata",
         imageUrl: "/assets/morya/morya-gallery-3.webp",
+        redirectingRoute:"/morya"
     },
 ];
 const Explore = () => {
@@ -38,13 +42,15 @@ const Explore = () => {
           <h1 className='text-4xl md:text-4xl text-center  mt-10 mb-5'>
             Explore Our Properties
         </h1>
-          <div className="flex justify-center">
+          <div className="flex justify-center cursor-pointer">
+         
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 p-4">
                   {properties.map((property) => (
                       <div
                           key={property.id}
                           className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow w-64 h-96 overflow-hidden"
                       >
+                          <a href={property.redirectingRoute}>
                           <div className="relative w-full h-2/3">
                               <Image
                                   src={property.imageUrl}
@@ -59,6 +65,7 @@ const Explore = () => {
                               <p className="text-gray-600">{property.price}</p>
                               <p className="text-gray-600">{property.location}</p>
                           </div>
+                          </a>
                       </div>
                   ))}
               </div>
