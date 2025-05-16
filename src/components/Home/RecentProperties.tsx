@@ -88,15 +88,15 @@ export default function RecentProperties() {
                 {properties.map((property) => (
                     <SwiperSlide key={property.id}>
                         <div className="rounded-xl overflow-hidden shadow-lg bg-white">
-                            <div className="relative">
-                                <Image src={property.image} alt={property.title} width={40} height={50} className="w-full h-64 object-cover" />
-
-                                {property.offer && (
-                                    <span className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1 rounded">OFFER</span>
-                                )}
-                                {property.featured && (
-                                    <span className="absolute top-3 left-16 bg-yellow-400 text-black text-xs px-2 py-1 rounded">FEATURED</span>
-                                )}
+                            <div className="relative w-full h-64">
+                                <Image
+                                    src={property.image}
+                                    alt={property.title}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    priority // optional for above-the-fold images
+                                />
                             </div>
 
                             <div className="p-4">

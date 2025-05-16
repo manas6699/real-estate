@@ -39,7 +39,7 @@ const properties: Property[] = [
 const Explore = () => {
   return (
     <section>
-          <h1 className='text-4xl md:text-4xl text-center  mt-10 mb-5'>
+          <h1 className='text-3xl sm:text-4xl text-center font-semibold text-gray-900 mb-4 mt-6'>
             Explore Our Properties
         </h1>
           <div className="flex justify-center cursor-pointer">
@@ -62,8 +62,8 @@ const Explore = () => {
                           </div>
                           <div className="p-4 h-1/3 flex flex-col justify-between">
                               <h2 className="text-lg font-semibold">{property.name}</h2>
-                              <p className="text-gray-600">{property.price}</p>
-                              <p className="text-gray-600">{property.location}</p>
+                                  <p className="text-gray-600 font-semibold">{property.price}</p>
+                                  <p className="text-gray-600 font-semibold">{property.location}</p>
                           </div>
                           </a>
                       </div>
