@@ -1,0 +1,115 @@
+{
+  "title": "abc",
+  "description": "Luxourious Living apartment",
+  "projectNmae": "ABC",
+  "priceRange": "₹ 2.40 - 3.80 Cr",
+  "backgroundImage": "blob",
+  "config": "4 BHK",
+  "possession date": "4 th Jan, 2025",
+  "unitsSold": 5,
+  "landArea": "4 Acer",
+  "propertyType": "Bunglow",
+  "RemainingpropertySize": "1,815 - 3,953 sq ft",
+  "blocks": 7,
+  "floors": "B+G+15, B+G+19, B+G+24",
+  "units": 300,
+  "rera": "WBRERA/P/NOR/2023/000063",
+  "iframeSource": "xyz",
+  "features": [
+    {
+      "icon": "foundation",
+      "title": "Premium Construction",
+      "description": "High-quality materials and modern design for long-lasting durability."
+    },
+    {
+      "icon": "shield",
+      "title": "Security Systems",
+      "description": "Integrated smart security features for enhanced protection."
+    },
+    {
+      "icon": "eco",
+      "title": "Eco-Friendly",
+      "description": "Sustainable building practices and energy-efficient designs."
+    }
+  ],
+  "developerLogo": "blob",
+  "developerDescription": "Srijan Realty, established in 1996, is one of the leading real estate developers in Eastern India, with a strong presence in Kolkata, Asansol, and expanding footprints in Chennai, Southern India. With over two decades of experience, Srijan has become a driving force in shaping the urban landscape, known for its innovation, quality craftsmanship, and customer-centric approach.",
+  "projectOverview": "long text",
+  "paymentPlan": [
+    {
+      "type": "3 BHK",
+      "size": {
+        "min": 1815,
+        "max": 3953,
+        "unit": "sq ft"
+      },
+      "price": {
+        "label": "₹ 2.40 Cr",
+        "min": 2.4,
+        "max": 2.4,
+        "unit": "Cr"
+      }
+    },
+    {
+      "type": "3.5 BHK",
+      "size": {
+        "min": 2184,
+        "max": 2652,
+        "unit": "sq ft"
+      },
+      "price": {
+        "label": "₹ 2.74 Cr - 3.48 Cr",
+        "min": 2.74,
+        "max": 3.48,
+        "unit": "Cr"
+      }
+    },
+    {
+      "type": "4 BHK",
+      "size": {
+        "min": 2583,
+        "max": 3953,
+        "unit": "sq ft"
+      },
+      "price": {
+        "label": "₹ 3.06 Cr Onwards",
+        "min": 3.06,
+        "max": null,
+        "unit": "Cr"
+      }
+    }
+  ],
+  "highlights": "bulleted text area",
+  "galleryImages": [
+    {
+      "blob": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQE...",
+      "alt": "Front view of the property"
+    },
+    {
+      "blob": "data:image/jpeg;base64,/9j/4BAAD...",
+      "alt": "Modern kitchen"
+    }
+  ],
+  "floorplanImages": [
+    {
+      "blob": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+      "label": "3 BHK Floor Plan"
+    },
+    {
+      "blob": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+      "label": "3 BHK Floor Plan"
+    },
+    {
+      "blob": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+      "label": "3 BHK Floor Plan"
+    },
+    {
+      "blob": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+      "label": "3 BHK Floor Plan"
+    },
+    {
+      "blob": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+      "label": "3 BHK Floor Plan"
+    }
+  ]
+}
