@@ -15,8 +15,18 @@ const poppins = Poppins({
 export const metadata = {
     title: "4 & 3 BHK Apartments in Tolly gunge | Sugam Morya Phase 2",
     description: "Sugam Morya in Tollygunge offers premium 3, 3.5  & 4  BHK homes with lush open areas, elegant design, and top-tier amenities on the prestigious BL Shah Road.",
-    
-};;
+    keywords: ["Luxury apartments Tollygunge",
+        "3 BHK flats Tollygunge",
+        " 4 BHK flats Tollygunge",
+        "Sugam Morya Kolkata",
+        "IGBC Gold certified homes",
+        "Golf course view apartments",
+        "Rooftop infinity pool Kolkata",
+        "Vaastu compliant homes Kolkata",
+        "High - rise apartments South Kolkata",
+        "Clubhouse with amenities Tollygunge"
+    ]
+};
 
 export default function RootLayout({
     children,

@@ -15,7 +15,18 @@ const poppins = Poppins({
 export const metadata = {
     title: 'Town Square, Kolkata | 3 & 4 BHK | Residential Apartments.',
     description: 'Town Square offers 3, 3.5, 4 & 5 BHK (Duplex) Premium Apartments with the most promising and vibrant location near Biswa Bangla Gate and Opposite to Novotel Hotel.',
-   
+    keywords: [
+        " Town Square Kolkata apartments",
+        "3 BHK flats near Biswa Bangla Gate",
+        "4 BHK duplex apartments Kolkata",
+        "Premium apartments near Novotel Kolkata",
+        "Residential projects New Town Kolkata",
+        "Luxury flats near Eco Park Kolkata",
+        "Town Square New Town Kolkata",
+        "High - rise apartments Rajarhat",
+        "Apartments near Kolkata IT hub",
+        "Modern amenities apartments Kolkata    "
+    ]
 };
 
 export default function RootLayout({

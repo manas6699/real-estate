@@ -15,6 +15,18 @@ const poppins = Poppins({
 export const metadata = {
     title: "Emami Aamod New Alipore , Kolkata | Luxury Apartment, 3&4BHK",
     description: "Emami Aamod in New Alipore offers 3&4 BHK with servant rooms from ₹2.90 Cr onwards. Total 233 units with 4 Luxury Towers,  pools, gym, clubhouse & more...",
+    keywords: [
+        "Emami Aamod New Alipore",
+        "Luxury apartments New Alipore",
+        "3 BHK flats with servant room Kolkata",
+        "4 BHK luxury apartments Kolkata",
+        "Emami Realty projects Kolkata",
+        "7-star lifestyle residences Kolkata",
+        "Apartments near CMRI Hospital Kolkata",
+        "Eco- friendly apartments Kolkata",
+        "High - end residential projects Kolkata",
+        "Gated community New Alipore"
+    ],
 };
 
 
