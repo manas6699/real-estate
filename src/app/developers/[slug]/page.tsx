@@ -10,10 +10,13 @@ interface DeveloperPageProps {
     };
 }
 
-// ✅ Define correct function signature
-export default function DeveloperPage({ params }: DeveloperPageProps) {
-    const developer = developers.find((d) => d.slug === params.slug);
 
+export default async function DeveloperPage({ params }: DeveloperPageProps) {
+    const { slug } = (await params);
+
+    if (!slug) return notFound();
+
+    const developer = developers.find((dev) => dev.slug === slug);
     if (!developer) return notFound();
 
     return (
@@ -35,9 +38,5 @@ export default function DeveloperPage({ params }: DeveloperPageProps) {
     );
 }
 
-// ✅ `generateStaticParams` must return array of `params` objects
-export function generateStaticParams() {
-    return developers.map((dev) => ({
-        slug: dev.slug,
-    }));
-}
+
+
