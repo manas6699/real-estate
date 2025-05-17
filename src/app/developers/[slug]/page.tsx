@@ -24,7 +24,7 @@ export default async function Page({
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">
                      {slug}
                 </h1>
-                <Image src={developer.image} alt={developer.name} width={300} height={300} className="rounded-full mb-4" />
+                <Image src={developer.image} alt={developer.name} width={300} height={300} className="mb-4" />
                 <p className="text-lg text-gray-600 text-center w-1/2">
                     {developers.find((dev) => dev.slug === slug)?.description}
                 </p>
