@@ -10,9 +10,8 @@ interface DeveloperPageProps {
     };
 }
 
-
-export default async function DeveloperPage({ params }: DeveloperPageProps) {
-    const { slug } = (await params);
+export default async function DeveloperPage(props: DeveloperPageProps) {
+    const { slug } = await  props.params; // ✅ Access params here, not in the argument list
 
     if (!slug) return notFound();
 
@@ -38,5 +37,9 @@ export default async function DeveloperPage({ params }: DeveloperPageProps) {
     );
 }
 
-
-
+// Required for static generation
+export function generateStaticParams() {
+    return developers.map((dev) => ({
+        slug: dev.slug,
+    }));
+}
