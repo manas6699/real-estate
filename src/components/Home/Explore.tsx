@@ -39,9 +39,9 @@ const properties: Property[] = [
 const Explore = () => {
   return (
     <section>
-          <h1 className='text-3xl sm:text-4xl text-center font-semibold text-gray-900 mb-4 mt-6'>
+          <h2 className='text-3xl sm:text-4xl text-center font-semibold text-gray-900 mb-4 mt-6'>
             Explore Our Properties
-        </h1>
+        </h2>
           <div className="flex justify-center cursor-pointer">
          
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 p-4">

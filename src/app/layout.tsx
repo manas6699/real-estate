@@ -66,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={`${poppins.className}`}>
+    <html lang="en" className={`${poppins.className}`}>
       <body>{children}</body>
       <GoogleAnalytics gaId="G-2XE1CXQ699" />
     </html>
