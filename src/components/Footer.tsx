@@ -5,7 +5,11 @@ import Image from 'next/image';
 import Logo from '../../public/assets/logo-transparent.png'
 import Link from "next/link";
 
-const Footer = () => {
+interface footerPhonenumber {
+    phoneNumber: string;
+}
+
+const Footer = (prop: footerPhonenumber) => {
     return (
         <footer className="bg-black text-white px-6 py-10">
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
@@ -23,10 +27,12 @@ const Footer = () => {
                 <div>
                     <h4 className="text-lg font-semibold mb-3">Quick Links</h4>
                     <ul className="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" className="hover:text-white">Home</a></li>
-                        <li><a href="#" className="hover:text-white">About Us</a></li>
-                        <li><a href="#" className="hover:text-white">Services</a></li>
-                        <li><a href="#" className="hover:text-white">Contact</a></li>
+                        <li><a href="#" className="hover:text-yellow-400">Home</a></li>
+                        <li><a href="#" className="hover:text-yellow-400">About Us</a></li>
+                        <li><a href="/privacypolicy" className="hover:text-yellow-400">Privacy Policy</a></li>
+                        <li><a href="/terms" className="hover:text-yellow-400">Terms and Coditions</a></li>
+                        <li><a href="/refund" className="hover:text-yellow-400">Cancellation & Refund Policy</a></li>
+                        <li><a href="#" className="hover:text-yellow-400">Contact</a></li>
                     </ul>
                 </div>
 
@@ -34,7 +40,7 @@ const Footer = () => {
                 <div>
                     <h4 className="text-lg font-semibold mb-3">Contact</h4>
                     <p className="text-sm text-gray-400">Email: Info@mmrrealty.co.in</p>
-                    <p className="text-sm text-gray-400">Phone: +91 98309 47144</p>
+                    <p className="text-sm text-gray-400">Phone: +91 {prop.phoneNumber}</p>
                 </div>
 
                 {/* Social Media */}
