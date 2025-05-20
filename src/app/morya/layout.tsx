@@ -36,22 +36,20 @@ export default function RootLayout({
     return (
         <html className={`${poppins.className}`}>
             <head>
-                {/* Google Analytics Script */}
+                {/* Google Ads Tag */}
                 <Script
                     strategy="afterInteractive"
-                    src={`https://www.googletagmanager.com/gtag/js?id=G-797R14VMX2`}
+                    src="https://www.googletagmanager.com/gtag/js?id=AW-17036070133"
                 />
                 <Script
-                    id="google-analytics"
+                    id="gtag-init"
                     strategy="afterInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-797R14VMX2', {
-                page_path: window.location.pathname,
-              });
+              gtag('config', 'AW-17036070133');
             `,
                     }}
                 />
