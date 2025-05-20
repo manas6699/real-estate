@@ -4,6 +4,8 @@ import React from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
+
+
 import Hero from '@/componentsMorya/Hero'
 
 import Info from '@/componentsMorya/Info'
@@ -15,23 +17,28 @@ import About from '@/componentsMorya/About'
 
 import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
 
-import MagicCard from '@/componentsMorya/MagicCard'
-import PaymentPlan from '@/componentsMorya/PaymentPlan'
+import Form from '@/components/Form'
 import Overview from '@/componentsMorya/Overview'
 import Amenities from '@/componentsMorya/Amenities'
-import GalleryMorya from '@/componentsMorya/GalleryMorya'
 import FloorPlans from '@/componentsMorya/FloorPlans'
+import MagicCard from '@/componentsMorya/MagicCard'
+import PaymentPlan from '@/componentsMorya/PaymentPlan'
+import GalleryMorya from '@/componentsMorya/GalleryMorya'
 import FloorPlansDownload from '@/componentsMorya/FloorPlansDownload'
-import Form from '@/components/Form'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 
-
+import PopupForm from '@/components/PopupForm';
 
 const page = () => {
+
+  
   return (
     <div>
         <div className="flex flex-col md:flex-row h-screen">
           <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
+          <div className='lg:hidden block'>
+              <PopupForm source='morya'/>
+          </div>
               <Navbar source="morya"/>
               <Hero/>
               <Info/>
