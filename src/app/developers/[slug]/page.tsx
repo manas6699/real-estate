@@ -1,5 +1,5 @@
 import { developers } from "@/app/data/developers";
-import Footer from "@/components/Home/Footer";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Home/Navbar";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -29,7 +29,7 @@ export default async function Page({
                     {developers.find((dev) => dev.slug === slug)?.description}
                 </p>
             </div>
-            <Footer/>
+            <Footer phoneNumber="7439514475" />
         </>
     )
   }
