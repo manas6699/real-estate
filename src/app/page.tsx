@@ -6,7 +6,7 @@ import Navbar from "@/components/Home/Navbar";
 import RecentProperties from "@/components/Home/RecentProperties";
 import StatsSection from "@/components/Home/StatsSection";
 import Team from "@/components/Home/Team";
-import Footer from "@/components/Home/Footer";
+import Footer from "@/components/Footer";
 
 const Home = () => {
   
@@ -21,7 +21,7 @@ const Home = () => {
       <Developer/>
       <ChooseUs/>
       <Team/>
-      <Footer/>
+      <Footer phoneNumber="7439514475"/>
     </>
   );
 };
