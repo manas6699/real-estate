@@ -55,7 +55,7 @@ export default function MobileMagicHiddenForm({ source }: FormProps) {
         onSubmit={handleSubmit}
         className="bg-white shadow-2xl rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
       >
-        <h2 className="text-2xl font-semibold text-center mb-2 text-gray-800">Contact Us</h2>
+        <h2 className="text-2xl font-semibold text-center mb-2 text-gray-800">Book a Site Visit</h2>
 
         <input
           type="text"
