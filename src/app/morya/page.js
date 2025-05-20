@@ -34,8 +34,8 @@ const page = () => {
           <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
               <Navbar source="morya"/>
               <Hero/>
-              <MobileMagicHiddenForm source="morya"/>
               <Info/>
+              <MobileMagicHiddenForm source="morya"/>
               <MagicCard/>
               <Map/>
               <About/>
