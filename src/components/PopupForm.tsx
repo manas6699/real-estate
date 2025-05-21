@@ -66,12 +66,12 @@ export default function PopupForm({ source , formHeading , logoImage }: PopupFor
                 onSubmit={handleSubmit}
                 className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4"
             >
-                <div className="w-20 h-20 rounded-full overflow-hidden mx-auto -mt-12 border-4 border-white shadow-md">
+                <div className="w-20 h-20 rounded-full overflow-hidden mx-auto -mt-14 border-4 bg-white border-cyan-200 p-2 shadow-lg">
                     <Image
                         src={logoImage}
                         alt="Form Icon"
-                        width={10}
-                        height={10}
+                        width={200}
+                        height={200}
                         className="w-full h-full object-cover"
                     />
                 </div>
