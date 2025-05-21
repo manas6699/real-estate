@@ -8,6 +8,7 @@ import { LEADS_ENDPOINT } from '@/config/api';
 
 type PopupFormProps = {
     source: string;
+    formHeading: string;
 };
 
 type BrochureFormData = {
@@ -17,7 +18,7 @@ type BrochureFormData = {
     source: string;
 };
 
-export default function PopupForm({ source }: PopupFormProps) {
+export default function PopupForm({ source , formHeading }: PopupFormProps) {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({
@@ -63,7 +64,7 @@ export default function PopupForm({ source }: PopupFormProps) {
                 onSubmit={handleSubmit}
                 className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4"
             >
-                <h2 className="text-xl font-semibold text-center">Contact Us</h2>
+                <h2 className="text-xl font-semibold text-center">{formHeading}</h2>
 
                 <input
                     type="text"
