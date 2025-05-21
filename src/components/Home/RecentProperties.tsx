@@ -71,7 +71,10 @@ export default function RecentProperties() {
         <section className="py-12 px-4 md:px-10">
             <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold">Recent Properties for Sale</h2>
-                <p className="text-gray-600 text-sm mt-2">Lorem ipsum dolor sit amet</p>
+                <p className="text-gray-600 text-sm mt-2">
+                    Explore our latest listings of prime properties available for sale. From modern apartments to spacious villas, 
+                    each listing is handpicked to meet your lifestyle and investment needs.    
+                </p>
             </div>
 
             <Swiper

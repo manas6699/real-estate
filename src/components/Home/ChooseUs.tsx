@@ -1,8 +1,9 @@
 import Image from "next/image";
 import {
-    Search,
+    Handshake,
+    LineChart,
+    FileCheck,
     Users,
-    KeyRound,
 } from "lucide-react";
 
 const ChooseUs = () => {
@@ -12,7 +13,7 @@ const ChooseUs = () => {
                 {/* Left Image with Badge */}
                 <div className="relative">
                     <Image
-                        src="/assets/emami/1.webp" // replace with your image path
+                        src="/assets/emami/1.webp"
                         alt="Luxury House"
                         width={700}
                         height={500}
@@ -38,13 +39,12 @@ const ChooseUs = () => {
                     {/* Feature 1 */}
                     <div className="flex items-start gap-4">
                         <div className="p-2 bg-amber-100 rounded-xl">
-                            <Search className="w-6 h-6 text-gray-800" />
+                            <Handshake className="w-6 h-6 text-gray-800" />
                         </div>
                         <div>
-                            <h4 className="font-semibold text-gray-900">Find Real Estate</h4>
+                            <h4 className="font-semibold text-gray-900">Customer-First Approach</h4>
                             <p className="text-sm text-gray-600">
-                                Sumo petentium ut per, at his wisi utinam adipiscing. Est ei graeco
-                                Lorem ipsum dolor sit amet, consectetur adipiscing
+                                We prioritize your needs, offering personalized guidance and transparent deals that truly work in your favor.
                             </p>
                         </div>
                     </div>
@@ -52,13 +52,14 @@ const ChooseUs = () => {
                     {/* Feature 2 */}
                     <div className="flex items-start gap-4">
                         <div className="p-2 bg-green-200 rounded-xl">
-                            <Users className="w-6 h-6 text-gray-800" />
+                            <LineChart className="w-6 h-6 text-gray-800" />
                         </div>
                         <div>
-                            <h4 className="font-semibold text-gray-900">Meet Relator</h4>
+                            <h4 className="font-semibold text-gray-900">
+                                Expert Market Insights
+                            </h4>
                             <p className="text-sm text-gray-600">
-                                Sumo petentium ut per, at his wisi utinam adipiscing. Est ei graeco
-                                Lorem ipsum dolor sit amet, consectetur adipiscing
+                                Our team brings deep industry knowledge to help you make confident, well-informed purchase and sale decisions.
                             </p>
                         </div>
                     </div>
@@ -66,13 +67,12 @@ const ChooseUs = () => {
                     {/* Feature 3 */}
                     <div className="flex items-start gap-4">
                         <div className="p-2 bg-purple-200 rounded-xl">
-                            <KeyRound className="w-6 h-6 text-gray-800" />
+                            <FileCheck className="w-6 h-6 text-gray-800" />
                         </div>
                         <div>
-                            <h4 className="font-semibold text-gray-900">Take The Keys</h4>
+                            <h4 className="font-semibold text-gray-900">Seamless Experience</h4>
                             <p className="text-sm text-gray-600">
-                                Sumo petentium ut per, at his wisi utinam adipiscing. Est ei graeco
-                                Lorem ipsum dolor sit amet, consectetur adipiscing
+                                From property search to final paperwork, we ensure a smooth, hassle-free journey every step of the way.
                             </p>
                         </div>
                     </div>
