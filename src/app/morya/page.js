@@ -37,7 +37,7 @@ const page = () => {
         <div className="flex flex-col md:flex-row h-screen">
           <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
           <div className='lg:hidden block'>
-              <PopupForm source='morya'  formHeading="Book a Site Visit"/>
+              <PopupForm source='morya'  formHeading="Book a Site Visit" logoImage='/assets/morya/morya.png'/>
           </div>
               <Navbar source="morya"/>
               <Hero/>

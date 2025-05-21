@@ -5,10 +5,12 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loader from '@/components/loader';
 import { LEADS_ENDPOINT } from '@/config/api';
+import Image from 'next/image';
 
 type PopupFormProps = {
     source: string;
     formHeading: string;
+    logoImage: string;
 };
 
 type BrochureFormData = {
@@ -18,7 +20,7 @@ type BrochureFormData = {
     source: string;
 };
 
-export default function PopupForm({ source , formHeading }: PopupFormProps) {
+export default function PopupForm({ source , formHeading , logoImage }: PopupFormProps) {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({
@@ -64,6 +66,15 @@ export default function PopupForm({ source , formHeading }: PopupFormProps) {
                 onSubmit={handleSubmit}
                 className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4"
             >
+                <div className="w-20 h-20 rounded-full overflow-hidden mx-auto -mt-12 border-4 border-white shadow-md">
+                    <Image
+                        src={logoImage}
+                        alt="Form Icon"
+                        width={10}
+                        height={10}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
                 <h2 className="text-xl font-semibold text-center">{formHeading}</h2>
 
                 <input
@@ -97,7 +108,7 @@ export default function PopupForm({ source , formHeading }: PopupFormProps) {
 
                 <button
                     type="submit"
-                    className="bg-pink-600 text-white py-2 rounded-md hover:bg-pink-700 transition"
+                    className="bg-blue-900 text-white py-2 rounded-md hover:bg-pink-700 transition"
                 >
                     {loading ? (
                         <div className="flex justify-center items-center">
