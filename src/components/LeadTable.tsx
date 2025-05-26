@@ -11,7 +11,10 @@ import {
     useReactTable,
     SortingState,
     getPaginationRowModel,
+    getFilteredRowModel,
+    ColumnFiltersState
 } from '@tanstack/react-table';
+
 import { GET_ALL_LEADS } from '../config/api';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -29,7 +32,7 @@ export default function LeadTable() {
     const [data, setData] = useState<Lead[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [sourceFilter, setSourceFilter] = useState('');
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [pageSize] = useState(10);
 
     useEffect(() => {
@@ -56,9 +59,7 @@ export default function LeadTable() {
         fetchLeads();
     }, []);
 
-    const filteredData = sourceFilter
-        ? data.filter((lead) => lead.source.trim() === sourceFilter.trim())
-        : data;
+   
 
     const formatDate = (isoString: string) => {
         const date = new Date(isoString);
@@ -97,14 +98,17 @@ export default function LeadTable() {
     ];
 
     const table = useReactTable({
-        data: filteredData,
+        data,
         columns,
         state: {
             sorting,
+            columnFilters, 
         },
         onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters, 
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(), 
         getPaginationRowModel: getPaginationRowModel(),
         initialState: {
             pagination: {
@@ -113,11 +117,10 @@ export default function LeadTable() {
             },
         },
     });
-
-    const uniqueSources = [...new Set(data.map((lead) => lead.source))];
+      
 
     const exportToExcel = () => {
-        const exportData = filteredData.map((lead) => ({
+        const exportData = data.map((lead) => ({
             Name: lead.name,
             Phone: lead.phone,
             Email: lead.email,
@@ -139,12 +142,12 @@ export default function LeadTable() {
             <div className="mb-4 flex items-center space-x-4">
                 <label className="font-medium">Filter by Source:</label>
                 <select
-                    value={sourceFilter}
-                    onChange={(e) => setSourceFilter(e.target.value)}
+                    value={(table.getColumn('source')?.getFilterValue() as string) ?? ''}
+                    onChange={(e) => table.getColumn('source')?.setFilterValue(e.target.value)}
                     className="border rounded px-3 py-1"
                 >
                     <option value="">All</option>
-                    {uniqueSources.map((src) => (
+                    {[...new Set(data.map((lead) => lead.source))].map((src) => (
                         <option key={src} value={src}>
                             {src}
                         </option>
@@ -158,6 +161,7 @@ export default function LeadTable() {
                     Export to Excel
                 </button>
             </div>
+
 
             {loading ? (
                 <div className="text-center py-10 text-gray-500 text-lg font-medium">
