@@ -45,6 +45,7 @@ export default function Form({ source }: FormProps) {
             await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Our Team will reach out to you very soon!');
             setFormData({ name: '', email: '', phone: '', source });
+            setLoading(false); // <--- Reset loading here on success
         } catch (error: unknown) {
             setLoading(false);
             if (axios.isAxiosError(error)) {
@@ -56,6 +57,7 @@ export default function Form({ source }: FormProps) {
             console.error('Submission error:', error);
         }
     };
+    
 
     return (
         <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
