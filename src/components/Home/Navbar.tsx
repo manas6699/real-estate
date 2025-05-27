@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { X } from 'lucide-react'; // Optional: Use lucide-react or any icon lib
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link';
+import { X } from 'lucide-react'; 
+import { useState } from 'react';
+
 import Image from 'next/image';
-import Logo from '../../../public/assets/logo-transparent.png'
+import Loader from '@/components/loader';
+import 'react-toastify/dist/ReactToastify.css';
+import { LEADS_ENDPOINT } from '@/config/api';
 import { Facebook, Instagram } from "lucide-react"
+import { toast, ToastContainer } from 'react-toastify';
+import Logo from '../../../public/assets/logo-transparent.png'
 
 type BrochureFormData = {
     name: string;
@@ -24,6 +27,7 @@ type sourceType = {
 export default function Navbar(source: sourceType) {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [loading , setLoading] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source.source });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -32,11 +36,12 @@ export default function Navbar(source: sourceType) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        
         try {
+            setLoading(true);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const response = await axios.post<{ message: string; lead: unknown }>(
-                'https://split-wise-clone-085p.onrender.com/api/mmr/leads',
+                LEADS_ENDPOINT,
                 formData
             );
 
@@ -45,6 +50,7 @@ export default function Navbar(source: sourceType) {
             setIsOpen(false);
 
         } catch (error: unknown) {
+            setLoading(false);
             if (axios.isAxiosError(error)) {
                 const message =
                     error.response?.data?.message ||
@@ -161,7 +167,13 @@ export default function Navbar(source: sourceType) {
                                         type="submit"
                                         className="bg-[#de3163] hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
                                     >
-                                        Submit
+                                        {loading ? (
+                                            <div className="flex justify-center items-center">
+                                                <Loader color='white' />
+                                            </div>
+                                        ) : (
+                                            <>Submit</>
+                                        )}
                                     </button>
                                 </form>
                             </div>
