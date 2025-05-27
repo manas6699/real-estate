@@ -1,7 +1,6 @@
-import Image from 'next/image'
 import React from 'react'
-// import Emami from '../../public/assets/emami/eami-logo.webp'
-import Logo from '../../public/assets/morya/Poster.png'
+import Image from 'next/image'
+import Logo from '../../../public/assets/morya/Poster.png';
 
 const About = () => {
   return (

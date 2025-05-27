@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { Phone, MessageCircle } from 'lucide-react';
-
-import HeroImage from '../../public/assets/morya/morya-gallery-1.webp';
 import Image from 'next/image';
+import { Phone, MessageCircle } from 'lucide-react';
+import HeroImage from '../../../public/assets/morya/morya-gallery-1.webp';
 
 const Hero = () => {
   return (

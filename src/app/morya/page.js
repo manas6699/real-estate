@@ -6,25 +6,25 @@ import Footer from '@/components/Footer'
 
 
 
-import Hero from '@/componentsMorya/Hero'
+import Hero from '@/components/componentsMorya/Hero'
 
-import Info from '@/componentsMorya/Info'
+import Info from '@/components/componentsMorya/Info'
 
 
-import Map from '@/componentsMorya/MapView'
+import Map from '@/components/componentsMorya/MapView'
 
-import About from '@/componentsMorya/About'
+import About from '@/components/componentsMorya/About'
 
-import DownloadBrochure from '@/componentsMorya/DownloadBrochure'
+import DownloadBrochure from '@/components/componentsMorya/DownloadBrochure'
 
 import Form from '@/components/Form'
-import Overview from '@/componentsMorya/Overview'
-import Amenities from '@/componentsMorya/Amenities'
-import FloorPlans from '@/componentsMorya/FloorPlans'
-import MagicCard from '@/componentsMorya/MagicCard'
-import PaymentPlan from '@/componentsMorya/PaymentPlan'
-import GalleryMorya from '@/componentsMorya/GalleryMorya'
-import FloorPlansDownload from '@/componentsMorya/FloorPlansDownload'
+import Overview from '@/components/componentsMorya/Overview'
+import Amenities from '@/components/componentsMorya/Amenities'
+import FloorPlans from '@/components/componentsMorya/FloorPlans'
+import MagicCard from '@/components/componentsMorya/MagicCard'
+import PaymentPlan from '@/components/componentsMorya/PaymentPlan'
+import GalleryMorya from '@/components/componentsMorya/GalleryMorya'
+import FloorPlansDownload from '@/components/componentsMorya/FloorPlansDownload'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 
 import PopupForm from '@/components/PopupForm';
