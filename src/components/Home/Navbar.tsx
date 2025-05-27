@@ -48,6 +48,7 @@ export default function Navbar(source: sourceType) {
             toast.success('Our Team will reach out to you very soon!');
             setFormData({ name: '', email: '', phone: '', source: source.source });
             setIsOpen(false);
+            setLoading(false);
 
         } catch (error: unknown) {
             setLoading(false);
