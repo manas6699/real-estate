@@ -4,8 +4,10 @@ import { useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
 import LeadTable from '@/components/LeadTable';
-import Logo from '../../../../public/assets/logo-transparent.png'
 import Footer from '@/components/Footer';
+import Logo from '../../../../public/assets/logo-transparent.png'
+
+import MondrianButton from '@/components/MondrianButton';
 
 import LeadCards from '@/components/LeadCards';
 import Link from 'next/link';
@@ -72,6 +74,7 @@ export default function LeadsPage() {
                 </div>
             </nav>
             <main className="max-w-6xl mx-auto mt-6 mb-16">
+                <MondrianButton/>
                 <LeadCards />
                 <h1 className="text-2xl font-semibold  p-6">All Leads</h1>
                 <LeadTable />
