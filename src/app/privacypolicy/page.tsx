@@ -113,7 +113,7 @@ export default function PrivacyPolicy() {
                     <h2 className="text-xl font-semibold mb-2">11. Contact Us</h2>
                     <p>If you have any questions or concerns about this Privacy Policy, contact us at:</p>
                     <ul className="list-none space-y-1 mt-2">
-                        <li><strong>Email:</strong> info@mmrrealty.in</li>
+                        <li><strong>Email:</strong> info@mmrrealty.co.in</li>
                         <li><strong>Phone:</strong> +91 9123853689</li>
                         <li><strong>Address:</strong> 3108 Rajdanga Main Road, Block EB, Plot 47, Kolkata – 700107</li>
                     </ul>
