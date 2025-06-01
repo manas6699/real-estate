@@ -18,3 +18,12 @@ input[type=number]::-webkit-inner-spin-button,
   input[type=number] {
     -moz-appearance: textfield;
   }
+
+
+  .input {
+    @apply w-full p-2 border border-gray-300 rounded;
+  }
+  .btn {
+    @apply mt-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded;
+  }
+  
