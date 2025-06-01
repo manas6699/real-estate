@@ -33,7 +33,7 @@ const page = () => {
 
   
   return (
-    <div>
+    <>
         <div className="flex flex-col md:flex-row h-screen">
           <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
           <div className='lg:hidden block'>
@@ -59,7 +59,7 @@ const page = () => {
             <Form source="morya"/>
           </div>
         </div>
-    </div>
+    </>
   )
 }
 
