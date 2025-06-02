@@ -10,8 +10,8 @@ import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm';
 import Image from 'next/image';
 
 
-import { BACKEND_ADMIN_POST_API } from '@/config/api'
-import EnquireBtn from '@/components/EnquireBtn';
+import { BACKEND_ADMIN_POST_API, UPLOAD_IMAGES_BASE_URL } from '@/config/api'
+// import EnquireBtn from '@/components/EnquireBtn';
 import Amenities from '@/dynamicComponents/Amenities';
 import DownloadBrochureButton2 from '../components/DownloadBrochureButton2';
 import Gallery from '@/dynamicComponents/Gallery';
@@ -72,10 +72,10 @@ export default function AllinOne({ id }: { id: string }) {
         );
     }
 
-    const backgroundImageUrl = `http://localhost:8000/uploads/${data.backgroundImage}`;
-    const developerLogo = `http://localhost:8000/uploads/${data.developerLogo}`;
-    const brochurepdf = `http://localhost:8000/uploads/${data.brochurePdf}`;
-    const floorPlanPdf = `http://localhost:8000/uploads/${data.floorPlanPdf}`;
+    const backgroundImageUrl = `${UPLOAD_IMAGES_BASE_URL}/${data.backgroundImage}`;
+    const developerLogo = `${UPLOAD_IMAGES_BASE_URL}/${data.developerLogo}`;
+    const brochurepdf = `${UPLOAD_IMAGES_BASE_URL}/${data.brochurePdf}`;
+    const floorPlanPdf = `${UPLOAD_IMAGES_BASE_URL}/${data.floorPlanPdf}`;
 
     const number = data.reraId;
     const handleCopy = async () => {
@@ -287,10 +287,14 @@ export default function AllinOne({ id }: { id: string }) {
                         </tbody>
                     </table>
                 </div>
-                <div className="mt-5 flex justify-between gap-5">
+                {/* <div className="mt-5 flex justify-between gap-5">
 
                     <EnquireBtn source={data.title} btntext="Instant Call Back ⚡" />
                     <DownloadBrochureButton2 source={data.title} pdfurl={brochurepdf} btnText="Brochure" />
+                </div> */}
+                <div className="mt-5">
+
+                        <DownloadBrochureButton2 source={data.title} pdfurl={brochurepdf} btnText="Brochure" />
                 </div>
                 <Amenities />
                 <h2 className='text-xl md:text-4xl font-bold mb-5'>
