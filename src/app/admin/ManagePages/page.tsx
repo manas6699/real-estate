@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 
-import {  BACKEND_ADMIN_POST_API } from '@/config/api';
+import { BACKEND_ADMIN_POST_API } from '@/config/api';
 import Navbar from '@/components/AdminComponents/Navbar';
 
 // BUG
@@ -27,7 +27,7 @@ const projectSchema = z.object({
       message: 'Background image is required',
     }),
 
-    developerLogo: z
+  developerLogo: z
     .custom<FileList>((val) => typeof window !== 'undefined' && val instanceof FileList && val.length > 0, {
       message: 'Developer logo is required',
     }),
@@ -47,7 +47,7 @@ const projectSchema = z.object({
   propertyType: z.string(),
   propertySize: z.string(),
   noOfBlocks: z.coerce.number(),
-  floors: z.coerce.number(),
+  floors: z.string(),
   noOfUnits: z.coerce.number(),
   reraId: z.string(),
   iframeSource: z.string(),
@@ -145,7 +145,7 @@ export default function ProjectForm() {
     control,
     name: 'paymentPlan'
   });
-  
+
 
   const onSubmit = async (data: ProjectFormData) => {
     try {
@@ -206,7 +206,7 @@ export default function ProjectForm() {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 max-w-4xl mx-auto">
         <div>
           <label className="block font-semibold mb-1">Title</label>
