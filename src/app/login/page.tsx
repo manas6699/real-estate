@@ -24,33 +24,33 @@ export default function LoginPage() {
         setError('');
         setLoading(true);
 
-        const res = await  axios.post(
-            `${API_BASE_URL}/auth/login`,
-            { phone, password },
-            {
-                withCredentials: true, // ✅ Very important to receive cookies
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+        try {
+            const res = await axios.post(
+                `${API_BASE_URL}/auth/login`,
+                { phone, password },
+                {
+                    withCredentials: true, // Required to accept HTTP-only cookies
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (res.status === 200) {
+                // Successful login, server already set cookie
+                router.push('/admin/LeadData');
+            } else {
+                setError('Login failed. Please check your credentials.');
             }
-          );
-
-          // set cookies
-        console.log('token from login page : ', res.data.token);
-        document.cookie = `token=${res.data.token}; path=/; max-age=${60 * 60 * 24}; secure; samesite=strict`;
-
-
-        if (res.status === 200) {
-            // Login successful, redirect to admin panel
-            router.push('/admin/LeadData');
-
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            console.error(err);
+            setError(err.response?.data?.message || 'Login failed');
+        } finally {
+            setLoading(false);
         }
-        else {
-            // Handle login error
-            setError('Login failed. Please check your credentials.');
-        }
-
     };
+    
 
     return (
         <div className="flex min-h-screen justify-center items-center bg-gray-50">
