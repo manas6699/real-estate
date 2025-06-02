@@ -1,5 +1,6 @@
 'use client';
 
+import { LEADS_ENDPOINT } from '@/config/api';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -35,7 +36,7 @@ export default function MobileMagicHiddenForm({ source }: FormProps) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post('https://split-wise-clone-085p.onrender.com/api/mmr/leads', formData);
+      await axios.post(`${LEADS_ENDPOINT}`, formData);
       toast.success('Our Team will reach out to you very soon!');
       setFormData({ name: '', email: '', phone: '', source });
     } catch (error: unknown) {
