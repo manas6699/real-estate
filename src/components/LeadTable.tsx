@@ -39,7 +39,9 @@ export default function LeadTable() {
         const fetchLeads = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(GET_ALL_LEADS);
+                const res = await axios.get(GET_ALL_LEADS,{
+                    withCredentials: true
+                });
                 if (Array.isArray(res.data.leads)) {
                     setData(res.data.leads);
                 } else {
