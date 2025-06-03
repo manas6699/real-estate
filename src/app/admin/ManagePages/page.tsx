@@ -209,7 +209,7 @@ export default function ProjectForm() {
       formData.append('paymentPlan', JSON.stringify(data.paymentPlan));
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const res = await axios.post(`${BACKEND_ADMIN_POST_API}/create`, formData, {
+      const res = await axios.post(`${BACKEND_ADMIN_POST_API}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
