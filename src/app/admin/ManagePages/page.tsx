@@ -4,19 +4,23 @@ import axios from 'axios';
 import * as z from 'zod';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import Loader from '@/components/loader';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 
+
 import { BACKEND_ADMIN_POST_API } from '@/config/api';
 import Navbar from '@/components/AdminComponents/Navbar';
+import { toast ,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // BUG
-// add pdf fields
-// add a spinner in the submit button
+// add pdf fields .
+// add a spinner in the submit button.
 // remove display Images bug
 // add html textbox
-// replace the alart to toast
-// Reset the form after submitting 
+// replace the alart to toast.
+// Reset the form after submitting .
 
 const projectSchema = z.object({
   title: z.string(),
@@ -40,6 +44,17 @@ const projectSchema = z.object({
     .custom<FileList>((val) => typeof window !== 'undefined' && val instanceof FileList && val.length > 0, {
       message: 'At least one floor plan image is required',
     }),
+
+    brochurepdf: z
+    .custom<FileList>((val) => typeof window !== 'undefined' && val instanceof FileList && val.length > 0, {
+      message: 'Brochure PDF is required',
+    }),
+
+    floorPlansPdf: z
+    .custom<FileList>((val) => typeof window !== 'undefined' && val instanceof FileList && val.length > 0, {
+      message: 'Floor Plans PDF is required',
+    }),
+
   configuration: z.string(),
   possessionDate: z.string(),
   unitsSold: z.coerce.number(),
@@ -81,6 +96,7 @@ export default function ProjectForm() {
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
   const [floorPlanPreviews, setFloorPlanPreviews] = useState<string[]>([]);
   const [developerLogoPreview, setDeveloperLogoPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     control,
@@ -149,6 +165,7 @@ export default function ProjectForm() {
 
   const onSubmit = async (data: ProjectFormData) => {
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append('backgroundImage', data.backgroundImage[0]);
       formData.append('developerLogo', data.developerLogo[0]);
@@ -159,6 +176,13 @@ export default function ProjectForm() {
 
       for (let i = 0; i < data.floorPlanImages.length; i++) {
         formData.append('floorPlanImages', data.floorPlanImages[i]);
+      }
+
+      for (let i = 0; i < data.brochurepdf.length; i++) {
+        formData.append('brochurepdf', data.brochurepdf[i]);
+      }
+      for (let i = 0; i < data.floorPlansPdf.length; i++) {
+        formData.append('floorPlansPdf', data.floorPlansPdf[i]);
       }
 
       formData.append('title', data.title);
@@ -184,21 +208,33 @@ export default function ProjectForm() {
       formData.append('features', JSON.stringify(data.features));
       formData.append('paymentPlan', JSON.stringify(data.paymentPlan));
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const res = await axios.post(`${BACKEND_ADMIN_POST_API}/create`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      alert('Form submitted successfully');
-      console.log(res.data);
+      setLoading(false);
+      toast.success('Project created successfully!');
+      // Reset form state
+      setBackgroundPreview(null);
+      setDeveloperLogoPreview(null);
+      setGalleryPreviews([]);
+      setFloorPlanPreviews([]);
+      // Reset the form fields
+      document.querySelector('form')?.reset();
+
+      // Revoke object URLs to free memory
       if (backgroundPreview) URL.revokeObjectURL(backgroundPreview);
       if (developerLogoPreview) URL.revokeObjectURL(developerLogoPreview);
       galleryPreviews.forEach(url => URL.revokeObjectURL(url));
       floorPlanPreviews.forEach(url => URL.revokeObjectURL(url));
 
     } catch (error) {
-      alert('Error submitting form');
+      setLoading(false);
+      // toast in stead of alert
+      toast.error('Error creating project');
       console.error(error);
     }
   };
@@ -463,8 +499,37 @@ export default function ProjectForm() {
           <input {...register('unitsSoldPercentage')} placeholder="Units Sold %" type="number" className="input" />
         </div>
 
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <div>
+          <label className="block font-semibold mb-1">Brochure PDF</label>
+          <input
+            type="file"
+            accept=".pdf"
+            {...register('brochurepdf')}
+            className="block w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Floor Plans PDF</label>
+          <input
+            type="file"
+            accept=".pdf"
+            {...register('floorPlansPdf')}
+            className="block w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <button type="submit" className="btn btn-primary">
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <Loader color='white' />
+            </div>
+          ) : (
+            <>Submit</>
+          )}
+        </button>
       </form>
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
     </>
   );
 }
