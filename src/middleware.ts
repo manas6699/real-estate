@@ -2,26 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
-  const pathname = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
 
-  // 1. Redirect logged-in users away from login page
+  console.log('token : ' , token);
+
+  // Redirect to dashboard if already logged in
   if (pathname === '/login' && token) {
     return NextResponse.redirect(new URL('/admin/LeadData', request.url));
   }
 
-  // 2. Protect admin routes
-  const isProtected = pathname.startsWith('/admin');
-  
-  if (isProtected) {
-    // 2a. Check for token
+  // Protect /admin routes
+  if (pathname.startsWith('/admin')) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // 2b. Add security headers for protected routes
     const response = NextResponse.next();
+
+    // Optional: Set additional security headers
     response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('X-Content-Type-Options', 'nosniff');
+
     return response;
   }
 
@@ -29,8 +30,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/login'
-  ],
+  matcher: ['/admin/:path*', '/login'],
 };
