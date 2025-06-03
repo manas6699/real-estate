@@ -35,14 +35,14 @@ export default function LoginPage() {
                 // `http://localhost:8000/api/auth/login`,
                 { phone, password },
                 {
-                    withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
-            if (res.status === 200) {
+            if (res.status === 200 && res.data.token) {
+                localStorage.setItem('authToken', res.data.token);
                 router.push('/admin/LeadData');
             } else {
                 setError('Login failed. Please check your credentials.');

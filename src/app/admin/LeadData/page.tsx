@@ -6,8 +6,11 @@ import LeadCards from '@/components/LeadCards';
 import MondrianButton from '@/components/MondrianButton';
 import Navbar from '@/components/AdminComponents/Navbar';
 
+import { useAuthRedirect } from '@/app/hooks/useAuthRedirect';
+
 export default function LeadsPage() {
 
+    useAuthRedirect();
     return (
         <>
             <Navbar />
