@@ -45,12 +45,12 @@ const projectSchema = z.object({
       message: 'At least one floor plan image is required',
     }),
 
-    brochurepdf: z
+  brochurePdf: z
     .custom<FileList>((val) => typeof window !== 'undefined' && val instanceof FileList && val.length > 0, {
       message: 'Brochure PDF is required',
     }),
 
-    floorPlansPdf: z
+  floorPlanPdf: z
     .custom<FileList>((val) => typeof window !== 'undefined' && val instanceof FileList && val.length > 0, {
       message: 'Floor Plans PDF is required',
     }),
@@ -178,11 +178,11 @@ export default function ProjectForm() {
         formData.append('floorPlanImages', data.floorPlanImages[i]);
       }
 
-      for (let i = 0; i < data.brochurepdf.length; i++) {
-        formData.append('brochurepdf', data.brochurepdf[i]);
+      for (let i = 0; i < data.brochurePdf.length; i++) {
+        formData.append('brochurePdf', data.brochurePdf[i]);
       }
-      for (let i = 0; i < data.floorPlansPdf.length; i++) {
-        formData.append('floorPlansPdf', data.floorPlansPdf[i]);
+      for (let i = 0; i < data.floorPlanPdf.length; i++) {
+        formData.append('floorPlanPdf', data.floorPlanPdf[i]);
       }
 
       formData.append('title', data.title);
@@ -209,7 +209,9 @@ export default function ProjectForm() {
       formData.append('paymentPlan', JSON.stringify(data.paymentPlan));
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const res = await axios.post(`${BACKEND_ADMIN_POST_API}`, formData, {
+      const res = await axios.post(
+        `${BACKEND_ADMIN_POST_API}`,
+         formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -504,7 +506,7 @@ export default function ProjectForm() {
           <input
             type="file"
             accept=".pdf"
-            {...register('brochurepdf')}
+            {...register('brochurePdf')}
             className="block w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
@@ -514,7 +516,7 @@ export default function ProjectForm() {
           <input
             type="file"
             accept=".pdf"
-            {...register('floorPlansPdf')}
+            {...register('floorPlanPdf')}
             className="block w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
