@@ -17,9 +17,6 @@ export default function LeadsPage() {
             <main className="max-w-6xl mx-auto mt-6 mb-16">
                 <MondrianButton />
                 <LeadCards />
-                <h1 className="text-2xl font-semibold  p-6">
-                    All Leads
-                </h1>
                 <LeadTable />
             </main>
             <Footer phoneNumber='98309 47144' />
