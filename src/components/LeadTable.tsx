@@ -139,9 +139,24 @@ export default function LeadTable() {
         saveAs(blob, 'leads_export.xlsx');
     };
 
+
+    const getFilteredDataLength =() => {
+        return table.getFilteredRowModel().rows.length;
+    }
+
+    const getFilteredProjectName = () => {
+        const filterValue = table.getColumn('source')?.getFilterValue();
+        if (!filterValue) return 'All Sources';
+        return filterValue as string;
+    }
+
     return (
         <div className="p-4">
+            <h2 className="text-2xl font-semibold mb-8">
+                Total {getFilteredDataLength()} lead from {getFilteredProjectName()} ,  out of   {data.length} Leads
+            </h2>
             <div className="mb-4 flex items-center space-x-4">
+
                 <label className="font-medium">Filter by Source:</label>
                 <select
                     value={(table.getColumn('source')?.getFilterValue() as string) ?? ''}
