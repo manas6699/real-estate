@@ -210,7 +210,7 @@ export default function ProjectForm() {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const res = await axios.post(
-        `${BACKEND_ADMIN_POST_API}`,
+        `${BACKEND_ADMIN_POST_API}/create`,
          formData, {
         headers: {
           'Content-Type': 'multipart/form-data'

@@ -18,7 +18,6 @@ import Gallery from '@/dynamicComponents/Gallery';
 import Footer from '@/components/Footer';
 import Form from '@/components/Form';
 
-console.log('manas', BACKEND_ADMIN_POST_API);
 
 interface tableMapType {
     _id: string,
