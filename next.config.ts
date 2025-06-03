@@ -5,8 +5,6 @@ const nextConfig: NextConfig = {
         domains: [
           'localhost',
           'www.mmrrealty.co.in',
-          'cdn.example.com',
-          'api.example.io'
         ],
       },
 };
