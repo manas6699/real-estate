@@ -1,4 +1,5 @@
 import { developers } from "@/app/data/developers";
+import EnquireBtn from "@/components/EnquireBtn";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Home/Navbar";
 import Image from "next/image";
@@ -19,17 +20,20 @@ export default async function Page({
 
     return (
         <>
-        <Navbar source="mmr-home"/>
+            <Navbar source="mmr-home" />
             <div className="flex flex-col items-center justify-center min-h-screen py-2">
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">
-                     {slug}
+                    {slug}
                 </h1>
                 <Image src={developer.image} alt={developer.name} width={300} height={300} className="mb-4" />
                 <p className="text-lg text-gray-600 text-center w-1/2">
                     {developers.find((dev) => dev.slug === slug)?.description}
                 </p>
+                <div className="mt-5 mb-5">
+                    <EnquireBtn source={`developer-${slug}`} btntext="Contact Developer 🏤" />
+                </div>
             </div>
             <Footer phoneNumber="7439514475" />
         </>
     )
-  }
+}
