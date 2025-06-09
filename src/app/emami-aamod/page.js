@@ -15,6 +15,7 @@ import PaymentPlan from '@/components/emami/PaymentPlan'
 import Footer from '@/components/Footer'
 import Form from '@/components/Form'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
+import PopupForm from '@/components/PopupForm';
 
 
 const Home = () => {
@@ -23,6 +24,10 @@ const Home = () => {
             <div>
                 <div className="flex flex-col md:flex-row h-screen">
                     <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
+                    <div className='lg:hidden block'>
+                                  <PopupForm source='morya'  formHeading="Book a Site Visit" logoImage='/assets/emami/eami-logo.webp'/>
+                    </div>
+                            
                         <Navbar source="emami"/>
                         <Hero/>
                         <Info/>
