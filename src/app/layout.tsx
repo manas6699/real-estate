@@ -1,16 +1,15 @@
-import { GoogleAnalytics } from '@next/third-parties/google'
 
-import type { Metadata } from "next";
 import "./globals.css";
 
+import type { Metadata } from "next";
+import { Lora } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google'
 
-import { Poppins } from 'next/font/google';
-
-const poppins = Poppins({
+const lora = Lora({
   subsets: ['latin'],
-  display: 'swap', // Optional: useful for better performance
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'], // Specify needed weights
-  variable: '--font-poppins', // CSS variable name
+  weight: ['400', '500', '600', '700'], // adjust based on your design needs
+  variable: '--font-lora',
+  display: 'swap',
 });
 
 
@@ -66,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html  className={`${poppins.className}`}>
+    <html  className={`${lora.className}`}>
       <body>{children}</body>
       <GoogleAnalytics gaId="G-2XE1CXQ699" />
     </html>
