@@ -1,21 +1,24 @@
-
-
-
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/emami/Hero'
-import Info from '@/components/emami/Info'
-import MapView from '@/components/emami/MapView'
-import MagicCard from '@/components/emami/MagicCard'
-import FloorPlans from '@/components/emami/FloorPlans'
-import DownloadBrochure from '@/components/emami/DownloadBrochure'
-import GalleryEmami from '@/components/emami/GalleryEmami'
-import About from '@/components/emami/About'
-import Overview from '@/components/emami/Overview'
-import PaymentPlan from '@/components/emami/PaymentPlan'
 import Footer from '@/components/Footer'
+
 import Form from '@/components/Form'
-import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
+import Navbar from '@/components/Navbar';
+import Info from '@/components/emami/Info'
+import Hero from '@/components/emami/Hero'
+import About from '@/components/emami/About'
+
+
 import PopupForm from '@/components/PopupForm';
+import Overview from '@/components/emami/Overview'
+import MapView from '@/components/emami/MapView'
+import FloorPlans from '@/components/emami/FloorPlans'
+import MagicCard from '@/components/emami/MagicCard'
+
+
+import PaymentPlan from '@/components/emami/PaymentPlan'
+import GalleryEmami from '@/components/emami/GalleryEmami'
+import StickyButtonsRight from '@/components/StickyButtonsRight';
+import DownloadBrochure from '@/components/emami/DownloadBrochure'
+import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 
 
 const Home = () => {
@@ -30,6 +33,7 @@ const Home = () => {
                             
                         <Navbar source="emami"/>
                         <Hero/>
+                        <StickyButtonsRight />
                         <Info/>
                         <MagicCard/>
                         <MapView/>
