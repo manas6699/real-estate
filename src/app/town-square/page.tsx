@@ -1,23 +1,20 @@
 
-import Navbar from '@/components/Navbar';
-import HeroSection from '@/components/town-square/Herosection';
-import PropertyInfoSection from '@/components/town-square/PropertyInfoSection';
-import Overview from '@/components/town-square/Overview';
-import MagicCard from '@/components/town-square/MagicCard';
-import Highlights from '@/components/town-square/Highlights';
-import Amenities from '@/components/town-square/Amenities';
-import Gallery from '@/components/town-square/Gallery';
-import Footer from '@/components/Footer';
-
-import MapView from '@/components/town-square/MapView';
 import Form from '@/components/Form';
-import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 import About from '@/components/town-square/About';
+import Gallery from '@/components/town-square/Gallery';
+import Overview from '@/components/town-square/Overview';
+import MapView from '@/components/town-square/MapView';
+import Amenities from '@/components/town-square/Amenities';
+import Highlights from '@/components/town-square/Highlights';
 import FloorPlans from '@/components/town-square/FloorPlans';
+import MagicCard from '@/components/town-square/MagicCard';
+import HeroSection from '@/components/town-square/Herosection';
 import PaymentPlan from '@/components/town-square/PaymentPlan';
 
-
-
+import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm';
+import PropertyInfoSection from '@/components/town-square/PropertyInfoSection';
 
 const Home = () => {
   return (
