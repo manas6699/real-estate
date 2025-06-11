@@ -30,7 +30,6 @@ const Home = () => {
                     <div className='lg:hidden block'>
                                   <PopupForm source='emami'  formHeading="Book a Site Visit" logoImage='/assets/emami/eami-logo.webp'/>
                     </div>
-                            
                         <Navbar source="emami"/>
                         <Hero/>
                         <StickyButtonsRight />
