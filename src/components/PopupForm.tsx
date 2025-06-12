@@ -70,8 +70,8 @@ export default function PopupForm({ source , formHeading , logoImage }: PopupFor
                     <Image
                         src={logoImage}
                         alt="Form Icon"
-                        width={200}
-                        height={200}
+                        width={800}
+                        height={400}
                         className="w-full h-full object-cover"
                     />
                 </div>
