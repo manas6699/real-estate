@@ -38,12 +38,12 @@ const Home = () => {
                         <StickyButtonsRight />
                         <Info/>
                         <MagicCard/>
+                        <PaymentPlan/>
                         <MapView/>
                         <About/>
                         <Amenities/>
                         <Overview/>
                         <DownloadBrochure/>
-                        <PaymentPlan/>
                         <GalleryEmami/>
                         <FloorPlans/>
                         <MobileMagicHiddenForm source="emami"/>
