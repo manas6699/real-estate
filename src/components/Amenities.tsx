@@ -19,8 +19,12 @@ export default function Amenities() {
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => scrollRef.current?.scrollBy({ left: 250, behavior: 'smooth' }),
-        onSwipedRight: () => scrollRef.current?.scrollBy({ left: -250, behavior: 'smooth' }),
+        onSwipedLeft: () => {
+            scrollRef.current?.scrollBy({ left: 220, behavior: 'smooth' })
+        },
+        onSwipedRight: () => {
+            scrollRef.current?.scrollBy({ left: -220, behavior: 'smooth' })
+        },
         trackMouse: true,
     })
 
@@ -28,16 +32,16 @@ export default function Amenities() {
         <section className="py-10 px-4 sm:px-8 max-w-7xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6">Amenities</h2>
 
-            {/* Mobile Carousel */}
+            {/* Mobile Swipe Carousel */}
             <div className="sm:hidden" {...swipeHandlers}>
                 <div
                     ref={scrollRef}
-                    className="flex overflow-x-auto gap-4 scroll-smooth no-scrollbar px-1"
+                    className="flex overflow-x-auto scroll-smooth no-scrollbar gap-4 px-6 snap-x snap-mandatory"
                 >
                     {amenities.map((src, idx) => (
                         <div
                             key={idx}
-                            className="relative w-[230px] aspect-[9/16] bg-white rounded-2xl shadow-md overflow-hidden shrink-0"
+                            className="relative snap-center shrink-0 w-[200px] aspect-[9/16] bg-white rounded-2xl shadow-md overflow-hidden"
                         >
                             <Image
                                 src={src}

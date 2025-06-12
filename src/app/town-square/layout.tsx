@@ -1,16 +1,12 @@
-
-
-import { Poppins } from 'next/font/google';
 import Script from 'next/script';
+import { Lora } from 'next/font/google';
 
-const poppins = Poppins({
+const lora = Lora({
     subsets: ['latin'],
-    display: 'swap', // Optional: useful for better performance
-    weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'], // Specify needed weights
-    variable: '--font-poppins', // CSS variable name
+    weight: ['400', '500', '600', '700'], // Lora supports these weights
+    variable: '--font-lora',
+    display: 'swap',
 });
-
-
 
 export const metadata = {
     title: 'Town Square, Kolkata | 3 & 4 BHK | Residential Apartments.',
@@ -25,7 +21,7 @@ export const metadata = {
         "Town Square New Town Kolkata",
         "High - rise apartments Rajarhat",
         "Apartments near Kolkata IT hub",
-        "Modern amenities apartments Kolkata    "
+        "Modern amenities apartments Kolkata"
     ]
 };
 
@@ -35,7 +31,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html className={`${poppins.className}`}>
+        <html className={`${lora.className}`}>
             <head>
                 {/* Google Analytics Script */}
                 <Script
@@ -47,13 +43,13 @@ export default function RootLayout({
                     strategy="afterInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-KZXEP3KZN2', {
-                page_path: window.location.pathname,
-              });
-            `,
+                          window.dataLayer = window.dataLayer || [];
+                          function gtag(){dataLayer.push(arguments);}
+                          gtag('js', new Date());
+                          gtag('config', 'G-KZXEP3KZN2', {
+                            page_path: window.location.pathname,
+                          });
+                        `,
                     }}
                 />
             </head>

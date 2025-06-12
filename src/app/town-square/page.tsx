@@ -1,15 +1,22 @@
-
 import Form from '@/components/Form';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+
+
 import About from '@/components/town-square/About';
 import Gallery from '@/components/town-square/Gallery';
+
+
 import Overview from '@/components/town-square/Overview';
 import MapView from '@/components/town-square/MapView';
-import Amenities from '@/components/town-square/Amenities';
+import Amenities from '@/components/Amenities';
+
+
 import Highlights from '@/components/town-square/Highlights';
 import FloorPlans from '@/components/town-square/FloorPlans';
 import MagicCard from '@/components/town-square/MagicCard';
+
+
 import HeroSection from '@/components/town-square/Herosection';
 import PaymentPlan from '@/components/town-square/PaymentPlan';
 
@@ -29,8 +36,8 @@ const Home = () => {
           <About />
           <Overview />
           <PaymentPlan />
-          <Highlights />
           <Amenities />
+          <Highlights />
           <Gallery />
           <FloorPlans />
           <MobileMagicHiddenForm source="town-square" />
