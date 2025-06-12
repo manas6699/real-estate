@@ -1,6 +1,6 @@
-import Footer from '@/components/Footer'
-
 import Form from '@/components/Form'
+
+import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar';
 import Info from '@/components/emami/Info'
 import Hero from '@/components/emami/Hero'
@@ -10,6 +10,7 @@ import About from '@/components/emami/About'
 import PopupForm from '@/components/PopupForm';
 import Overview from '@/components/emami/Overview'
 import MapView from '@/components/emami/MapView'
+import Amenities from '@/components/Amenities';
 import FloorPlans from '@/components/emami/FloorPlans'
 import MagicCard from '@/components/emami/MagicCard'
 
@@ -23,12 +24,14 @@ import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 
 const Home = () => {
     return (
-        
-            <div>
+            <>
                 <div className="flex flex-col md:flex-row h-screen">
                     <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
                     <div className='lg:hidden block'>
-                                  <PopupForm source='emami'  formHeading="Book a Site Visit" logoImage='/assets/emami/eami-logo.webp'/>
+                                  <PopupForm source='emami'  
+                                            formHeading="Book a Site Visit" 
+                                            logoImage='/assets/emami/eami-logo.webp'
+                                  />
                     </div>
                         <Navbar source="emami"/>
                         <Hero/>
@@ -37,6 +40,7 @@ const Home = () => {
                         <MagicCard/>
                         <MapView/>
                         <About/>
+                        <Amenities/>
                         <Overview/>
                         <DownloadBrochure/>
                         <PaymentPlan/>
@@ -49,9 +53,7 @@ const Home = () => {
                             <Form source="emami"/>
                     </div>
                 </div>
-            </div>
-            
-        
+            </>
     )
 }
 

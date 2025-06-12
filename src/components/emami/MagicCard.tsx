@@ -1,119 +1,119 @@
-'use client'
+'use client';
 
-
-
-import { LandPlot, House, TentTree, Cuboid, Boxes, Combine } from 'lucide-react'
-
-import { useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+import {
+    LandPlot,
+    House,
+    TentTree,
+    Cuboid,
+    Boxes,
+    Combine,
+    Copy,
+    Check,
+} from 'lucide-react';
+import { useState } from 'react';
 
 export default function MagicCard() {
-    const progress = 20 // Example progress percentage
-
-    const [copied, setCopied] = useState(false)
-    const number = 'WBRERA/P/KOL/2024/002136'
+    const progress = 20;
+    const [copied, setCopied] = useState(false);
+    const number = 'WBRERA/P/KOL/2024/002136';
 
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(number)
-            setCopied(true)
-            setTimeout(() => setCopied(false), 2000)
+            await navigator.clipboard.writeText(number);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
         } catch (err) {
-            console.error('Failed to copy!', err)
+            console.error('Failed to copy!', err);
         }
-    }
+    };
 
     return (
-        <section className='p-5 lg:p-10 mx-auto flex flex-col  justify-center'>
-            <h1 className='text-xl md:text-4xl font-bold mb-5'>
+        <section className="p-5 lg:p-10 mx-auto max-w-6xl">
+            <h1 className="text-xl md:text-4xl font-bold mb-6 text-gray-900">
                 EMAMI AAMOD - Key Metrics
             </h1>
-            <div className="w-full max-w-8xl mx-auto rounded-3xl 
-            bg-gradient-to-tr from-blue-600 to-purple-900 
-            p-4 md:p-6 text-white transition-transform duration-300 
-            hover:scale-[1.02]">
+
+            <div className="w-full bg-white rounded-3xl shadow-[0_0_20px_rgba(255,105,180,0.5)] p-6 sm:p-8 transition-all">
                 {/* Header */}
-                <div className="flex flex-wrap items-center gap-3 px-3 sm:px-5 pb-3">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Project Status</h2>
-                    <div className="p-1.5 sm:p-2 bg-orange-600 rounded-md">
-                        <p className="text-xs sm:text-sm font-semibold">NEW</p>
+                <div className="flex flex-wrap items-center gap-3 mb-6">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+                        Project Status
+                    </h2>
+                    <div className="px-3 py-1 bg-orange-100 text-orange-700 rounded-md text-sm font-medium">
+                        NEW
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full bg-white/20 rounded-full h-2.5 sm:h-3 mb-4 sm:mb-6 overflow-hidden mx-3 sm:mx-5">
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-3">
                     <div
-                        className="h-full bg-white rounded-full transition-all duration-700"
+                        className="h-full bg-indigo-500 rounded-full transition-all duration-700"
                         style={{ width: `${progress}%` }}
                     ></div>
                 </div>
+                <p className="text-sm text-gray-600 mb-6">
+                    Units Sold: <span className="font-semibold text-gray-800">20%</span>
+                </p>
 
-                <div className="px-3 sm:px-5 mb-4">
-                    <p className="text-sm sm:text-base">
-                        Units Sold : <span className="font-semibold">20%</span>
-                    </p>
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+                    <StatItem
+                        icon={<LandPlot className="text-green-600" />}
+                        label="4.2 Acre"
+                        subtext="Total Land Area"
+                    />
+                    <StatItem
+                        icon={<House className="text-blue-600" />}
+                        label="Apartment"
+                        subtext="Residence Typology"
+                    />
+                    <StatItem
+                        icon={<TentTree className="text-yellow-600" />}
+                        label="2,243 - 2,724 sq ft"
+                        subtext="Super Builtup Area"
+                    />
                 </div>
 
-                {/* 3 Column Stats Row 1 */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-3 sm:px-5 py-2">
-                    <div className="flex flex-col gap-1">
-                        <LandPlot className="text-white w-6 h-6 font-bold" />
-                        <span className="text-base sm:text-lg font-semibold">
-                            4.2 Acre
-                        </span>
-                        <span className="text-lg text-white/80">Total Land Area</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <House className="text-white w-6 h-6 font-bold" />
-                        <span className="text-base sm:text-lg font-semibold">Apartment</span>
-                        <span className="text-lg text-white/80">Residence Typology</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <TentTree className="text-white w-6 h-6 font-bold" />
-                        <span className="text-base sm:text-lg font-semibold">2,243 - 2,724 sq ft</span>
-                        <span className="text-lg text-white/80">Super Builtup Area</span>
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+                    <StatItem
+                        icon={<Cuboid className="text-purple-600" />}
+                        label="4"
+                        subtext="Total No. of Blocks"
+                    />
+                    <StatItem
+                        icon={<Boxes className="text-rose-600" />}
+                        label="G+25, G+17"
+                        subtext="Floors"
+                    />
+                    <StatItem
+                        icon={<Combine className="text-cyan-600" />}
+                        label="233"
+                        subtext="No of Units"
+                    />
                 </div>
 
-                {/* 3 Column Stats Row 2 */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-3 sm:px-5 py-2">
-                    <div className="flex flex-col gap-1">
-                        <Cuboid className="text-white w-6 h-6 font-bold" />
-                        <span className="text-base sm:text-lg font-semibold">4</span>
-                        <span className="text-lg text-white/80">Total No. of Blocks</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <Boxes className="text-white w-6 h-6 font-bold" />
-                        <span className="text-base sm:text-lg font-semibold">G+25, G+17</span>
-                        <span className="text-lg text-white/80">Floors</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <Combine className="text-white w-6 h-6 font-bold" />
-                        <span className="text-base sm:text-lg font-semibold">233</span>
-                        <span className="text-lg text-white/80">No of Units</span>
-                    </div>
-                </div>
-
-                {/* RERA ID Input with Copy Button */}
-                <div className="w-full flex flex-col sm:flex-row sm:items-center gap-3
-                bg-white rounded-xl shadow-md p-4 mt-4 sm:max-w-md">
-                    <label htmlFor="number" className="text-xs font-bold text-gray-700">
+                {/* RERA Copy Box */}
+                <div className="bg-gray-100 border border-gray-300 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 max-w-md">
+                    <label
+                        htmlFor="number"
+                        className="text-sm font-semibold text-gray-700"
+                    >
                         RERA ID
                     </label>
-                    <div className="relative flex-1">
+                    <div className="relative w-full">
                         <input
                             id="number"
                             value={number}
                             readOnly
-                            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-xs text-gray-800"
+                            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
                         />
                         <button
                             onClick={handleCopy}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-indigo-600 transition-colors"
-                            aria-label="Copy to clipboard"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-indigo-600"
+                            aria-label="Copy RERA ID"
                         >
                             {copied ? (
-                                <Check className="w-5 h-5 text-green-500" />
+                                <Check className="w-5 h-5 text-green-600" />
                             ) : (
                                 <Copy className="w-5 h-5" />
                             )}
@@ -121,7 +121,26 @@ export default function MagicCard() {
                     </div>
                 </div>
             </div>
-
         </section>
-    )
+    );
+}
+
+function StatItem({
+    icon,
+    label,
+    subtext,
+}: {
+    icon: React.ReactNode;
+    label: string;
+    subtext: string;
+}) {
+    return (
+        <div className="flex items-start gap-3">
+            <div className="p-2 bg-gray-100 rounded-full">{icon}</div>
+            <div>
+                <p className="text-base font-semibold text-gray-800">{label}</p>
+                <p className="text-sm font-extrabold text-gray-600">{subtext}</p>
+            </div>
+        </div>
+    );
 }
