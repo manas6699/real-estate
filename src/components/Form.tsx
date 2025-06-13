@@ -60,57 +60,69 @@ export default function Form({ source }: FormProps) {
     
 
     return (
-        <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
-           
-            <form
-                onSubmit={handleSubmit}
-                className="bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
-            >
-                <h2 className="text-2xl font-semibold text-center mb-2 text-white">Contact Us</h2>
-
-                <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    required
-                    className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Email Address"
-                    required
-                    className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
-                />
-                <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Your phone number (10 Digit)"
-                    pattern="[0-9]{10}"
-                    required
-                    className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
-                />
-
-                <button
-                    type="submit"
-                    className="bg-[#de3163] cursor-pointer hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
+        <>
+            <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
+            
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
                 >
-                    {loading ? (
-                        <div className="flex justify-center items-center">
-                            <Loader color='white' />
-                        </div>
-                    ) : (
-                        <>Submit</>
-                    )}
-                </button>
-            </form>
-        </div>
+                    <h2 className="text-2xl font-semibold text-center mb-2 text-white">Contact Us</h2>
+
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Your Name"
+                        required
+                        className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email Address"
+                        required
+                        className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
+                    />
+                    <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Your phone number (10 Digit)"
+                        pattern="[0-9]{10}"
+                        required
+                        className="bg-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 placeholder:text-sm"
+                    />
+
+                    <button
+                        type="submit"
+                        className="bg-[#de3163] cursor-pointer hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
+                    >
+                        {loading ? (
+                            <div className="flex justify-center items-center">
+                                <Loader color='white' />
+                            </div>
+                        ) : (
+                            <>Submit</>
+                        )}
+                    </button>
+                </form>
+            </div>
+            <div className="mt-16 text-center font-extrabold space-y-2">
+                <p className="text-sm sm:text-base">
+                    ✨ Our expert team will reach out to you within 24 hours.
+                </p>
+                <div className="flex justify-center gap-4 flex-wrap mt-4 text-xs sm:text-sm">
+                    <span className="bg-white text-pink-600 px-3 py-2 rounded-full shadow-sm">100% Privacy Guaranteed</span>
+                    <span className="bg-white text-indigo-600 px-3 py-2 rounded-full shadow-sm">No Spam Policy</span>
+                    <span className="bg-white text-blue-600 px-3 py-2 rounded-full shadow-sm">Instant Brochure Delivery</span>
+                </div>
+            </div>
+        </>
 
     );
 }
