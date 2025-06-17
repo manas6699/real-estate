@@ -1,11 +1,12 @@
 'use client';
 
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 import Loader from '@/components/loader';
-import {LEADS_ENDPOINT} from '@/config/api';
+import { LEADS_ENDPOINT } from '@/config/api';
+import React, { useState, useEffect } from 'react';
+import { ShieldCheck, Ban, Clock } from 'lucide-react';
 
 
 type BrochureFormData = {
@@ -27,7 +28,7 @@ export default function Form({ source }: FormProps) {
         source: '', // Empty initially
     });
 
-    const [loading , setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // 🔥 useEffect to set source only on client
     useEffect(() => {
@@ -57,12 +58,12 @@ export default function Form({ source }: FormProps) {
             console.error('Submission error:', error);
         }
     };
-    
+
 
     return (
         <>
             <div className="flex justify-center items-start mt-6 sm:mt-10 px-2 sm:px-4">
-            
+
                 <form
                     onSubmit={handleSubmit}
                     className="bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 shadow-lg rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
@@ -112,14 +113,43 @@ export default function Form({ source }: FormProps) {
                     </button>
                 </form>
             </div>
-            <div className="mt-16 text-center font-extrabold space-y-2">
-                <p className="text-sm sm:text-base">
+            <div className="mt-14 text-center font-extrabold space-y-2">
+                <p className="text-xl font-extrabold sm:text-base text-white">
                     ✨ Our expert team will reach out to you within 24 hours.
                 </p>
+                
+
+
                 <div className="flex justify-center gap-4 flex-wrap mt-4 text-xs sm:text-sm">
-                    <span className="bg-white text-pink-600 px-3 py-2 rounded-full shadow-sm">100% Privacy Guaranteed</span>
-                    <span className="bg-white text-indigo-600 px-3 py-2 rounded-full shadow-sm">No Spam Policy</span>
-                    <span className="bg-white text-blue-600 px-3 py-2 rounded-full shadow-sm">Instant Brochure Delivery</span>
+                    {/* Privacy */}
+                    <span className="flex items-center gap-2 bg-white text-pink-600 px-3 py-2 rounded-full shadow-sm">
+                        <div className="relative flex items-center justify-center w-4 h-4">
+                            <span className="absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75 animate-ping"></span>
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                        </div>
+                        <ShieldCheck className="w-4 h-4 text-pink-600" />
+                        100% Privacy Guaranteed
+                    </span>
+
+                    {/* No Spam */}
+                    <span className="flex items-center gap-2 bg-white text-indigo-600 px-3 py-2 rounded-full shadow-sm">
+                        <div className="relative flex items-center justify-center w-4 h-4">
+                            <span className="absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75 animate-ping"></span>
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-pink-500"></span>
+                        </div>
+                        <Ban className="w-4 h-4 text-indigo-600" />
+                        No Spam Policy
+                    </span>
+
+                    {/* Instant Delivery */}
+                    <span className="flex items-center gap-2 bg-white text-purple-600 px-3 py-2 rounded-full shadow-sm">
+                        <div className="relative flex items-center justify-center w-4 h-4">
+                            <span className="absolute inline-flex h-3 w-3 rounded-full bg-yellow-400 opacity-75 animate-ping"></span>
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-yellow-500"></span>
+                        </div>
+                        <Clock className="w-4 h-4 text-purple-600" />
+                        Instant Brochure Delivery
+                    </span>
                 </div>
             </div>
         </>
