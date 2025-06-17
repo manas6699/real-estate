@@ -32,7 +32,6 @@ export default function Amenities() {
         <section className="py-10 px-4 sm:px-8 max-w-7xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6">Amenities</h2>
 
-            {/* Mobile Swipe Carousel */}
             <div className="sm:hidden" {...swipeHandlers}>
                 <div
                     ref={scrollRef}
@@ -46,16 +45,15 @@ export default function Amenities() {
                             <Image
                                 src={src}
                                 alt={`Amenity ${idx + 1}`}
-                                layout="fill"
-                                objectFit="cover"
-                                className="rounded-2xl"
+                                fill
+                                className="rounded-2xl object-cover"
                             />
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Desktop Grid */}
+
             <div className="hidden sm:grid grid-cols-2 md:grid-cols-4 gap-6">
                 {amenities.map((src, idx) => (
                     <div
@@ -65,9 +63,8 @@ export default function Amenities() {
                         <Image
                             src={src}
                             alt={`Amenity ${idx + 1}`}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-2xl"
+                            fill
+                            className="rounded-2xl object-cover"
                         />
                     </div>
                 ))}

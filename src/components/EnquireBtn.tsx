@@ -1,13 +1,11 @@
 'use client';
 
-
 import axios from 'axios';
 import { X } from 'lucide-react'
 import React, { useState } from 'react'
 import Loader from '@/components/loader';
 import { LEADS_ENDPOINT } from '@/config/api';
 import { toast, ToastContainer } from 'react-toastify'
-
 
 
 type BrochureFormData = {
@@ -23,10 +21,6 @@ type EnquireBtnProps = {
 };
 
 const EnquireBtn = ({source , btntext}: EnquireBtnProps) => {
-
-    console.log('btntext prop:', btntext);
-
-
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source });
     const [loading, setLoading] = useState(false);
@@ -128,7 +122,6 @@ const EnquireBtn = ({source , btntext}: EnquireBtnProps) => {
                               ) : (
                                   <>Submit</>
                               )}
-
                           </button>
                       </form>
                   </div>

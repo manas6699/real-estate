@@ -1,14 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { X } from 'lucide-react'; // Optional: Use lucide-react or any icon lib
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link';
-import { Phone } from 'lucide-react'; // Optional: Use lucide-react or any icon lib
+import { useState } from 'react';
+
 import Image from 'next/image';
+import { X, Phone } from 'lucide-react';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Logo from '../../public/assets/logo.png'
+import { LEADS_ENDPOINT } from '@/config/api';
+import { toast, ToastContainer } from 'react-toastify';
+
+
 
 type BrochureFormData = {
     name: string;
@@ -18,13 +22,13 @@ type BrochureFormData = {
 };
 
 type sourceType = {
-    source : string;
+    source: string;
 }
 
 export default function Navbar(source: sourceType) {
 
     const [isOpen, setIsOpen] = useState(false);
-        const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '' , source:source.source });
+    const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source.source });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,7 +40,7 @@ export default function Navbar(source: sourceType) {
         try {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const response = await axios.post<{ message: string; lead: unknown }>(
-                'https://split-wise-clone-085p.onrender.com/api/mmr/leads',
+                LEADS_ENDPOINT,
                 formData
             );
 
@@ -56,6 +60,7 @@ export default function Navbar(source: sourceType) {
             console.error('Submission error:', error);
         }
     };
+    
     return (
         <nav className="w-full bg-white shadow-md py-4">
             <div className="container mx-auto px-4 flex flex-row lg:flex-row items-center justify-between">
