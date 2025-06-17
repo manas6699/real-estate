@@ -122,35 +122,36 @@ export default function Form({ source }: FormProps) {
 
                 <div className="flex justify-center gap-4 flex-wrap mt-4 text-xs sm:text-sm">
                     {/* Privacy */}
-                    <span className="flex items-center gap-2 bg-white text-pink-600 px-3 py-2 rounded-full shadow-sm">
+                    <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-5 py-1 rounded-full shadow-md">
                         <div className="relative flex items-center justify-center w-4 h-4">
                             <span className="absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75 animate-ping"></span>
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                         </div>
-                        <ShieldCheck className="w-4 h-4 text-pink-600" />
+                        <ShieldCheck className="w-4 h-4 text-white" />
                         100% Privacy Guaranteed
                     </span>
 
                     {/* No Spam */}
-                    <span className="flex items-center gap-2 bg-white text-indigo-600 px-3 py-2 rounded-full shadow-sm">
+                    <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-5 py-1 rounded-full shadow-md">
                         <div className="relative flex items-center justify-center w-4 h-4">
                             <span className="absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75 animate-ping"></span>
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-pink-500"></span>
                         </div>
-                        <Ban className="w-4 h-4 text-indigo-600" />
+                        <Ban className="w-4 h-4 text-white" />
                         No Spam Policy
                     </span>
 
                     {/* Instant Delivery */}
-                    <span className="flex items-center gap-2 bg-white text-purple-600 px-3 py-2 rounded-full shadow-sm">
+                    <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-5 py-1 rounded-full shadow-md">
                         <div className="relative flex items-center justify-center w-4 h-4">
                             <span className="absolute inline-flex h-3 w-3 rounded-full bg-yellow-400 opacity-75 animate-ping"></span>
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-yellow-500"></span>
                         </div>
-                        <Clock className="w-4 h-4 text-purple-600" />
+                        <Clock className="w-4 h-4 text-white" />
                         Instant Brochure Delivery
                     </span>
                 </div>
+
             </div>
         </>
 
