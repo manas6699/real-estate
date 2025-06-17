@@ -1,36 +1,30 @@
 'use client';
 
 import React from 'react'
-import Navbar from '@/components/Navbar'
+import Form from '@/components/Form'
 import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar'
 
 
-
-import Hero from '@/components/componentsMorya/Hero'
-
+import PopupForm from '@/components/PopupForm';
 import Info from '@/components/componentsMorya/Info'
-
-
+import Hero from '@/components/componentsMorya/Hero'
+import About from '@/components/componentsMorya/About'
 import Map from '@/components/componentsMorya/MapView'
 
-import About from '@/components/componentsMorya/About'
-
-import DownloadBrochure from '@/components/componentsMorya/DownloadBrochure'
-
-import Form from '@/components/Form'
 import Overview from '@/components/componentsMorya/Overview'
 import Amenities from '@/components/componentsMorya/Amenities'
 import FloorPlans from '@/components/componentsMorya/FloorPlans'
 import MagicCard from '@/components/componentsMorya/MagicCard'
+
+import StickyButtonsRight from '@/components/StickyButtonsRight';
 import PaymentPlan from '@/components/componentsMorya/PaymentPlan'
 import GalleryMorya from '@/components/componentsMorya/GalleryMorya'
-import FloorPlansDownload from '@/components/componentsMorya/FloorPlansDownload'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
-
-import PopupForm from '@/components/PopupForm';
+import DownloadBrochure from '@/components/componentsMorya/DownloadBrochure'
+import FloorPlansDownload from '@/components/componentsMorya/FloorPlansDownload'
 
 const page = () => {
-
   
   return (
     <>
@@ -41,6 +35,7 @@ const page = () => {
           </div>
               <Navbar source="morya"/>
               <Hero/>
+              <StickyButtonsRight/>
               <Info/>
               <MobileMagicHiddenForm source="morya"/>
               <MagicCard/>
