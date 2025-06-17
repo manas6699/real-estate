@@ -4,6 +4,7 @@ import { developers } from "@/app/data/developers";
 import Link from "next/link";
 
 export default function DeveloperSection() {
+    const topDevelopers = developers.slice(0, 4);
     return (
         <section className="py-16 px-4 sm:px-6 lg:px-12 bg-gray-50">
             <div className="max-w-7xl mx-auto">
@@ -11,7 +12,7 @@ export default function DeveloperSection() {
                     Trusted Real Estate Developers
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 cursor-pointer">
-                    {developers.map((dev) => (
+                    {topDevelopers.map((dev) => (
                         <Link href={`/developers/${dev.slug}`} key={dev.name}>
                             <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden">
                                 <div className="relative w-full h-48 rounded-2xl">
@@ -37,7 +38,21 @@ export default function DeveloperSection() {
                         </Link>
                     ))}
                 </div>
+
+
+                
             </div>
+
+            {/* View All Button */}
+            <div className="flex justify-center mt-12">
+                <Link href="/DevepoperPage">
+                    <button className="bg-[#de3163] hover:bg-[#c42553] text-white font-semibold py-2 px-6 rounded-md transition cursor-pointer">
+                        View All Popular Developers
+                    </button>
+                </Link>
+            </div>
+        
+    
         </section>
     );
 }
