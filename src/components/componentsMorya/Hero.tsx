@@ -5,7 +5,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(false); // starts with sound
+  const [isMuted, setIsMuted] = useState(false); // sound ON by default
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -17,20 +17,20 @@ const Hero = () => {
   return (
     <section className="p-4 md:p-10 bg-yellow-50">
       <div className="relative w-full max-w-6xl mx-auto rounded-3xl overflow-hidden aspect-[3/2] sm:aspect-[16/9]">
-        {/* Video */}
+        {/* External Video */}
         <video
           ref={videoRef}
           autoPlay
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
           muted={isMuted}
+          className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/assets/morya/morya.mp4" type="video/mp4" />
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
-        {/* Typewriter Text */}
+        {/* Overlay Text */}
         <div className="absolute bottom-4 left-4 text-white text-xl sm:text-3xl font-semibold whitespace-nowrap overflow-hidden border-r-2 border-white animate-typewriter">
           Sugam Morya
         </div>
