@@ -56,8 +56,15 @@ export default function MobileMagicHiddenForm({ source }: FormProps) {
         onSubmit={handleSubmit}
         className="bg-white shadow-2xl rounded-xl p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
       >
-        <h2 className="text-2xl font-semibold text-center mb-2 text-gray-800">Book a Site Visit</h2>
+        {/* <h2 className="text-2xl font-semibold text-center mb-2 text-gray-800">
+          Price&apos;s  increasing next month.
+        </h2> */}
 
+        <h2 className="text-2xl font-semibold text-center mb-2">Yes , I am Interested.</h2>
+
+        <p className='text-xs text-center text-gray-700'>
+          Please provide whatspp enabled phone number for more details.
+        </p>
         <input
           type="text"
           name="name"
@@ -91,7 +98,7 @@ export default function MobileMagicHiddenForm({ source }: FormProps) {
           type="submit"
           className="bg-[#de3163] hover:bg-[#c42553] text-white py-2 rounded-md transition-all"
         >
-          Submit
+          Request Call Back
         </button>
       </form>
     </div>
