@@ -66,7 +66,7 @@ const PaymentPlan = () => {
                     </table>
                 </div>
                 <div className='mt-5'>
-                    <EnquireBtn source="town-square" btntext="Instant Call Back ⚡" />
+                    <EnquireBtn source="town-square" btntext="Instant Call Back ⚡" modalheading="Receive Payment Plans" />
                 </div>
             </div>
         </section>

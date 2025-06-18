@@ -123,7 +123,7 @@ export default function AllinOne({ id }: { id: string }) {
                             <p className="text-lg font-semibold">{data.possessionDate}</p>
                         </div>
                         <div>
-                            <EnquiryBtn source={id} btntext='Instant Call Back ⚡' />
+                                    <EnquiryBtn source={id} btntext='Instant Call Back ⚡' modalheading="demo" />
                         </div>
 
                     </div>

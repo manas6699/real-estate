@@ -18,7 +18,7 @@ export default function PropertyInfoSection() {
                         <p className="text-lg font-semibold">Dec 2027</p>
                     </div>
                     <div>
-                        <EnquiryBtn source="town-square" btntext='Instant Call Back ⚡' />
+                        <EnquiryBtn source="town-square" btntext='Instant Call Back ⚡' modalheading="Contact Us" />
                     </div>
                 </div>
             </div>
