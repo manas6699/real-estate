@@ -30,7 +30,7 @@ export default async function Page({
                     {developers.find((dev) => dev.slug === slug)?.description}
                 </p>
                 <div className="mt-5 mb-5">
-                    <EnquireBtn source={`developer-${slug}`} btntext="Contact Developer 🏤" />
+                    <EnquireBtn source={`developer-${slug}`} btntext="Contact Developer 🏤" modalheading="Contact Developer" />
                 </div>
             </div>
             <Footer phoneNumber="7439514475" />
