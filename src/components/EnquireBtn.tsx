@@ -18,9 +18,10 @@ type BrochureFormData = {
 type EnquireBtnProps = {
     source: string;
     btntext: string;
+    modalheading: string
 };
 
-const EnquireBtn = ({source , btntext}: EnquireBtnProps) => {
+const EnquireBtn = ({ source, btntext, modalheading }: EnquireBtnProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source });
     const [loading, setLoading] = useState(false);
@@ -79,7 +80,7 @@ const EnquireBtn = ({source , btntext}: EnquireBtnProps) => {
                           <X className="w-5 h-5" />
                       </button>
 
-                      <h2 className="text-xl font-bold mb-2 text-gray-800">Get in Touch</h2>
+                      <h2 className="text-xl font-bold mb-2 text-gray-800">{modalheading}</h2>
                       <p className="text-sm text-gray-600 mb-5">We’ll get back to you shortly!</p>
 
                       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
