@@ -61,7 +61,7 @@ const Gallery = () => {
 
             <div>
                 {/* Main Section */}
-                <div className="flex flex-col md:flex-row gap-6 md:gap-10 p-6 md:p-20 mb-10">
+                <div className="flex flex-col md:flex-row gap-6 md:gap-10 p-6 md:p-20 mb-10 bg-yellow-50">
                     <button
                         onClick={() => setIsOpen(true)}
                         className="inline-flex items-center gap-3 px-10 py-2
@@ -133,7 +133,7 @@ const Gallery = () => {
                                     type="submit"
                                     className="mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition-all cursor-pointer"
                                 >
-                                    Submit & Download
+                                    Receive Floor Plans
                                 </button>
                             </form>
                         </div>
