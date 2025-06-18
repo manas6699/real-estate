@@ -13,7 +13,7 @@ import About from '@/components/componentsMorya/About'
 import Map from '@/components/componentsMorya/MapView'
 
 import Overview from '@/components/componentsMorya/Overview'
-import Amenities from '@/components/componentsMorya/Amenities'
+import Amenities from '@/components/Amenities'
 import FloorPlans from '@/components/componentsMorya/FloorPlans'
 import MagicCard from '@/components/componentsMorya/MagicCard'
 
@@ -23,6 +23,7 @@ import GalleryMorya from '@/components/componentsMorya/GalleryMorya'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 import DownloadBrochure from '@/components/componentsMorya/DownloadBrochure'
 import FloorPlansDownload from '@/components/componentsMorya/FloorPlansDownload'
+import EmiCalculator from '@/components/Home/EmiCalculator';
 
 const page = () => {
   
@@ -31,7 +32,7 @@ const page = () => {
         <div className="flex flex-col md:flex-row h-screen">
           <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
           <div className='lg:hidden block'>
-              <PopupForm source='morya'  formHeading="Book a Site Visit" logoImage='/assets/morya/morya.png'/>
+              <PopupForm source='morya'  formHeading="Price's increasing soon" logoImage='/assets/morya/morya.png'/>
           </div>
               <Navbar source="morya"/>
               <Hero/>
@@ -43,6 +44,7 @@ const page = () => {
               <About/>
               <Overview/>
               <PaymentPlan/>
+              <EmiCalculator/>
               <DownloadBrochure/>
               <Amenities/>
               <GalleryMorya/>
@@ -50,7 +52,7 @@ const page = () => {
               <FloorPlansDownload/>
               <Footer phoneNumber="98309 47144" />
           </div>
-          <div className="hidden sm:block sm:w-2/5 md:w-1/4 h-screen bg-purple-800 p-4 sm:p-6 sticky top-0 border-l border-gray-300">
+          <div className="hidden sm:block sm:w-2/5 md:w-1/4 h-screen bg-yellow-50 p-4 sm:p-6 sticky top-0 border-l border-gray-300">
             <Form source="morya"/>
           </div>
         </div>
