@@ -5,8 +5,8 @@ import Logo from '../../../public/assets/morya/Poster.png';
 const About = () => {
   return (
     <div>
-          <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-white">
-              <h1 className="text-blue-400 text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
+          <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-yellow-50">
+              <h1 className="text-amber-700 text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
                   About Sugam
               </h1>
               
@@ -14,7 +14,7 @@ const About = () => {
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
                   <Image
                       alt="emami logo"
-                      width={200}
+                      width={100}
                       height={60}
                       src={Logo}
                       className="w-auto h-auto object-contain"
