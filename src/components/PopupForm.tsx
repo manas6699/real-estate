@@ -36,7 +36,7 @@ export default function PopupForm({ source, formHeading, logoImage }: PopupFormP
         const timer = setTimeout(() => {
             setVisible(true);
             setFormData((prev) => ({ ...prev, source }));
-        }, 3000); // 3-second delay
+        }, 10000); // 10-second delay
 
         return () => clearTimeout(timer);
     }, [source]);
