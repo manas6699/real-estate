@@ -7,6 +7,8 @@ import Loader from '@/components/loader';
 import { LEADS_ENDPOINT } from '@/config/api';
 import Image from 'next/image';
 
+import { Phone } from 'lucide-react';
+
 type PopupFormProps = {
     source: string;
     formHeading: string;
@@ -20,7 +22,7 @@ type BrochureFormData = {
     source: string;
 };
 
-export default function PopupForm({ source , formHeading , logoImage }: PopupFormProps) {
+export default function PopupForm({ source, formHeading, logoImage }: PopupFormProps) {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({
@@ -64,8 +66,19 @@ export default function PopupForm({ source , formHeading , logoImage }: PopupFor
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center">
             <form
                 onSubmit={handleSubmit}
-                className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4"
+                className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4"
             >
+                {/* Cross Button */}
+                <button
+                    type="button"
+                    onClick={() => setVisible(false)}
+                    className="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl font-bold"
+                    aria-label="Close form"
+                >
+                    &times;
+                </button>
+
+                {/* Logo */}
                 <div className="w-20 h-20 rounded-full overflow-hidden mx-auto -mt-14 border-4 bg-white border-cyan-200 p-2 shadow-lg">
                     <Image
                         src={logoImage}
@@ -75,6 +88,7 @@ export default function PopupForm({ source , formHeading , logoImage }: PopupFor
                         className="w-full h-full object-cover"
                     />
                 </div>
+
                 <h2 className="text-xl font-semibold text-center">{formHeading}</h2>
 
                 <input
@@ -112,12 +126,19 @@ export default function PopupForm({ source , formHeading , logoImage }: PopupFor
                 >
                     {loading ? (
                         <div className="flex justify-center items-center">
-                            <Loader color='white' />
+                            <Loader color="white" />
                         </div>
                     ) : (
-                        <>Submit</>
+                        <>Get Details</>
                     )}
                 </button>
+                <div className='flex items-center gap-2 text-center justify-center '>
+                    <Phone className="w-5 h-5" />
+                <p className='text-center font-black text-xl'>
+
+                9830947144
+                </p>
+                </div>
             </form>
         </div>
     );
