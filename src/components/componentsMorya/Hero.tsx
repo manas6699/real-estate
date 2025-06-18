@@ -1,63 +1,50 @@
-import React from 'react'
+'use client';
 
-import Image from 'next/image';
-import { Phone, MessageCircle } from 'lucide-react';
-import HeroImage from '../../../public/assets/morya/morya-gallery-1.webp';
+import React, { useRef, useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 const Hero = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(false); // starts with sound
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   return (
-    <div>
-      <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/hero-2.png")' }}>
-        
-        <section className="flex flex-col md:flex-row items-center justify-between w-full px-6 md:px-12 py-8 md:py-16">
-          {/* Image Section - 75% width on medium+ screens */}
-          <div className="relative w-full md:w-3/5 h-64 md:h-[75vh] rounded-3xl overflow-hidden">
-            <Image
-              src={HeroImage}
-              alt="Hero"
-              layout="fill"
-              objectFit="cover"
-              priority
-            />
-          </div>
+    <section className="p-4 md:p-10 bg-yellow-50">
+      <div className="relative w-full max-w-6xl mx-auto rounded-3xl overflow-hidden aspect-[3/2] sm:aspect-[16/9]">
+        {/* Video */}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          muted={isMuted}
+        >
+          <source src="/assets/morya/morya.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-          {/* Text Section - 100% width on mobile, 25% on desktop */}
-          <div className="w-full md:w-2/5 flex flex-col justify-center text-center md:text-left px-4 md:px-6 mt-8 md:mt-0">
-            <h1 className="text-4xl md:text-8xl font-bold mb-4 text-white">
-              Morya
-            </h1>
-
-            <p className="text-sm md:text-lg text-white font-extrabold">
-              Discover luxurious living and elegant spaces with Morya. Your future home awaits in the heart of comfort and style.
-              Experience unmatched convenience with top-tier amenities and seamless connectivity.
-            </p>
-          </div>
-        </section>
-        {/* Sticky Buttons Bottom Right */}
-        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
-          {/* WhatsApp */}
-          <a
-            href="https://wa.me/9830947144"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition"
-            title="Chat on WhatsApp"
-          >
-            <MessageCircle size={24} />
-          </a>       
-
-          {/* Contact */}
-          <a
-            href="tel:9830947144"
-            className="bg-pink-600 text-white p-3 rounded-full shadow-lg hover:bg-pink-700 transition"
-            title="Call Us"
-          >
-            <Phone size={24} />
-          </a>
+        {/* Typewriter Text */}
+        <div className="absolute bottom-4 left-4 text-white text-xl sm:text-3xl font-semibold whitespace-nowrap overflow-hidden border-r-2 border-white animate-typewriter">
+          Sugam Morya
         </div>
-      </section>
-    </div>
-  )
-}
 
-export default Hero
+        {/* Mute/Unmute Button */}
+        <button
+          onClick={toggleMute}
+          className="absolute bottom-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm transition-all"
+        >
+          {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+        </button>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
