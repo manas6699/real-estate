@@ -37,7 +37,7 @@ export default function Info() {
                         </div>
                     </div>
                     <div>
-                        <EnquiryBtn source="morya" btntext='Instant Call Back ⚡' />
+                        <EnquiryBtn source="morya" btntext='Instant Call Back ⚡' modalheading="Contact Us"/>
                     </div>
 
                 </div>

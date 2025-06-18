@@ -1,30 +1,28 @@
 // components/MapView.tsx
 'use client';
 
-import 'leaflet/dist/leaflet.css';
-
 import { Building2, ShieldCheck, Trees, ParkingCircle } from 'lucide-react';
 
 
 
 const features = [
     {
-        icon: <Building2 className="w-8 h-8 text-red-600" />,
+        icon: <Building2 className="w-8 h-8 text-amber-700" />,
         title: 'Premium Construction',
         description: 'High-quality materials and modern design for long-lasting durability.',
     },
     {
-        icon: <ShieldCheck className="w-8 h-8 text-red-600" />,
+        icon: <ShieldCheck className="w-8 h-8 text-amber-700" />,
         title: '24x7 Security',
         description: 'Advanced surveillance systems and secure gated community.',
     },
     {
-        icon: <Trees className="w-8 h-8 text-red-600" />,
+        icon: <Trees className="w-8 h-8 text-amber-700" />,
         title: 'Green Landscaping',
         description: 'Beautifully landscaped gardens and eco-friendly surroundings.',
     },
     {
-        icon: <ParkingCircle className="w-8 h-8 text-red-600" />,
+        icon: <ParkingCircle className="w-8 h-8 text-amber-700" />,
         title: 'Ample Parking',
         description: 'Spacious and well-organized parking for residents and guests.',
     },
