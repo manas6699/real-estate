@@ -4,9 +4,9 @@ import React from 'react';
 
 const Overview = () => {
   return (
-    <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24">
+    <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-yellow-50">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-blue-400 mb-6">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-amber-700 mb-6">
           Morya - Project Overview
         </h1>
 
