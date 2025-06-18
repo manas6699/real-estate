@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { X, Phone } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Logo from '../../public/assets/logo.png'
+import Logo from '../../public/assets/logo-transparent.png'
 import { LEADS_ENDPOINT } from '@/config/api';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -62,7 +62,7 @@ export default function Navbar(source: sourceType) {
     };
     
     return (
-        <nav className="w-full bg-white shadow-md py-4">
+        <nav className="w-full shadow-md py-4">
             <div className="container mx-auto px-4 flex flex-row lg:flex-row items-center justify-between">
 
                 {/* Left: Logo */}
