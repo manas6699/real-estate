@@ -5,7 +5,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(false); // sound ON by default
+  const [isMuted, setIsMuted] = useState(true); // sound ON by default
 
   const toggleMute = () => {
     if (videoRef.current) {
