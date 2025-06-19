@@ -26,9 +26,10 @@ const Hero = () => {
           muted={isMuted}
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+          <source src="https://fynbnk.com/morya.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+
 
         {/* Overlay Text */}
         <div className="absolute bottom-4 left-4 text-white text-xl sm:text-3xl font-semibold whitespace-nowrap overflow-hidden border-r-2 border-white animate-typewriter">
