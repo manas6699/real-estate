@@ -11,20 +11,48 @@ const lora = Lora({
 });
 
 export const metadata = {
-    title: "4 & 3 BHK Apartments in Tolly gunge | Sugam Morya Phase 2",
-    description: "Sugam Morya in Tollygunge offers premium 3, 3.5  & 4  BHK homes with lush open areas, elegant design, and top-tier amenities on the prestigious BL Shah Road.",
-    keywords: ["Luxury apartments Tollygunge",
+    title: "4 & 3 BHK Apartments in Tollygunge | Sugam Morya Phase 2",
+    description:
+        "Sugam Morya in Tollygunge offers premium 3, 3.5 & 4 BHK homes with lush open areas, elegant design, and top-tier amenities on the prestigious BL Saha Road.",
+    keywords: [
+        "Sugam Morya",
+        "Morya Alipore",
+        "Morya Tollygunge",
+        "Luxury Home Kolkata",
+        "High Rise Project Kolkata",
+        "Golf Course View Apartments",
+        "Tollygunge Metro",
+        "Howrah Railway Station 14 KM",
+        "B L Saha Road, Tollygunge",
+        "Alipore Kolkata Apartments",
+        "1,531 - 2,647 sq ft",
+        "3.5 BHK Flats Kolkata",
+        "₹1.46 Cr - ₹2.48 Cr",
+        "Affordable Luxury Flats",
+        "Avail Launch Offer",
+        "Sample Flat Ready",
+        "Enquire Now",
+        "Request Callback",
+        "Instant Call Back",
+        "Golf Course View",
+        "High Rise Project",
+        "Unmatched Price",
+        "Your data is safe with us",
+        "Ready-to-move flats Tollygunge",
+        "New residential projects near Tollygunge Metro",
+        "3.5 BHK for sale in Alipore",
+        "Luxury apartments Tollygunge",
         "3 BHK flats Tollygunge",
-        " 4 BHK flats Tollygunge",
+        "4 BHK flats Tollygunge",
         "Sugam Morya Kolkata",
         "IGBC Gold certified homes",
-        "Golf course view apartments",
         "Rooftop infinity pool Kolkata",
         "Vaastu compliant homes Kolkata",
-        "High - rise apartments South Kolkata",
+        "High-rise apartments South Kolkata",
         "Clubhouse with amenities Tollygunge"
     ]
 };
+  
 
 export default function RootLayout({
     children,
