@@ -6,21 +6,22 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 
 
-import PopupForm from '@/components/PopupForm';
+import Amenities from '@/components/Amenities'
 import Info from '@/components/RoyalGanges/Info'
+import Map from '@/components/RoyalGanges/Map'
+import PopupForm from '@/components/PopupForm';
+
 import Hero from '@/components/RoyalGanges/Hero'
 import About from '@/components/RoyalGanges/About'
-import Map from '@/components/RoyalGanges/Map'
 
-// import Overview from '@/components/componentsMorya/Overview'
-import Amenities from '@/components/Amenities'
+import Gallery from '@/components/RoyalGanges/Gallery'
+import Overview from '@/components/RoyalGanges/Overview'
 import FloorPlans from '@/components/RoyalGanges/FloorPlans'
 import MagicCard from '@/components/RoyalGanges/MagicCard'
 
 import EmiCalculator from '@/components/Home/EmiCalculator';
 import StickyButtonsRight from '@/components/StickyButtonsRight';
 import PaymentPlan from '@/components/RoyalGanges/PaymentPlan'
-import Gallery from '@/components/RoyalGanges/Gallery'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 import DownloadBrochure from '@/components/RoyalGanges/DownloadBrochure'
 import FloorPlansDownload from '@/components/componentsMorya/FloorPlansDownload'
@@ -42,7 +43,7 @@ const page = () => {
           <MagicCard />
           <Map />
           <About />
-          {/* <Overview/> */}
+          <Overview />
           <PaymentPlan />
           <EmiCalculator />
           <DownloadBrochure />
