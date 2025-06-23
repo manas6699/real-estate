@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 
 
+import Amenities from '@/components/Amenities'
 import PopupForm from '@/components/PopupForm';
 import Info from '@/components/componentsMorya/Info'
 import Hero from '@/components/componentsMorya/Hero'
@@ -13,7 +14,6 @@ import About from '@/components/componentsMorya/About'
 import Map from '@/components/componentsMorya/MapView'
 
 import Overview from '@/components/componentsMorya/Overview'
-import Amenities from '@/components/Amenities'
 import FloorPlans from '@/components/componentsMorya/FloorPlans'
 import MagicCard from '@/components/componentsMorya/MagicCard'
 
@@ -46,7 +46,18 @@ const page = () => {
               <PaymentPlan/>
               <EmiCalculator/>
               <DownloadBrochure/>
-              <Amenities/>
+              <Amenities
+            amenities={[
+              '/assets/amenities/20.png',
+              '/assets/amenities/21.png',
+              '/assets/amenities/22.png',
+              '/assets/amenities/23.png',
+              '/assets/amenities/24.png',
+              '/assets/amenities/25.png',
+              '/assets/amenities/26.png',
+              '/assets/amenities/27.png',
+            ]}
+          />
               <GalleryMorya/>
               <FloorPlans/>
               <FloorPlansDownload/>

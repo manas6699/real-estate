@@ -41,7 +41,18 @@ const Home = () => {
                         <PaymentPlan/>
                         <MapView/>
                         <About/>
-                        <Amenities/>
+                        <Amenities
+            amenities={[
+              '/assets/amenities/20.png',
+              '/assets/amenities/21.png',
+              '/assets/amenities/22.png',
+              '/assets/amenities/23.png',
+              '/assets/amenities/24.png',
+              '/assets/amenities/25.png',
+              '/assets/amenities/26.png',
+              '/assets/amenities/27.png',
+            ]}
+          />
                         <Overview/>
                         <DownloadBrochure/>
                         <GalleryEmami/>
