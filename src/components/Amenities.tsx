@@ -4,18 +4,11 @@ import React, { useRef } from 'react'
 import Image from 'next/image'
 import { useSwipeable } from 'react-swipeable'
 
-const amenities = [
-    '/assets/amenities/20.png',
-    '/assets/amenities/21.png',
-    '/assets/amenities/22.png',
-    '/assets/amenities/23.png',
-    '/assets/amenities/24.png',
-    '/assets/amenities/25.png',
-    '/assets/amenities/26.png',
-    '/assets/amenities/27.png',
-]
+type AmenitiesProps = {
+    amenities: string[];
+  };
 
-export default function Amenities() {
+export default function Amenities({ amenities } : AmenitiesProps) {
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
     const swipeHandlers = useSwipeable({

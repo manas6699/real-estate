@@ -15,7 +15,7 @@ const Gallery = () => {
         name: '',
         email: '',
         phone: '',
-        source:'Morya'
+        source:'Primus Ganges'
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,13 +33,13 @@ const Gallery = () => {
             );
 
             toast.success('You Floor Plan is ready to download!');
-            setFormData({ name: '', email: '', phone: '', source: 'morya' });
+            setFormData({ name: '', email: '', phone: '', source: 'Primus Ganges' });
             setIsOpen(false);
 
             // Trigger the download
             const link = document.createElement('a');
-            link.href = 'pdfs/Morya Floor plans.pdf'; // Path in the public folder
-            link.download = 'Morya-Floor-Plan.pdf'; // Suggested filename
+            link.href = 'pdfs/Primus Ganges Floor Plans.pdf'; // Path in the public folder
+            link.download = 'Primus Ganges Floor Plans.pdf'; // Suggested filename
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -76,8 +76,8 @@ const Gallery = () => {
 
                     <div className="flex-1">
                         <p className="font-semibold text-gray-600 text-sm md:text-base leading-relaxed">
-                            Morya offers you to discover spacious layouts designed with purpose and perfection.
-                            The floor plans at Town Square blend intelligent design with indulgent comfort, offering
+                            Primus Ganges offers you to discover spacious layouts designed with purpose and perfection.
+                            The floor plans at Primus Ganges blend intelligent design with indulgent comfort, offering
                             expansive living spaces tailored to elevate every moment.
                             Choose a layout that matches your lifestyle — where every square foot speaks luxury.
                         </p>
