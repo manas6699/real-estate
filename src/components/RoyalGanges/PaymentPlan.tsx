@@ -8,7 +8,7 @@ const PaymentPlan = () => {
     {
       unitType: 'Apartments',
       size: '1,047 - 2,387 sq ft',
-      price: '₹ 56 L Onwards',
+      price: '₹ 81.32 L Onwards',
     },
     {
       unitType: 'Villaments',
