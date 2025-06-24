@@ -38,7 +38,7 @@ const page = () => {
           <Navbar source="Primus Ganges" />
           <Hero />
           <StickyButtonsRight />
-          <Info sourceName="Primus Ganges" possessionDate="April 2030" configuration="2, 3 BHK" priceRange="₹ 81.32 Lacs" />
+          <Info sourceName="Primus Ganges" possessionDate="April 2030" configuration="2 & 3 BHK" priceRange="₹ 81.32 Lacs onwards" />
           <MobileMagicHiddenForm source="Primus Ganges" />
           <MagicCard />
           <Map />
