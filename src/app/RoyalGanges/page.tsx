@@ -33,12 +33,12 @@ const page = () => {
       <div className="flex flex-col md:flex-row h-screen">
         <div className="md:w-3/4 w-full overflow-y-auto scroll-hide md:h-full">
           <div className='lg:hidden block'>
-            <PopupForm source='Primus Ganges' formHeading="Price's increasing soon" logoImage='/assets/morya/morya.png' />
+            <PopupForm source='Primus Ganges' formHeading="Price's increasing soon" logoImage='/assets/rg.png' />
           </div>
           <Navbar source="Primus Ganges" />
           <Hero />
           <StickyButtonsRight />
-          <Info sourceName="Primus Ganges" possessionDate="DEC 2027" configuration="2, 3, 4 BHK" priceRange="₹ 56 L - 2.45 Cr" />
+          <Info sourceName="Primus Ganges" possessionDate="April 2030" configuration="2, 3 BHK" priceRange="₹ 81.32 Lacs" />
           <MobileMagicHiddenForm source="Primus Ganges" />
           <MagicCard />
           <Map />
