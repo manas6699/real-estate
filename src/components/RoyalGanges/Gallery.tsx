@@ -9,7 +9,10 @@ const images = [
     '/assets/royalgangesgallery/6.jpg',
     '/assets/royalgangesgallery/7.jpg',
     '/assets/royalgangesgallery/8.jpg',
-    '/assets/royalgangesgallery/9.jpg'
+    '/assets/royalgangesgallery/9.jpg',
+    '/assets/royalgangesgallery/50.png',
+    '/assets/royalgangesgallery/100.png',
+    
 ];
 
 export default function GalleryMorya() {
