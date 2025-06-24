@@ -39,7 +39,7 @@ const properties: Property[] = [
         id: 4,
         name: "Primus Ganges",
         price: "₹ 81.32 lacs Onwards",
-        location: "Howrah",
+        location: "Kolkata",
         imageUrl: "/assets/royalgangesgallery/10.png",
         redirectingRoute:"/RoyalGanges"
     },
