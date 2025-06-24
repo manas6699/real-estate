@@ -5,16 +5,16 @@ import {
     House,
     TentTree,
     Cuboid,
-    Boxes,
     Copy,
     Check,
+    Combine,
 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function MagicCard() {
     const progress = 20;
     const [copied, setCopied] = useState(false);
-    const number = 'WBRERA/P/KOL/2023/000260';
+    const number = 'WBRERA/P/SOU/2025/002901';
 
     const handleCopy = async () => {
         try {
@@ -59,17 +59,17 @@ export default function MagicCard() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
                     <StatItem
                         icon={<LandPlot className="text-green-600" />}
-                        label="25  Acre"
+                        label="26.53  Acres"
                         subtext="Total Land Area"
                     />
                     <StatItem
                         icon={<House className="text-blue-600" />}
-                        label="Apartment"
+                        label="Residential"
                         subtext="Residence Typology"
                     />
                     <StatItem
                         icon={<TentTree className="text-yellow-600" />}
-                        label="1529 - 3755 sq ft"
+                        label="1292 - 1535 sq ft"
                         subtext="Super Builtup Area"
                     />
                 </div>
@@ -77,19 +77,19 @@ export default function MagicCard() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
                     <StatItem
                         icon={<Cuboid className="text-purple-600" />}
-                        label="22"
-                        subtext="Total No. of Blocks"
+                        label="136"
+                        subtext="Total No. of Units"
                     />
-                    <StatItem
+                    {/* <StatItem
                         icon={<Boxes className="text-rose-600" />}
                         label="Villa G + 2 ,Villament G + 4, Apartment G + 27 & G + 29"
                         subtext=""
-                    />
-                    {/* <StatItem
-                        icon={<Combine className="text-cyan-600" />}
-                        label="172"
-                        subtext="No of Units"
                     /> */}
+                    <StatItem
+                        icon={<Combine className="text-cyan-600" />}
+                        label="G + 18"
+                        subtext="No of floors"
+                    />
                 </div>
 
                 {/* RERA Copy Box */}
