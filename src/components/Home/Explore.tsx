@@ -35,6 +35,14 @@ const properties: Property[] = [
         imageUrl: "/assets/morya/morya-gallery-3.webp",
         redirectingRoute:"/morya"
     },
+    {
+        id: 4,
+        name: "Primus Ganges",
+        price: "₹ 81.32 lacs Onwards",
+        location: "Howrah",
+        imageUrl: "/assets/royalgangesgallery/10.png",
+        redirectingRoute:"/RoyalGanges"
+    },
 ];
 const Explore = () => {
   return (
@@ -44,7 +52,7 @@ const Explore = () => {
         </h2>
           <div className="flex justify-center cursor-pointer">
          
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 p-4">
                   {properties.map((property) => (
                       <div
                           key={property.id}
