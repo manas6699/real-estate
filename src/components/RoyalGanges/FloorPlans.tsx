@@ -3,7 +3,6 @@ import ImageGallery from '@/components/ImageGallery';
 const images = [
     '/assets/royalgangesgallery/2bhk.png',
     '/assets/royalgangesgallery/3bhk.png',
-    '/assets/royalgangesgallery/fp2.png',
 ];
 
 export default function GalleryMorya() {

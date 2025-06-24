@@ -27,7 +27,7 @@ const PaymentPlan = () => {
     <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-yellow-50">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-amber-700 text-2xl sm:text-4xl md:text-5xl font-bold mb-10 mt-5">
-          Royal Ganges - Payment Plans
+          Primus Ganges - Payment Plans
         </h1>
 
         <div className="overflow-x-auto">
