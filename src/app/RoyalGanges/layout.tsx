@@ -11,7 +11,7 @@ const lora = Lora({
 });
 
 export const metadata = {
-    title: "The Royal Ganges, Ganga Facing Flats - MMR Realty",
+    title: "The Primus Ganges, Ganga Facing Flats - MMR Realty",
     description:
         "Experience luxurious waterfront living at Royal Ganges – premium apartments & duplexes with stunning Ganges views. Book now! ",
     keywords: [
