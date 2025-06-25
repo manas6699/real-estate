@@ -75,7 +75,7 @@ export default function DownloadBrochureButton() {
     return (
         <>
             {/* Trigger Section */}
-            <div className="flex flex-col md:flex-row gap-6 md:gap-10 p-6 md:p-20 mb-10 bg-yellow-50">
+            <section id="brochure" className="flex flex-col md:flex-row gap-6 md:gap-10 p-6 md:p-20 mb-10 pt-24 bg-yellow-50">
                 <button
                     onClick={() => setIsOpen(true)}
                     className="inline-flex items-center gap-3 px-10 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-all w-fit"
@@ -95,7 +95,7 @@ export default function DownloadBrochureButton() {
                         one of the top condominiums in South Kolkata.
                     </p>
                 </div>
-            </div>
+            </section>
 
             {/* Modal */}
             {isOpen && (
