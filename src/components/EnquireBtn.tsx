@@ -23,8 +23,8 @@ type EnquireBtnProps = {
 
 const EnquireBtn = ({ source, btntext, modalheading }: EnquireBtnProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source });
     const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
