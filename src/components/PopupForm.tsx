@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
+import { Phone } from 'lucide-react';
+
 import { toast } from 'react-toastify';
 import Loader from '@/components/loader';
 import { LEADS_ENDPOINT } from '@/config/api';
-import Image from 'next/image';
-
-import { Phone } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
 
 type PopupFormProps = {
     source: string;
@@ -25,6 +25,9 @@ type BrochureFormData = {
 export default function PopupForm({ source, formHeading, logoImage }: PopupFormProps) {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [userClosed, setUserClosed] = useState(false); // track if user manually closed
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
     const [formData, setFormData] = useState<BrochureFormData>({
         name: '',
         email: '',
@@ -32,14 +35,29 @@ export default function PopupForm({ source, formHeading, logoImage }: PopupFormP
         source: '',
     });
 
+    // Initial 10-second delay
     useEffect(() => {
         const timer = setTimeout(() => {
             setVisible(true);
             setFormData((prev) => ({ ...prev, source }));
-        }, 10000); // 10-second delay
+        }, 10000);
 
         return () => clearTimeout(timer);
     }, [source]);
+
+    // If user closes manually, show every 8s again
+    useEffect(() => {
+        if (userClosed && !visible) {
+            intervalRef.current = setInterval(() => {
+                setVisible(true);
+                setUserClosed(false); // reset after showing again
+            }, 8000);
+        }
+
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, [userClosed, visible]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,13 +69,18 @@ export default function PopupForm({ source, formHeading, logoImage }: PopupFormP
             setLoading(true);
             await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Our Team will reach out to you very soon!');
-            setVisible(false); // hide popup only after successful submission
+            setVisible(false); // hide on success
         } catch (error) {
             toast.error('Submission failed. Try again.');
             console.error('Form error:', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleClose = () => {
+        setVisible(false);
+        setUserClosed(true);
     };
 
     if (!visible) return null;
@@ -71,7 +94,7 @@ export default function PopupForm({ source, formHeading, logoImage }: PopupFormP
                 {/* Cross Button */}
                 <button
                     type="button"
-                    onClick={() => setVisible(false)}
+                    onClick={handleClose}
                     className="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl font-bold"
                     aria-label="Close form"
                 >
@@ -132,12 +155,9 @@ export default function PopupForm({ source, formHeading, logoImage }: PopupFormP
                         <>Get Details</>
                     )}
                 </button>
-                <div className='flex items-center gap-2 text-center justify-center '>
+                <div className="flex items-center gap-2 text-center justify-center ">
                     <Phone className="w-5 h-5" />
-                <p className='text-center font-black text-xl'>
-
-                9830947144
-                </p>
+                    <p className="text-center font-black text-xl">9830947144</p>
                 </div>
             </form>
         </div>
