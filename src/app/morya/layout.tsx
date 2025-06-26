@@ -16,6 +16,8 @@ export const metadata = {
         "Sugam Morya in Tollygunge offers premium 3, 3.5 & 4 BHK homes with lush open areas, elegant design, and top-tier amenities on the prestigious BL Saha Road.",
     keywords: [
         "Sugam Morya",
+        "3 bhk flat for sale  in south kolkata",
+        "best place to buy flats in kolkata",
         "Morya Alipore",
         "Morya Tollygunge",
         "Luxury Home Kolkata",
