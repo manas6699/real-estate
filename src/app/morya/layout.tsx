@@ -1,5 +1,3 @@
-
-
 import Script from 'next/script';
 import { Lora } from 'next/font/google';
 
@@ -54,7 +52,6 @@ export const metadata = {
         "Clubhouse with amenities Tollygunge"
     ]
 };
-  
 
 export default function RootLayout({
     children,
@@ -87,21 +84,21 @@ export default function RootLayout({
                     strategy="afterInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `
-      function gtag_report_conversion(url) {
-        var callback = function () {
-          if (typeof(url) != 'undefined') {
-            window.location = url;
-          }
-        };
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17036070133/hihlCPPJ870aEPWZt7s_',
-          'value': 1.0,
-          'currency': 'INR',
-          'event_callback': callback
-        });
-        return false;
-      }
-    `,
+                        function gtag_report_conversion(url) {
+                            var callback = function () {
+                            if (typeof(url) != 'undefined') {
+                                window.location = url;
+                            }
+                            };
+                            gtag('event', 'conversion', {
+                            'send_to': 'AW-17036070133/hihlCPPJ870aEPWZt7s_',
+                            'value': 1.0,
+                            'currency': 'INR',
+                            'event_callback': callback
+                            });
+                            return false;
+                        }
+                        `,
                     }}
                 />
             </head>

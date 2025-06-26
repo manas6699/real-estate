@@ -13,6 +13,7 @@ import Hero from '@/components/componentsMorya/Hero'
 import About from '@/components/componentsMorya/About'
 import Map from '@/components/componentsMorya/MapView'
 
+import EmiCalculator from '@/components/Home/EmiCalculator';
 import Overview from '@/components/componentsMorya/Overview'
 import FloorPlans from '@/components/componentsMorya/FloorPlans'
 import MagicCard from '@/components/componentsMorya/MagicCard'
@@ -23,7 +24,6 @@ import GalleryMorya from '@/components/componentsMorya/GalleryMorya'
 import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm'
 import DownloadBrochure from '@/components/componentsMorya/DownloadBrochure'
 import FloorPlansDownload from '@/components/componentsMorya/FloorPlansDownload'
-import EmiCalculator from '@/components/Home/EmiCalculator';
 
 const page = () => {
   
@@ -47,16 +47,16 @@ const page = () => {
               <EmiCalculator/>
               <DownloadBrochure/>
               <Amenities
-            amenities={[
-              '/assets/amenities/20.png',
-              '/assets/amenities/21.png',
-              '/assets/amenities/22.png',
-              '/assets/amenities/23.png',
-              '/assets/amenities/24.png',
-              '/assets/amenities/25.png',
-              '/assets/amenities/26.png',
-              '/assets/amenities/27.png',
-            ]}
+                    amenities={[
+                      '/assets/amenities/20.png',
+                      '/assets/amenities/21.png',
+                      '/assets/amenities/22.png',
+                      '/assets/amenities/23.png',
+                      '/assets/amenities/24.png',
+                      '/assets/amenities/25.png',
+                      '/assets/amenities/26.png',
+                      '/assets/amenities/27.png',
+                    ]}
           />
               <GalleryMorya/>
               <FloorPlans/>
