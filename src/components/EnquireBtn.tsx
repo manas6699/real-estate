@@ -18,10 +18,11 @@ type BrochureFormData = {
 type EnquireBtnProps = {
     source: string;
     btntext: string;
-    modalheading: string
+    modalheading: string;
+    clickevent?: (() => void);
 };
 
-const EnquireBtn = ({ source, btntext, modalheading }: EnquireBtnProps) => {
+const EnquireBtn = ({ source, btntext, modalheading , clickevent }: EnquireBtnProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<BrochureFormData>({ name: '', email: '', phone: '', source: source });
@@ -45,6 +46,8 @@ const EnquireBtn = ({ source, btntext, modalheading }: EnquireBtnProps) => {
             setFormData({ name: '', email: '', phone: '', source: source });
             setIsOpen(false);
             setLoading(false);
+            // removing blur
+            if (clickevent) clickevent();
 
         } catch (error: unknown) {
             setLoading(false);
