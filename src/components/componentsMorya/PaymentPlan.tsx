@@ -1,33 +1,32 @@
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import EnquireBtn from '@/components/EnquireBtn';
 
 const PaymentPlan = () => {
-    const plans = [
-        {
-          unitType: '3 BHK + 2T',
-          size: '1,531 sq ft',
-          price: '₹ 1.46 Cr Onwards',
-        },
-        {
-          unitType: '3.5 BHK + 3T',
-          size: '1,941 sq ft',
-          price: '₹ 1.80 Cr Onwards',
-        },
-        {
-          unitType: '4 BHK (Compact)',
-          size: '2,240 sq ft',
-          price: '₹ 2.06 Cr Onwards',
-        },
-        {
-          unitType: '4 BHK (Luxury)',
-          size: '2,647 sq ft',
-          price: '₹ 2.48 Cr Onwards',
-        },
-      ];
-      
+  const [showAll, setShowAll] = useState(false);
 
+  const plans = [
+    {
+      unitType: '3 BHK + 2T',
+      size: '1,531 sq ft',
+      price: '₹ 1.46 Cr Onwards',
+    },
+    {
+      unitType: '3.5 BHK + 3T',
+      size: '1,941 sq ft',
+      price: '₹ 1.80 Cr Onwards',
+    },
+    {
+      unitType: '4 BHK (Compact)',
+      size: '2,240 sq ft',
+      price: '₹ 2.06 Cr Onwards',
+    },
+    {
+      unitType: '4 BHK (Luxury)',
+      size: '2,647 sq ft',
+      price: '₹ 2.48 Cr Onwards',
+    },
+  ];
+  
   return (
     <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-yellow-50">
       <div className="max-w-5xl mx-auto">
@@ -52,28 +51,37 @@ const PaymentPlan = () => {
             </thead>
             <tbody>
               {plans.map((plan, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-50 transition-colors"
-                >
+                <tr key={index} className="transition-all">
                   <td className="px-4 py-3 text-gray-700 border-b">
                     {plan.unitType}
                   </td>
                   <td className="px-4 py-3 text-gray-700 border-b">
                     {plan.size}
                   </td>
-                  <td className="px-4 py-3 text-gray-700 border-b">
+                  <td
+                    className={`px-4 py-3 text-gray-700 border-b transition-all ${!showAll && index !== 1e9
+                        ? 'blur-sm pointer-events-none opacity-60 select-none'
+                        : ''
+                      }`}
+                  >
                     {plan.price}
                   </td>
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
-        <div className='mt-5'>
-        <EnquireBtn source="emami" btntext="Receive Payment Plans⚡" modalheading="Receive Payment Plans" />
 
+      
 
+        <div className="mt-5">
+          <EnquireBtn
+            source="emami"
+            btntext="View All Payment Plans⚡"
+            modalheading="View All Payment Plans"
+            clickevent={()=> setShowAll(true)}
+          />
         </div>
       </div>
     </section>
