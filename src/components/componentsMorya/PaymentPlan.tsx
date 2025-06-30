@@ -59,7 +59,7 @@ const PaymentPlan = () => {
                     {plan.size}
                   </td>
                   <td
-                    className={`px-4 py-3 text-gray-700 border-b transition-all ${!showAll && index !== 1e9
+                    className={`px-4 py-3 text-gray-700 border-b transition-all ${!showAll && index !== 1e9 && index != 0
                         ? 'blur-sm pointer-events-none opacity-60 select-none'
                         : ''
                       }`}
