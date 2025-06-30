@@ -26,7 +26,7 @@ const PaymentPlan = () => {
       price: '₹ 2.48 Cr Onwards',
     },
   ];
-  
+
   return (
     <section className="px-4 py-12 sm:px-8 md:px-16 lg:px-24 bg-yellow-50">
       <div className="max-w-5xl mx-auto">
@@ -60,8 +60,8 @@ const PaymentPlan = () => {
                   </td>
                   <td
                     className={`px-4 py-3 text-gray-700 border-b transition-all ${!showAll && index !== 1e9 && index != 0
-                        ? 'blur-sm pointer-events-none opacity-60 select-none'
-                        : ''
+                      ? 'blur-sm pointer-events-none opacity-60 select-none'
+                      : ''
                       }`}
                   >
                     {plan.price}
@@ -69,18 +69,16 @@ const PaymentPlan = () => {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
 
-      
 
         <div className="mt-5">
           <EnquireBtn
-            source="emami"
+            source="morya"
             btntext="View All Payment Plans⚡"
             modalheading="View All Payment Plans"
-            clickevent={()=> setShowAll(true)}
+            clickevent={() => setShowAll(true)}
           />
         </div>
       </div>
