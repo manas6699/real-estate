@@ -1,85 +1,118 @@
 'use client';
-import React from 'react';
-import { ChevronDown } from 'lucide-react';
 
-const Hero = () => {
+import { useState } from 'react';
+import { Filter } from 'lucide-react';
+
+const tabs = ['All', 'Sale', 'Rent'];
+// const types = ['All Type', 'Apartment', 'Villa', 'Plot'];
+
+export default function HomeSearchBar() {
+    const [selectedTab, setSelectedTab] = useState('All');
+    // const [keyword, setKeyword] = useState('');
+    // const [selectedType, setSelectedType] = useState('All Type');
+
     return (
-        <section
-            className="relative w-full h-screen bg-cover bg-center flex items-center justify-center px-4 bg-black/50"
-            style={{ backgroundImage: "url('assets/morya/morya-gallery-1.webp')" }}
-        >
-            <div className="absolute inset-0 bg-black/25 z-0"></div>
+        <div className="flex flex-col items-center w-full px-4 py-8">
+            {/* Heading */}
+            <p className="text-sm text-gray-600 mb-1">
+                We’ve more than 745,000 apartments, place & plot.
+            </p>
+            <h1 className="text-2xl md:text-4xl font-semibold text-green-800 mt-6 mb-6"> Find Your
+                <span className='bg-green-700 font-semibold rounded-sm text-yellow-300 px-4 text-5xl'>
+                    Perfect
+                </span>
+                Home
+            </h1>
 
-            {/* Content */}
-            <div className="relative z-10 text-center text-white max-w-4xl w-full">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-                    The #1 Site for Real Estate You Trust
-                </h1>
-                <p className="text-base sm:text-lg md:text-xl mb-8">
-                    Discover premium flats, villas, and commercial properties for rent or sale.
-                </p>
-
-                {/* Search Box */}
-                <div className="bg-white rounded-2xl p-4 shadow-lg flex flex-col md:flex-row md:items-stretch gap-4 w-full max-w-5xl mx-auto">
-                    {/* Location Filter */}
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        className="flex-1 px-5 py-3 text-black rounded-full border border-gray-300 outline-none text-sm"
-                    />
-
-                    {/* Custom Dropdowns */}
-                    {[
-                        {
-                            name: 'Price Range',
-                            options: [
-                                { label: '₹50L - ₹1Cr', value: '50-100' },
-                                { label: '₹1Cr - ₹2Cr ', value: '101-200' },
-                                { label: '₹2Cr - ₹3Cr ', value: '201-300' },
-                                { label: '₹3Cr - ₹4Cr ', value: '301-400' },
-                                { label: '₹4Cr - ₹5Cr ', value: '401-500' },
-                                { label: '₹5Cr - ₹20Cr ', value: '501-2000' },
-                            ],
-                        },
-                        {
-                            name: 'Flat/Bungalaw',
-                            options: [
-                                { label: 'Flat', value: 'flat' },
-                                { label: 'Bungalaw', value: 'Bungalaw' },
-                            ],
-                        },
-                        {
-                            name: 'Type',
-                            options: [
-                                { label: 'Residential', value: 'residential' },
-                                { label: 'Commercial', value: 'commercial' },
-                                { label: 'Rental', value: 'rental' },
-                            ],
-                        },
-                    ].map((dropdown, idx) => (
-                        <div className="relative w-full md:w-auto" key={idx}>
-                            <select
-                                className="appearance-none w-full md:w-auto px-5 py-3 rounded-full border border-gray-300 text-sm pr-10 bg-white text-gray-700"
-                            >
-                                <option value="">{dropdown.name}</option>
-                                {dropdown.options.map((opt, i) => (
-                                    <option value={opt.value} key={i}>{opt.label}</option>
-                                ))}
-                            </select>
-                            <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                                <ChevronDown size={18} />
-                            </div>
-                        </div>
-                    ))}
-
-                    {/* Search Button */}
-                    <button className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all text-sm">
-                        Search
+            {/* Tabs */}
+            <div className="flex">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab}
+                        onClick={() => setSelectedTab(tab)}
+                        className={`px-5 py-2 font-medium transition cursor-pointer ${selectedTab === tab
+                            ? 'bg-yellow-400 text-black'
+                            : 'bg-black text-white'
+                            }`}
+                    >
+                        {tab}
                     </button>
-                </div>
+                ))}
             </div>
-        </section>
-    );
-};
 
-export default Hero;
+            {/* Search Box */}
+            <div className="bg-white rounded-2xl p-4 shadow-lg flex flex-col md:flex-row md:items-stretch gap-4 w-full max-w-5xl mx-auto">
+                {/* Location Filter */}
+                <input
+                    type="text"
+                    placeholder="Location"
+                    className="flex-1 px-5 py-3 text-black rounded-full border border-gray-300 outline-none text-sm"
+                />
+
+                {/* Custom Dropdowns */}
+                {[
+                    {
+                        name: 'Price Range',
+                        options: [
+                            { label: '₹50L - ₹1Cr', value: '50-100' },
+                            { label: '₹1Cr - ₹2Cr ', value: '101-200' },
+                            { label: '₹2Cr - ₹3Cr ', value: '201-300' },
+                            { label: '₹3Cr - ₹4Cr ', value: '301-400' },
+                            { label: '₹4Cr - ₹5Cr ', value: '401-500' },
+                            { label: '₹5Cr - ₹20Cr ', value: '501-2000' },
+                        ],
+                    },
+                    {
+                        name: 'Flat/Bungalaw',
+                        options: [
+                            { label: 'Flat', value: 'flat' },
+                            { label: 'Bungalaw', value: 'Bungalaw' },
+                        ],
+                    },
+                    {
+                        name: 'Type',
+                        options: [
+                            { label: 'Residential', value: 'residential' },
+                            { label: 'Commercial', value: 'commercial' },
+                            { label: 'Rental', value: 'rental' },
+                        ],
+                    },
+                ].map((dropdown, idx) => (
+                    <div className="relative w-full md:w-auto" key={idx}>
+                        <select
+                            className="appearance-none w-full md:w-auto px-5 py-3 rounded-full border border-gray-300 text-sm pr-10 bg-white text-gray-700"
+                        >
+                            <option value="">{dropdown.name}</option>
+                            {dropdown.options.map((opt, i) => (
+                                <option value={opt.value} key={i}>{opt.label}</option>
+                            ))}
+                        </select>
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-gray-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </span>
+                    </div>
+                ))}
+
+                {/* Filter Button */}
+                <button
+                    className="flex items-center gap-1 text-sm text-gray-700 border border-gray-300 px-3 py-2 rounded-md hover:bg-gray-100">
+                    <Filter size={16} />
+                    Filter
+                </button>
+
+                {/* Search Button */}
+                <button className="bg-yellow-400 text-black font-medium px-5 py-2 rounded-md hover:bg-yellow-500 text-sm">
+                    Search
+                </button>
+            </div>
+        </div>
+    );
+}
