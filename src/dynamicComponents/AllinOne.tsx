@@ -10,7 +10,7 @@ import MobileMagicHiddenForm from '@/components/MobileMagicHiddenForm';
 import Image from 'next/image';
 
 
-import { BACKEND_ADMIN_POST_API, UPLOAD_IMAGES_BASE_URL } from '@/config/api'
+import { BACKEND_ADMIN_POST_API } from '@/config/api'
 // import EnquireBtn from '@/components/EnquireBtn';
 import Amenities from '@/dynamicComponents/Amenities';
 import DownloadBrochureButton2 from '../components/DownloadBrochureButton2';
@@ -71,10 +71,10 @@ export default function AllinOne({ id }: { id: string }) {
         );
     }
 
-    const backgroundImageUrl = `${UPLOAD_IMAGES_BASE_URL}/${data.backgroundImage}`;
-    const developerLogo = `${UPLOAD_IMAGES_BASE_URL}/${data.developerLogo}`;
-    const brochurepdf = `${UPLOAD_IMAGES_BASE_URL}/${data.brochurePdf}`;
-    const floorPlanPdf = `${UPLOAD_IMAGES_BASE_URL}/${data.floorPlanPdf}`;
+    const backgroundImageUrl = data.backgroundImage
+    const developerLogo = data.developerLogo
+    const brochurepdf = data.brochurePdf
+    const floorPlanPdf = data.floorPlanPdf
 
     const number = data.reraId;
     const handleCopy = async () => {
@@ -95,7 +95,7 @@ export default function AllinOne({ id }: { id: string }) {
             <section
                 className="w-full h-[80vh] bg-cover bg-center flex items-center justify-center text-white text-center px-4 sm:px-6 md:px-12"
                 style={{
-                    backgroundImage: `url('${backgroundImageUrl}')`,
+                    backgroundImage: `url(${backgroundImageUrl})`
                 }}
             >
 
@@ -238,7 +238,7 @@ export default function AllinOne({ id }: { id: string }) {
 
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
                     <Image
-                        alt="emami logo"
+                        alt='Developer Logo'
                         width={200}
                         height={60}
                         src={developerLogo}

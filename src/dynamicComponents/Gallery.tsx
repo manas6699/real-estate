@@ -12,8 +12,6 @@ const Gallery: React.FC<ImageGalleryProps> = ({ images }) => {
 
     const handleClose = () => setSelectedIndex(null);
 
-    const baseUrl = 'http://localhost:8000/uploads/'; // 🔁 Replace with your actual image base URL
-
     useEffect(() => {
         if (selectedIndex !== null) {
             const handleKeyDown = (e: KeyboardEvent) => {
@@ -47,7 +45,7 @@ const Gallery: React.FC<ImageGalleryProps> = ({ images }) => {
                         onClick={() => setSelectedIndex(index)}
                     >
                         <Image
-                            src={baseUrl + filename}
+                            src={filename}
                             alt={`Image ${index + 1}`}
                             fill
                             className="object-cover rounded-lg transition-transform hover:scale-105 duration-300"
@@ -81,7 +79,7 @@ const Gallery: React.FC<ImageGalleryProps> = ({ images }) => {
 
                     <div className="max-w-5xl w-full flex justify-center items-center">
                         <Image
-                            src={baseUrl + images[selectedIndex]}
+                            src={images[selectedIndex]}
                             alt={`Large Image ${selectedIndex + 1}`}
                             width={1200}
                             height={800}
