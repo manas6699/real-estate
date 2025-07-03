@@ -247,12 +247,12 @@ export default function ProjectForm() {
       <Navbar />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 max-w-4xl mx-auto">
         <div>
-          <label className="block font-semibold mb-1">Title</label>
+          <label className="block font-semibold mb-1">Project Title</label>
           <input {...register('title')} placeholder="Title" className="input" />
         </div>
 
         <div>
-          <label className="block font-semibold mb-1">Description</label>
+          <label className="block font-semibold mb-1">Project Description</label>
           <input {...register('description')} placeholder="Description" className="input" />
         </div>
 
