@@ -5,12 +5,12 @@ import Navbar from '@/components/Navbar';
 import Info from '@/components/emami/Info'
 import Hero from '@/components/emami/Hero'
 import About from '@/components/emami/About'
+import Amenities from '@/components/Amenities';
 
 
 import PopupForm from '@/components/PopupForm';
 import Overview from '@/components/emami/Overview'
 import MapView from '@/components/emami/MapView'
-import Amenities from '@/components/Amenities';
 import FloorPlans from '@/components/emami/FloorPlans'
 import MagicCard from '@/components/emami/MagicCard'
 

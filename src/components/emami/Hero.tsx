@@ -3,7 +3,7 @@ import React from 'react';
 
 const Hero = () => {
     return (
-        <section className="p-4 md:p-10">
+        <section className="p-4 md:p-10 mt-14">
             <div className="relative w-full max-w-6xl mx-auto rounded-3xl overflow-hidden aspect-[3/2] sm:aspect-[16/9]">
                 {/* Image */}
                 <Image
