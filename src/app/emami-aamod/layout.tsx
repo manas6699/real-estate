@@ -36,9 +36,11 @@ export default function RootLayout({
         <html className={`${lora.className}`}>
             <head>
                 {/* Google Analytics Script */}
+                
                 <Script
+                    id="google-analytics"
                     strategy="afterInteractive"
-                    src={`https://www.googletagmanager.com/gtag/js?id=G-T6VE9ZGC90`}
+                    src={"https://www.googletagmanager.com/gtag/js?id=AW-17339408048"}
                 />
                 <Script
                     id="google-analytics"
