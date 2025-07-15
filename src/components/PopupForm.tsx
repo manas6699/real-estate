@@ -68,6 +68,11 @@ export default function PopupForm({ source, formHeading, logoImage }: PopupFormP
         try {
             setLoading(true);
             await axios.post(LEADS_ENDPOINT, formData);
+            if (typeof window !== "undefined") {
+                window.gtag("event", "conversion", {
+                    send_to: "AW-17339408048/jQQnCNCY__AaELC9icxA"
+                })
+            }
             toast.success('Our Team will reach out to you very soon!');
             setVisible(false); // hide on success
         } catch (error) {
