@@ -136,7 +136,7 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-2 border rounded focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                             required
-                            minLength={6}
+                            
                         />
                         <button
                             type="button"
