@@ -1,0 +1,70 @@
+'use client';
+
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Navbar from '@/components/AdminComponents/Navbar';
+import { jwtDecode } from 'jwt-decode';
+import Sidebar from '@/components/AdminComponents/Sidebar';
+import Overview from '@/components/AdminComponents/Overview';
+import UserList from '@/components/AdminComponents/UserList';
+import Activity from '@/components/AdminComponents/Activity';
+
+
+type JWTPayload = {
+    exp: number;
+    [key: string]: unknown;
+};
+
+const Dashboard = () => {
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const token = localStorage.getItem('token');
+            console.log('Token:', token);
+
+            let isTokenExpired = false;
+
+            if (token) {
+                try {
+                    const decoded: JWTPayload = jwtDecode(token);
+                    const currentTime = Date.now() / 1000; // in seconds
+                    if (decoded.exp < currentTime) {
+                        isTokenExpired = true;
+                    }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (error) {
+                    isTokenExpired = true; // If decoding fails, treat as expired
+                }
+            }
+
+            if (!token || isTokenExpired) {
+                router.push('/login');
+                return;
+            }
+
+  
+        };
+
+        fetchUsers();
+    }, [router]);
+
+    return (
+        <div>
+            <Navbar />
+            <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
+                <Sidebar />
+
+                <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
+                    <div className="flex flex-col flex-1 gap-4">
+                        <Overview />
+                        <UserList />
+                    </div>
+                    <Activity />
+                </div>
+            </main>
+        </div>
+    );
+};
+
+export default Dashboard;
