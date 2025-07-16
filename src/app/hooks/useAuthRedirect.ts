@@ -8,16 +8,15 @@ export const useAuthRedirect = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
-    console.log('token : ' , token);
+    console.log('token is  : ' , token);
 
     // If on login page and already logged in
     if (pathname === '/login' && token) {
       router.replace('/admin/LeadData');
     }
 
-    // If on protected page and not logged in
-    if (pathname.startsWith('/admin') && !token) {
-      router.replace('/login');
-    }
+   if(pathname === '/login' && token){
+     router.replace('/admin/Dashboard')
+   }
   }, [pathname, router]);
 };
