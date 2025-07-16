@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import axios from 'axios';
+import { io } from 'socket.io-client';
 
 import { API_BASE_URL } from '@/config/api';
 import Logo from "../../../public/assets/logo-transparent.png";
-import axios from 'axios';
 import Loader from '@/components/loader';
 
 export default function LoginPage() {
@@ -20,7 +21,6 @@ export default function LoginPage() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Basic validation
         if (!phone.trim() || !password.trim()) {
             setError('Please fill in all fields');
             return;
@@ -32,7 +32,6 @@ export default function LoginPage() {
         try {
             const res = await axios.post(
                 `${API_BASE_URL}/auth/login`,
-                // `http://localhost:8000/api/auth/login`,
                 { phone, password },
                 {
                     headers: {
@@ -41,9 +40,43 @@ export default function LoginPage() {
                 }
             );
 
-            if (res.status === 200 && res.data.token) {
-                localStorage.setItem('authToken', res.data.token);
-                router.push('/admin/LeadData');
+            if (res.status === 200) {
+                // ✅ Store token safely
+                localStorage.setItem('token', res.data.token);
+
+                // ✅ Log for debug
+                console.log('✅ Token stored:', localStorage.getItem('token'));
+
+                // ✅ Immediately redirect — do NOT wait for socket here
+                router.push('/admin/Dashboard');
+
+                // ✅ Optionally connect socket in Dashboard page instead!
+                // But if you want to do it here:
+                const socket = io(`http://localhost:8000`, {
+                    auth: {
+                        token: res.data.token,
+                    },
+                });
+
+                socket.on('connect', () => {
+                    console.log('✅ Socket connected:', socket.id);
+
+                    // ✅ You do NOT need this if handshake sets user:
+                    socket.emit('user-online', {
+                        userId: res.data.user._id,
+                        username: res.data.user.name,
+                        online: true,
+                    });
+                });
+
+                socket.on('disconnect', () => {
+                    console.log('❌ Socket disconnected');
+                });
+
+                socket.on('connect_error', (err) => {
+                    console.error('❌ Socket connection failed:', err);
+                });
+
             } else {
                 setError('Login failed. Please check your credentials.');
             }
@@ -58,20 +91,19 @@ export default function LoginPage() {
         } finally {
             setLoading(false);
         }
+
     };
 
     return (
         <div className="flex min-h-screen justify-center items-center bg-gray-50">
             <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-                <div className='items-center justify-center w-full flex mb-6'>
-                    <Image src={Logo} width={50} height={40} alt='logo' priority />
+                <div className="items-center justify-center w-full flex mb-6">
+                    <Image src={Logo} width={50} height={40} alt="logo" priority />
                 </div>
                 <h2 className="text-2xl font-semibold mb-4 text-center">Admin Panel Login</h2>
 
                 {error && (
-                    <p className="text-red-500 text-sm mb-2 text-center">
-                        {error}
-                    </p>
+                    <p className="text-red-500 text-sm mb-2 text-center">{error}</p>
                 )}
 
                 <div className="mb-3">
@@ -98,7 +130,7 @@ export default function LoginPage() {
                     <div className="relative">
                         <input
                             id="password"
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -123,7 +155,7 @@ export default function LoginPage() {
                 >
                     {loading ? (
                         <div className="flex justify-center items-center">
-                            <Loader color='white' />
+                            <Loader color="white" />
                             <span className="ml-2">Logging in...</span>
                         </div>
                     ) : (
