@@ -20,8 +20,11 @@ const Navbar = () => {
                 .find(row => row.startsWith('token='))
                 ?.split('=')[1];
 
+            localStorage.removeItem('token');
+
             await axios.post(
                 `${API_BASE_URL}/auth/logout`,
+                // `http://localhost:8000/api/auth/logout`,
                 {},
                 {
                     headers: {
