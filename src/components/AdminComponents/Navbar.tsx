@@ -1,14 +1,12 @@
+'use client';
+
 import axios from 'axios';
 import React from 'react';
-
-import Link from 'next/link';
-import Image from 'next/image';
 
 import { LogOut } from 'lucide-react';
 
 import { useRouter } from 'next/navigation';
 import { API_BASE_URL } from '@/config/api';
-import Logo from '../../../public/assets/logo-transparent.png'
 
 const Navbar = () => {
 
@@ -24,7 +22,7 @@ const Navbar = () => {
 
             await axios.post(
                 `${API_BASE_URL}/auth/logout`,
-                // `http://localhost:8000/api/auth/logout`,
+                
                 {},
                 {
                     headers: {
@@ -45,10 +43,7 @@ const Navbar = () => {
         <>
             <nav className="w-full bg-white shadow-md py-3">
                 <div className="container mx-auto px-4 flex items-center justify-between">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center">
-                        <Image src={Logo} alt="Logo" width={50} height={50} />
-                    </Link>
+                   
 
                     {/* ADMIN PANEL text: hidden on small screens */}
                     <div className="hidden lg:flex items-center gap-2 text-gray-800 font-semibold">
