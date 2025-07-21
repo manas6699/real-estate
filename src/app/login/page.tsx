@@ -6,7 +6,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-import { API_BASE_URL } from '@/config/api';
+import { API_BASE_URL, WEB_SOCKET_URL } from '@/config/api';
 import Logo from "../../../public/assets/logo-transparent.png";
 import Loader from '@/components/loader';
 
@@ -52,7 +52,7 @@ export default function LoginPage() {
 
                 // ✅ Optionally connect socket in Dashboard page instead!
                 // But if you want to do it here:
-                const socket = io(`http://localhost:8000`, {
+                const socket = io(WEB_SOCKET_URL, {
                     auth: {
                         token: res.data.token,
                     },
