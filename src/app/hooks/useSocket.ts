@@ -1,5 +1,6 @@
 "use client";
 
+import { WEB_SOCKET_URL } from "@/config/api";
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -9,7 +10,7 @@ export const useSocket = (userId: string | null) => {
   useEffect(() => {
     if (!userId) return;
 
-    const socket = io("http://localhost:8000", {
+    const socket = io(WEB_SOCKET_URL, {
       withCredentials: true,
     });
 
