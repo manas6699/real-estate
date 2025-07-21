@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/AdminComponents/Navbar';
 import { jwtDecode } from 'jwt-decode';
@@ -8,7 +8,19 @@ import Sidebar from '@/components/AdminComponents/Sidebar';
 import Overview from '@/components/AdminComponents/Overview';
 import UserList from '@/components/AdminComponents/UserList';
 import Activity from '@/components/AdminComponents/Activity';
+import UsersTable from '@/components/AdminComponents/UsersTable';
+import axios from 'axios';
+import { SHOW_ALL_USERS_API } from '@/config/api';
 
+type User = {
+    _id: string;
+    name: string;
+    role: string;
+    online: boolean;
+    password: string;
+    phone?: string;
+    createdAt?: string;
+};
 
 type JWTPayload = {
     exp: number;
@@ -17,6 +29,38 @@ type JWTPayload = {
 
 const Dashboard = () => {
     const router = useRouter();
+    const [users, setUsers] = useState<User[]>([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await axios.get<{ [key: string]: Omit<User, '_id'> }>(
+                   SHOW_ALL_USERS_API,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (res.data) {
+                    const usersArray: User[] = Object.entries(res.data).map(
+                        ([id, user]) => ({
+                            _id: id,
+                            ...user, // ✅ Now TS knows user is an object
+                        })
+                    );
+
+                    setUsers(usersArray);
+                }
+            } catch (err) {
+                console.error('Error fetching users:', err);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -58,7 +102,8 @@ const Dashboard = () => {
                 <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
                     <div className="flex flex-col flex-1 gap-4">
                         <Overview />
-                        <UserList />
+                        <UserList/>
+                        <UsersTable data={users} />
                     </div>
                     <Activity />
                 </div>
