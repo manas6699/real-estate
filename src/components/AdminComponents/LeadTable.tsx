@@ -118,35 +118,48 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
     });
 
     return (
-        <div className="space-y-4">
-            {table.getRowModel().rows.map(row => (
-                <div
-                    key={row.id}
-                    className="flex flex-col md:flex-row justify-between items-center bg-white rounded-lg shadow p-4"
-                >
-                    {row.getVisibleCells().map(cell => (
-                        <div
-                            key={cell.id}
-                            className="flex-1 mb-2 md:mb-0 md:mr-4 text-left"
-                        >
-                            <div className="text-xs flex justify-center text-gray-400">
-                                {cell.column.columnDef.header as string}
-                            </div>
-                            <div className="font-medium items-center flex justify-center mt-2">
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ))}
+        <>
+        <div className='flex'>
+            <h1 className="text-2xl font-bold mb-4">Unassigned Leads</h1>
+            <div className="bg-black rounded-full h-8 ml-2.5 w-8">
+                <text className="text-white text-xs font-extrabold flex items-center justify-center h-full">
+                    <span className="text-center">
+                        {data.length}
+                    </span>
+                </text>
+            </div>
 
-            {isModalOpen && selectedLeadId && (
-                <AssignModal
-                    onClose={() => setIsModalOpen(false)}
-                    leadId={selectedLeadId} // ✅ pass it as prop
-                />
-            )}
         </div>
+            <div className="space-y-4">
+                {table.getRowModel().rows.map(row => (
+                    <div
+                        key={row.id}
+                        className="flex flex-col md:flex-row justify-between items-center bg-white rounded-lg shadow p-4"
+                    >
+                        {row.getVisibleCells().map(cell => (
+                            <div
+                                key={cell.id}
+                                className="flex-1 mb-2 md:mb-0 md:mr-4 text-left"
+                            >
+                                <div className="text-xs flex justify-center text-gray-400">
+                                    {cell.column.columnDef.header as string}
+                                </div>
+                                <div className="font-medium items-center flex justify-center mt-2">
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ))}
+
+                {isModalOpen && selectedLeadId && (
+                    <AssignModal
+                        onClose={() => setIsModalOpen(false)}
+                        leadId={selectedLeadId} // ✅ pass it as prop
+                    />
+                )}
+            </div>
+        </>
     );
     
 }

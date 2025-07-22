@@ -10,8 +10,8 @@ import {
 type Assign = {
     _id: string;
     lead_id: string;
-    telecaller_id: string;
-    telecaller_name: string;
+    assignee_id: string;
+    assignee_name: string;
     status: string;
     remarks: string;
     history: string[];
@@ -36,7 +36,6 @@ export default function AssignCardTable({ data }: Props) {
             accessorKey: 'lead_details.name',
             header: 'Customer Name',
         },
-        // 👇 You won’t use columns in the UI but still define them for table row model
     ];
 
     const table = useReactTable({
@@ -47,6 +46,15 @@ export default function AssignCardTable({ data }: Props) {
 
     return (
         <div className="space-y-4">
+            {/* Header moved outside the map */}
+            <div className='flex'>
+                <h1 className="text-2xl font-bold mb-4">Assigned Leads</h1>
+                <div className="bg-black rounded-full h-8 ml-2.5 w-8">
+                    <span className="text-white text-xs font-extrabold flex items-center justify-center h-full">
+                        {data.length}
+                    </span>
+                </div>
+            </div>
             {table.getRowModel().rows.map(row => {
                 const lead = row.original.lead_details;
                 const assign = row.original;
@@ -109,7 +117,7 @@ export default function AssignCardTable({ data }: Props) {
                             </div>
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-xs px-3 py-1 rounded-md text-blue-600 font-medium">
-                                    Assigned to {assign.telecaller_name}
+                                    Assigned to {assign.assignee_name}
                                 </span>
                             </div>
                             <button className="p-2 rounded-full border">
@@ -132,6 +140,5 @@ export default function AssignCardTable({ data }: Props) {
                 );
             })}
         </div>
-
     );
 }

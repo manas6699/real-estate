@@ -4,7 +4,7 @@
 import { usePathname } from 'next/navigation';
 
 import React from 'react';
-import { Home, Users, BarChart2,  HelpCircle } from 'lucide-react';
+import { Home, Users, BarChart2, HelpCircle, ArrowDownLeft, Merge } from 'lucide-react';
 
 export default function Sidebar() {
 
@@ -20,6 +20,13 @@ export default function Sidebar() {
                             }`}
                     >
                         <Home size={20} /> <span>Dashboard</span>
+                    </a>
+                    <a
+                        href="/admin/InsertLead"
+                        className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/InsertLead' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
+                            }`}
+                    >
+                        <ArrowDownLeft size={20} /> <span>Insert Lead</span>
                     </a>
                     <a
                         href="/admin/ManageUser"
@@ -40,7 +47,7 @@ export default function Sidebar() {
                         className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/assigned' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
                             }`}
                     >
-                        <Users size={20} /> <span>Assigned Leads</span>
+                        <Merge size={20} /> <span>Assigned Leads</span>
                     </a>
                     <a
                         href="#"

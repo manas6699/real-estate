@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'https://split-wise-clone-085p.onrender.com/api';
-// export const API_BASE_URL = 'http://localhost:8000/api';
+// export const API_BASE_URL = 'https://split-wise-clone-085p.onrender.com/api';
+export const API_BASE_URL = 'http://localhost:8000/api';
 
 
 export const LEADS_ENDPOINT = `${API_BASE_URL}/mmr/leads`;
@@ -23,3 +23,5 @@ export const ASSIGN_API = `${API_BASE_URL}/admin/assign`;
 export const WEB_SOCKET_URL = `${API_BASE_URL.replace('/api', '')}`;
 
 export const GET_ALL_TELECALLERS_API = `${API_BASE_URL}/users/telecallers`;
+
+export const GET_ALL_SALES_PERSONS_API = `${API_BASE_URL}/users/salespersons`;
