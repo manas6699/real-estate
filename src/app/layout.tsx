@@ -1,18 +1,15 @@
-
 import "./globals.css";
-
 import type { Metadata } from "next";
 import { Lora } from 'next/font/google';
-import { GoogleAnalytics } from '@next/third-parties/google'
+import Script from 'next/script'; // ✅ Import Script
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const lora = Lora({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'], // adjust based on your design needs
+  weight: ['400', '500', '600', '700'],
   variable: '--font-lora',
   display: 'swap',
 });
-
-
 
 export const metadata: Metadata = {
   title: "MMR Realty LLP: Top Real Estate Consultant in Kolkata",
@@ -55,7 +52,7 @@ export const metadata: Metadata = {
     "Bungalow-style homes in South Kolkata"
   ],
   verification: {
-    google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w', // Just the code, not full meta tag
+    google: 'Xy7W7IIbzhmM1foAbu7RHD7ZtvREjPomdnBe1dK467w',
   },
 };
 
@@ -65,9 +62,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html  className={`${lora.className}`}>
-      <body>{children}</body>
-      <GoogleAnalytics gaId="G-2XE1CXQ699" />
+    <html className={`${lora.className}`}>
+      <head>
+        {/* Google Ads script loader */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17339408048"
+          strategy="afterInteractive"
+        />
+        {/* Google Ads config */}
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17339408048');
+          `}
+        </Script>
+      </head>
+      <body>
+        {children}
+        <GoogleAnalytics gaId="G-2XE1CXQ699" />
+      </body>
     </html>
   );
 }
