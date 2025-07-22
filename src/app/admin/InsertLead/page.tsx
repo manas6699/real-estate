@@ -17,7 +17,6 @@ type BrochureFormData = {
     source: string;
 };
 
-
 const InsertLeadPage = () => {
 
     const [formData, setFormData] = useState<BrochureFormData>({
@@ -28,8 +27,6 @@ const InsertLeadPage = () => {
     });
 
     const [loading, setLoading] = useState(false);
-
-  
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -65,8 +62,6 @@ const InsertLeadPage = () => {
                         onSubmit={handleSubmit}
                         className=" p-4 sm:p-6 w-full max-w-sm flex flex-col gap-4"
                     >
-                        
-
                         <input
                             type="text"
                             name="name"

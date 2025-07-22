@@ -357,7 +357,7 @@ export default function ProjectForm() {
 
         <div>
           <label className="block font-semibold mb-1">Floors</label>
-          <input {...register('floors')} placeholder="Floors" type="number" className="input" />
+          <input {...register('floors')} placeholder="Floors"  className="input" />
         </div>
 
         <div>
