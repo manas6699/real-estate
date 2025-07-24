@@ -4,7 +4,7 @@
 import { usePathname } from 'next/navigation';
 
 import React from 'react';
-import { Home, Users, BarChart2, HelpCircle, ArrowDownLeft, Merge } from 'lucide-react';
+import { Home, Users, BarChart2, HelpCircle, ArrowDownLeft, BadgeAlert, MonitorCog, BadgeCheck } from 'lucide-react';
 
 export default function Sidebar() {
 
@@ -29,6 +29,13 @@ export default function Sidebar() {
                         <ArrowDownLeft size={20} /> <span>Insert Lead</span>
                     </a>
                     <a
+                        href="/admin/Campaign"
+                        className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Campaign' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
+                            }`}
+                    >
+                        <MonitorCog size={20} /> <span>Manage Campaign</span>
+                    </a>
+                    <a
                         href="/admin/ManageUser"
                         className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/ManageUser' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
                             }`}
@@ -40,14 +47,14 @@ export default function Sidebar() {
                         className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/ManageLeads' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
                             }`}
                     >
-                        <Users size={20} /> <span>Unassigned Leads</span>
+                        <BadgeAlert size={20} /> <span>Unassigned Leads</span>
                     </a>
                     <a
                         href="/admin/Dashboard/assigned"
                         className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/assigned' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
                             }`}
                     >
-                        <Merge size={20} /> <span>Assigned Leads</span>
+                        <BadgeCheck size={20} /> <span>Assigned Leads</span>
                     </a>
                     <a
                         href="#"
