@@ -23,7 +23,7 @@ const InsertLeadPage = () => {
         name: '',
         email: '',
         phone: '',
-        source: '', // Empty initially
+        source: 'admin-panel', 
     });
 
     const [loading, setLoading] = useState(false);
