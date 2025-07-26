@@ -38,7 +38,7 @@ const AssignPage = () => {
                 const res = await axios.get(SHOW_ALL_ASSIGNS_API);
                 console.log('Assigns API Response:', res.data);
                 if (res.data && res.data.success) {
-                    setAssigns(res.data.data);
+                    setAssigns([...res.data.data].reverse());
                 }
             } catch (err) {
                 console.error('Error fetching assigns:', err);
