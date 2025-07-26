@@ -4,7 +4,7 @@ import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/AdminComponents/Sidebar'
 
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 import Loader from '@/components/loader';
 import { LEADS_ENDPOINT } from '@/config/api';
@@ -23,7 +23,7 @@ const InsertLeadPage = () => {
         name: '',
         email: '',
         phone: '',
-        source: 'admin-panel', 
+        source: '', 
     });
 
     const [loading, setLoading] = useState(false);
@@ -37,8 +37,8 @@ const InsertLeadPage = () => {
         try {
             setLoading(true);
             await axios.post(LEADS_ENDPOINT, formData);
-            toast.success('Our Team will reach out to you very soon!');
-            setFormData({ name: '', email: '', phone: '', source: "admin-panel" });
+            toast.success('Lead posted successfully');
+            setFormData({ name: '', email: '', phone: '', source: "" });
             setLoading(false); // <--- Reset loading here on success
         } catch (error: unknown) {
             setLoading(false);
@@ -69,7 +69,7 @@ const InsertLeadPage = () => {
                             onChange={handleChange}
                             placeholder="Client's Name"
                             required
-                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 placeholder:text-sm"
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
                         />
                         <input
                             type="email"
@@ -78,7 +78,7 @@ const InsertLeadPage = () => {
                             onChange={handleChange}
                             placeholder="Email Address"
                             required
-                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 placeholder:text-sm"
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
                         />
                         <input
                             type="tel"
@@ -88,8 +88,18 @@ const InsertLeadPage = () => {
                             placeholder="Phone number (10 Digit)"
                             pattern="[0-9]{10}"
                             required
-                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 placeholder:text-sm"
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
                         />
+                        <input
+                            type="text"
+                            name="source"
+                            value={formData.source}
+                            onChange={handleChange}
+                            placeholder="Lead Source"
+                            required
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
+                        />
+                          
 
                         <button
                             type="submit"
@@ -104,6 +114,7 @@ const InsertLeadPage = () => {
                             )}
                         </button>
                     </form>
+                     <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
                 </div>
             </main>
         </div>
