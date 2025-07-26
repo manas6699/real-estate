@@ -21,3 +21,5 @@ export const WEB_SOCKET_URL = `${API_BASE_URL.replace('/api', '')}`;
 export const GET_ALL_TELECALLERS_API = `${API_BASE_URL}/users/telecallers`;
 
 export const GET_ALL_SALES_PERSONS_API = `${API_BASE_URL}/users/salespersons`;
+
+export const CREATE_CAMPAIGN = `${API_BASE_URL}/create/campaigns`;
