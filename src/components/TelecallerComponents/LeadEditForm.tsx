@@ -143,7 +143,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         onChange={(e) => setAlternatePhone(e.target.value)}
                         placeholder="Enter alternate phone number"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        required
+                        
                     />
                 </div>
 
@@ -156,7 +156,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         value={client_budget}
                         onChange={(e) => setClientBudget(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        required
+                        
                     >
                         <option value="" disabled>Select budget range</option>
                         {priceRanges.map((range) => (
@@ -176,7 +176,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         onChange={(e) => setInterestedProject(e.target.value)}
                         placeholder="Enter project name"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        required
+                        
                     />
                 </div>
 
@@ -192,7 +192,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         onChange={(e) => setLocation(e.target.value)}
                         placeholder="Enter location"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        required
+                        
                     />
                 </div>
 
@@ -219,7 +219,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         value={preferred_configuration}
                         onChange={(e) => setPreferredConfig(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        required
+                        
                     >
                         <option value="" disabled>Select preferred configuration</option>
                         {preferredConfigs.map((config) => (
@@ -271,7 +271,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         value={lead_status}
                         onChange={(e) => setLeadStatus(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded bg-orange-200 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring"
-                        required
+                        
                     >
                         <option value="" disabled>Select lead status</option>
                         {leadStatuses.map((status) => (
