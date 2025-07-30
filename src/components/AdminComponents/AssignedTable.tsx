@@ -21,6 +21,16 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        comments: string,
+        location: string,
+        alternate_phone: string,
+        client_budget: string,
+        furnished_status: string,
+        interested_project: string,
+        lead_status: string,
+        preferred_configuration: string,
+        preferred_floor: string,
+        property_status: string,
         createdAt: string;
         updatedAt: string;
     };
@@ -124,7 +134,14 @@ export default function AssignCardTable({ data }: Props) {
                                 <span className="font-medium text-black">Current Status</span>
                                 <span className="flex items-center space-x-1">
                                     <span className={`h-2 w-2 rounded-full ${assign.status === 'assigned' ? 'bg-yellow-500' : 'bg-purple-500'}`}></span>
-                                    <span>{assign.status}</span>
+                                    <span>{lead.lead_status ? lead.lead_status : assign.status}</span>
+                                </span>
+                            </div>
+                            <div className="flex flex-col text-xs text-gray-500">
+                                <span className="font-medium text-black">Remarks</span>
+                                <span className="flex items-center space-x-1">
+                                    
+                                    <span>{lead.comments}</span>
                                 </span>
                             </div>
                             <div className="flex items-center">
