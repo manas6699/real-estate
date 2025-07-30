@@ -24,6 +24,16 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        comments: string,
+        location: string,
+        alternate_phone: string,
+        client_budget: string,
+        furnished_status: string,
+        interested_project: string,
+        lead_status: string,
+        preferred_configuration: string,
+        preferred_floor: string,
+        property_status: string,
         createdAt: string;
         updatedAt: string;
     };
