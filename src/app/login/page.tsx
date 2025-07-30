@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import axios from 'axios';
 
+import { useState , useEffect } from 'react';
 
+import Loader from '@/components/loader';
 import { API_BASE_URL } from '@/config/api';
 import useRoleRedirect from '../hooks/useRoleRedirect';
-import Loader from '@/components/loader';
 
 interface User {
     _id: string;
@@ -22,15 +22,20 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    
 
-    // ✅ New: role state
-    const [role, setRole] = useState<User['role'] | null>(() => {
+    const [role, setRole] = useState<User['role'] | null>(null);
+
+    useEffect(() => {
         const user = localStorage.getItem('user');
-        return user ? JSON.parse(user).role : null;
-    });
+        if (user) {
+            const parsed = JSON.parse(user);
+            setRole(parsed.role);
+        }
+    }, []);
 
-    // ✅ Hook runs on mount & when role changes
     useRoleRedirect({ role });
+
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
