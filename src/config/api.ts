@@ -23,3 +23,9 @@ export const GET_ALL_TELECALLERS_API = `${API_BASE_URL}/users/telecallers`;
 export const GET_ALL_SALES_PERSONS_API = `${API_BASE_URL}/users/salespersons`;
 
 export const CREATE_CAMPAIGN = `${API_BASE_URL}/create/campaigns`;
+
+export const GET_LEAD_BY_ID = (id: string) => `${API_BASE_URL}/admin/assigns/${id}`;
+
+export const GET_LEAD_BY_TELECALLER_ID = (id: string) => `${API_BASE_URL}/mmr/getlead/${id}`;
+
+export const EDIT_LEAD_FORM = (id: string) => `${API_BASE_URL}/mmr/leads/${id}`;
