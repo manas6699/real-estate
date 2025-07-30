@@ -1,22 +1,36 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import axios from 'axios';
-import { io } from 'socket.io-client';
 
-import { API_BASE_URL, WEB_SOCKET_URL } from '@/config/api';
-import Logo from "../../../public/assets/logo-transparent.png";
+
+import { API_BASE_URL } from '@/config/api';
+import useRoleRedirect from '../hooks/useRoleRedirect';
 import Loader from '@/components/loader';
 
+interface User {
+    _id: string;
+    name: string;
+    phone: string;
+    role: 'admin' | 'telecaller' | 'salesperson';
+}
+
 export default function LoginPage() {
+    
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+
+    // ✅ New: role state
+    const [role, setRole] = useState<User['role'] | null>(() => {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user).role : null;
+    });
+
+    // ✅ Hook runs on mount & when role changes
+    useRoleRedirect({ role });
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,42 +55,11 @@ export default function LoginPage() {
             );
 
             if (res.status === 200) {
-                // ✅ Store token safely
                 localStorage.setItem('token', res.data.token);
+                localStorage.setItem('user', JSON.stringify(res.data.user));
 
-                // ✅ Log for debug
-                console.log('✅ Token stored:', localStorage.getItem('token'));
-
-                // ✅ Immediately redirect — do NOT wait for socket here
-                router.push('/admin/Dashboard');
-
-                // ✅ Optionally connect socket in Dashboard page instead!
-                // But if you want to do it here:
-                const socket = io(WEB_SOCKET_URL, {
-                    auth: {
-                        token: res.data.token,
-                    },
-                });
-
-                socket.on('connect', () => {
-                    console.log('✅ Socket connected:', socket.id);
-
-                    // ✅ You do NOT need this if handshake sets user:
-                    socket.emit('user-online', {
-                        userId: res.data.user._id,
-                        username: res.data.user.name,
-                        online: true,
-                    });
-                });
-
-                socket.on('disconnect', () => {
-                    console.log('❌ Socket disconnected');
-                });
-
-                socket.on('connect_error', (err) => {
-                    console.error('❌ Socket connection failed:', err);
-                });
-
+                // ✅ Update role to trigger redirect
+                setRole(res.data.user.role);
             } else {
                 setError('Login failed. Please check your credentials.');
             }
@@ -91,15 +74,12 @@ export default function LoginPage() {
         } finally {
             setLoading(false);
         }
-
     };
 
     return (
         <div className="flex min-h-screen justify-center items-center bg-gray-50">
             <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-                <div className="items-center justify-center w-full flex mb-6">
-                    <Image src={Logo} width={50} height={40} alt="logo" priority />
-                </div>
+
                 <h2 className="text-2xl font-semibold mb-4 text-center">Admin Panel Login</h2>
 
                 {error && (
@@ -136,7 +116,7 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-2 border rounded focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                             required
-                            
+
                         />
                         <button
                             type="button"
