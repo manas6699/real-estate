@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Navbar from '@/components/AdminComponents/Navbar';
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { SHOW_ALL_USERS_API } from '@/config/api';
+import Navbar from '@/components/AdminComponents/Navbar';
+
 import Sidebar from '@/components/AdminComponents/Sidebar';
-import Overview from '@/components/AdminComponents/Overview';
 import UserList from '@/components/AdminComponents/UserList';
 import Activity from '@/components/AdminComponents/Activity';
+
+import Overview from '@/components/AdminComponents/Overview';
 import UsersTable from '@/components/AdminComponents/UsersTable';
-import axios from 'axios';
-import { SHOW_ALL_USERS_API } from '@/config/api';
+import { usePushNotifications } from '@/app/hooks/usePushNotifications';
 
 type User = {
     _id: string;
@@ -30,6 +33,16 @@ type JWTPayload = {
 const Dashboard = () => {
     const router = useRouter();
     const [users, setUsers] = useState<User[]>([]);
+
+    const [userId, setUserId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUserId(parsedUser._id);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -92,6 +105,8 @@ const Dashboard = () => {
 
         fetchUsers();
     }, [router]);
+
+    usePushNotifications(userId);
 
     return (
         <div>
