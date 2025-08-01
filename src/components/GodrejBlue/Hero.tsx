@@ -25,7 +25,7 @@ export default function HeroSection() {
         setIsOpen(false); // Close modal after submission
     };
     return (
-        <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/town-square/g8.jpg")' }}>
+        <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url("/assets/gb/2.jpg")' }}>
             {/* Overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/25">
                 <h1 className="text-white text-4xl md:text-7xl text-center px-4">

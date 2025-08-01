@@ -23,7 +23,7 @@ export default function Info() {
                         </div>
                         <div>
                             <p className="text-gray-600 font-medium">Configuration</p>
-                            <p className="text-lg font-semibold">3, 3.5, 4 BHK & Penthouse</p>
+                            <p className="text-lg font-semibold">3, 4 BHK & Penthouse</p>
                         </div>
                     </div>
                     {/* Possession Date */}

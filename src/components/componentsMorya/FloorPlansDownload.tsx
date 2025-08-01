@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { FileDown, X } from 'lucide-react';
 import axios from "axios";
 import { toast } from "react-toastify";
+import { LEADS_ENDPOINT } from "@/config/api";
 
 
 
@@ -28,7 +29,7 @@ const Gallery = () => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const response = await axios.post<{ message: string; lead: unknown }>(
-                'https://split-wise-clone-085p.onrender.com/api/mmr/leads',
+                LEADS_ENDPOINT,
                 formData
             );
 
