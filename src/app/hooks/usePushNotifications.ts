@@ -14,7 +14,7 @@ export const usePushNotifications = (userId: unknown) => {
         const { messaging } = await import('../../config/firebase');
 
         const token = await getToken(messaging, {
-          vapidKey: 'BBujhl5rH8PvYZMAfId2eNATQpJaS5jL8JhSFfD2ex5_g6jqxySpX_jlxpy_YyFt7qSD5k0F1XYWDi8e3XCsbwk'
+          vapidKey: process.env.VAPID_KEY
         });
 
         console.log('FCM Token:', token);
