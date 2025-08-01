@@ -8,13 +8,13 @@ import { getMessaging } from "firebase/messaging";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyA2_WS4wTlXPYCxO7QX3XEb2zKY4KGxdyc",
-  authDomain: "test-node-with-firebase.firebaseapp.com",
-  projectId: "test-node-with-firebase",
-  storageBucket: "test-node-with-firebase.firebasestorage.app",
-  messagingSenderId: "303483129418",
-  appId: "1:303483129418:web:f10eef55a11aac4eaa20b3",
-  measurementId: "G-9D8JHW5Q0Q"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID
 };
 
 // Initialize Firebase
