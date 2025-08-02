@@ -85,7 +85,8 @@ export default function Navbar(source: sourceType) {
 
                 {/* Center: Navigation Links */}
                 <div className="hidden md:flex gap-6 text-gray-800 font-medium text-sm lg:text-base">
-                    {['About', 'Overview', 'Brochure', 'Gallery', 'FloorPlans'].map((item) => (
+                    {/* {['About', 'Overview', 'Brochure', 'Gallery', 'FloorPlans'].map((item) => ( */}
+                    {['Overview', 'Brochure', 'Gallery'].map((item) => (
                         <button key={item} onClick={() => scrollToSection(item.toLowerCase())} className="hover:text-pink-600 transition cursor-pointer">
                             {item.replace('FloorPlans', 'Floor Plans')}
                         </button>
