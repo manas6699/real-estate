@@ -52,9 +52,9 @@ const page = () => {
           <DownloadBrochure />
           <Amenities
             amenities={[
-              '/assets/amenities/20.png',
-              '/assets/amenities/21.png',
-              '/assets/amenities/22.png',
+              '/assets/amenities/1.png',
+              '/assets/amenities/2.png',
+              '/assets/amenities/32.png',
               '/assets/amenities/23.png',
               '/assets/amenities/24.png',
               '/assets/amenities/25.png',
