@@ -7,6 +7,7 @@ import Navbar from '@/components/AdminComponents/Navbar'
 
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
+import { usePushNotifications } from '@/app/hooks/usePushNotifications';
 
 type Assign = {
     _id: string;
@@ -28,6 +29,16 @@ type Assign = {
 };
 const TelecallerDashboardPage = () => {
     const [assigns, setAssigns] = useState<Assign[]>([]);
+
+    const [userId, setUserId] = useState<string | null>(null);
+
+     useEffect(() => {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                const parsedUser = JSON.parse(storedUser);
+                setUserId(parsedUser._id);
+            }
+        }, []);
 
     useEffect(() => {
         const fetchAssigns = async () => {
@@ -59,6 +70,8 @@ const TelecallerDashboardPage = () => {
 
         fetchAssigns();
     }, []);
+
+    usePushNotifications(userId);
     return (
         <>
             <TelecallerSidebar />
