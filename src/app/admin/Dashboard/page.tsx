@@ -49,7 +49,7 @@ const Dashboard = () => {
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.get<{ [key: string]: Omit<User, '_id'> }>(
-                   SHOW_ALL_USERS_API,
+                    SHOW_ALL_USERS_API,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -89,18 +89,23 @@ const Dashboard = () => {
                     if (decoded.exp < currentTime) {
                         isTokenExpired = true;
                     }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                     isTokenExpired = true; // If decoding fails, treat as expired
                 }
             }
 
             if (!token || isTokenExpired) {
+
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                console.error('Token is missing or expired');
+                alert('Session expired. Please log in again.');
                 router.push('/login');
                 return;
             }
 
-  
+
         };
 
         fetchUsers();
@@ -117,7 +122,7 @@ const Dashboard = () => {
                 <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
                     <div className="flex flex-col flex-1 gap-4">
                         <Overview />
-                        <UserList/>
+                        <UserList />
                         <UsersTable data={users} />
                     </div>
                     <Activity />
