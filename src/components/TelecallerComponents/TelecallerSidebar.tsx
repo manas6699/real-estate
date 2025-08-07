@@ -50,7 +50,7 @@ export default function TelecallerSidebar() {
                             <Calendar1Icon className="w-5 h-5" />
                             <span className="text-base font-medium">My Calendar</span>
                         </a>
-                        <a href="/telecaller/my-leads" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/my-leads' ? 'text-pink-600 font-extrabold' : ''
+                        <a href="/telecaller/processed" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/processed' ? 'text-pink-600 font-extrabold' : ''
                             }`} >
                             <ClipboardList className="w-5 h-5" />
                             <span className="text-base font-medium">Processed Leads</span>

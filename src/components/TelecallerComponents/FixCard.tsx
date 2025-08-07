@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { GET_LEAD_BY_TELECALLER_ID } from '@/config/api';
+import { GET_LEAD_DETAILS } from '@/config/api';
 
 type LeadInfoCardProps = {
     lead: {
@@ -25,7 +25,7 @@ export default function FixCard({ leadId }: leadIdtype) {
     useEffect(() => {
         const fetchLead = async () => {
             try {
-                const response = await axios.get(`${GET_LEAD_BY_TELECALLER_ID(leadId)}`);
+                const response = await axios.get(`${GET_LEAD_DETAILS(leadId)}`);
                 setLead(response.data.lead);
             } catch (error) {
                 console.error('Error fetching lead:', error);
