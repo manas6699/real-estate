@@ -2,6 +2,8 @@ import { onMessage } from 'firebase/messaging';
 import { useEffect } from 'react';
 import axios from 'axios';
 
+import { toast } from 'react-toastify';
+
 import { POST_FCM_TOKEN } from '@/config/api';
 
 export const usePushNotifications = (userId: unknown) => {
@@ -38,10 +40,10 @@ export const usePushNotifications = (userId: unknown) => {
 
             new Notification(payload.notification?.title ?? '', {
               body: payload.notification?.body ?? '',
-              icon: '/icon.png',
+              // icon: '/icon.png',
             });
+            toast.info(`${payload.notification?.title}: ${payload.notification?.body}`);
           });
-
         } catch (error) {
           console.error('Error getting or sending FCM token:', error);
         }
