@@ -57,8 +57,9 @@ export default function Sidebar() {
                         <BadgeCheck size={20} /> <span>Assigned Leads</span>
                     </a>
                     <a
-                        href="#"
-                        className="flex items-center space-x-2 text-lg font-medium"
+                        href="/admin/Dashboard/Report"
+                        className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/Report' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
+                            }`}
                     >
                         <BarChart2 size={20} /> <span>View Report</span>
                     </a>
