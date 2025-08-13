@@ -1,12 +1,12 @@
 'use client';
 
-import axios from 'axios';
+
 import React, { useEffect, useState } from 'react';
 
 import { LogOut } from 'lucide-react';
 
 import { useRouter } from 'next/navigation';
-import { API_BASE_URL } from '@/config/api';
+
 
 const Navbar = () => {
     const router = useRouter();
@@ -29,24 +29,21 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         try {
-            const token = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('token='))
-                ?.split('=')[1];
+           
 
             localStorage.removeItem('token');
             localStorage.removeItem('user');
 
-            await axios.post(
-                `${API_BASE_URL}/auth/logout`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    withCredentials: true,
-                }
-            );
+            // await axios.post(
+            //     `${API_BASE_URL}/auth/logout`,
+            //     {},
+            //     {
+            //         headers: {
+            //             Authorization: `Bearer ${token}`,
+            //         },
+            //         withCredentials: true,
+            //     }
+            // );
 
             // Redirect to login after successful logout
             router.push('/login');
