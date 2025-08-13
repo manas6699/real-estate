@@ -50,7 +50,7 @@ export default function AssignedLeads({ data }: Props) {
         <div className="space-y-4 relative">
             {/* Header */}
             <div className='flex'>
-                <h1 className="text-2xl font-bold mb-4">All Leads</h1>
+                <h1 className="text-2xl font-bold mb-4">Lead Count</h1>
                 <div className="bg-black rounded-full h-8 ml-2.5 w-8">
                     <span className="text-white text-xs font-extrabold flex items-center justify-center h-full">
                         {data.length}
