@@ -1,10 +1,7 @@
 'use client';
 
 import axios from 'axios';
-
-import { useState , useEffect } from 'react';
-
-
+import { useState, useEffect } from 'react';
 import Loader from '@/components/loader';
 import { API_BASE_URL } from '@/config/api';
 import useRoleRedirect from '../hooks/useRoleRedirect';
@@ -17,28 +14,31 @@ interface User {
 }
 
 export default function LoginPage() {
-    
     const [loading, setLoading] = useState(false);
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    
-
     const [role, setRole] = useState<User['role'] | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
+    // ✅ Safe localStorage access
     useEffect(() => {
-        const user = localStorage.getItem('user');
-        if (user) {
-            const parsed = JSON.parse(user);
-            setRole(parsed.role);
+        if (typeof window !== 'undefined') {
+            const user = localStorage.getItem('user');
+            const storedToken = localStorage.getItem('token');
+            if (user) {
+                const parsed = JSON.parse(user);
+                setRole(parsed.role);
+            }
+            if (storedToken) {
+                setToken(storedToken);
+            }
         }
     }, []);
 
- 
-    
-    useRoleRedirect({ role , token: localStorage.getItem('token') });
-
+    // ✅ Redirect only in browser and with token check
+    useRoleRedirect({ role, token });
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,19 +55,16 @@ export default function LoginPage() {
             const res = await axios.post(
                 `${API_BASE_URL}/auth/login`,
                 { phone, password },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
+                { headers: { 'Content-Type': 'application/json' } }
             );
 
             if (res.status === 200) {
-                localStorage.setItem('token', res.data.token);
-                localStorage.setItem('user', JSON.stringify(res.data.user));
-
-                // ✅ Update role to trigger redirect
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('token', res.data.token);
+                    localStorage.setItem('user', JSON.stringify(res.data.user));
+                }
                 setRole(res.data.user.role);
+                setToken(res.data.token);
             } else {
                 setError('Login failed. Please check your credentials.');
             }
@@ -87,12 +84,8 @@ export default function LoginPage() {
     return (
         <div className="flex min-h-screen justify-center items-center bg-gray-50">
             <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-
                 <h2 className="text-2xl font-semibold mb-4 text-center">Please Login 🤭</h2>
-
-                {error && (
-                    <p className="text-red-500 text-sm mb-2 text-center">{error}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mb-2 text-center">{error}</p>}
 
                 <div className="mb-3">
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
@@ -124,7 +117,6 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-2 border rounded focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                             required
-
                         />
                         <button
                             type="button"
