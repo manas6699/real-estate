@@ -3,14 +3,14 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 
-import 'react-toastify/dist/ReactToastify.css'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 import { EDIT_LEAD_FORM } from '@/config/api';
 
 import { ToastContainer, toast } from 'react-toastify';
 
 
-type leadIdType= {
+type leadIdType = {
     leadId: string;
 }
 
@@ -72,7 +72,7 @@ const preferredConfigs = [
 const furnishedOptions = ['Furnished', 'Semi-Furnished', 'Unfurnished'];
 const propertyStatusOptions = ['Under Construction', 'Ready to Move'];
 
-const LeadEditForm = ( {leadId} :leadIdType ) => {
+const LeadEditForm = ({ leadId }: leadIdType) => {
     const [alternate_phone, setAlternatePhone] = useState('');
     const [client_budget, setClientBudget] = useState('');
     const [interested_project, setInterestedProject] = useState('');
@@ -83,11 +83,28 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
     const [furnished_status, setFurnishedStatus] = useState('');
     const [property_status, setPropertyStatus] = useState('');
     const [comments, setComments] = useState('');
+    const [schedule_date, setScheduleDate] = useState("");
+    const [schedule_time, setScheduleTime] = useState("");
+
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // 1️⃣ Get user data from localStorage
+        const userDataString = localStorage.getItem("user");
+        let assignee_id = "";
+
+        if (userDataString) {
+            try {
+                const userData = JSON.parse(userDataString);
+                assignee_id = userData._id || ""; // extract _id
+            } catch (err) {
+                console.error("Error parsing token from localStorage", err);
+            }
+        }
+
+        // 2️⃣ Prepare form data
         const formData = {
             alternate_phone,
             client_budget,
@@ -99,34 +116,40 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
             furnished_status,
             property_status,
             comments,
+            schedule_date,
+            schedule_time,
+            assignee_id // added from localStorage
         };
 
-        console.log('Form Data:', formData);
+        console.log("Form Data:", formData);
 
         try {
             const response = await axios.put(EDIT_LEAD_FORM(leadId), formData);
 
-            console.log('Lead updated successfully:', response.data);
+            console.log("Lead updated successfully:", response.data);
 
-            toast.success('Lead updated successfully!');
+            toast.success("Lead updated successfully!");
 
             // ✅ Reset form fields
-            setAlternatePhone('');
-            setClientBudget('');
-            setInterestedProject('');
-            setLeadStatus('');
-            setLocation('');
-            setPreferredFloor('');
-            setPreferredConfig('');
-            setFurnishedStatus('');
-            setPropertyStatus('');
-            setComments('');
+            setAlternatePhone("");
+            setClientBudget("");
+            setInterestedProject("");
+            setLeadStatus("");
+            setLocation("");
+            setPreferredFloor("");
+            setPreferredConfig("");
+            setFurnishedStatus("");
+            setPropertyStatus("");
+            setComments("");
+            setScheduleDate("");
+            setScheduleTime("");
 
         } catch (error) {
-            console.error('Error updating lead:', error);
-            toast.error('Error updating lead!');
+            console.error("Error updating lead:", error);
+            toast.error("Error updating lead!");
         }
     };
+
 
 
     return (
@@ -143,7 +166,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         onChange={(e) => setAlternatePhone(e.target.value)}
                         placeholder="Enter alternate phone number"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        
+
                     />
                 </div>
 
@@ -156,7 +179,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         value={client_budget}
                         onChange={(e) => setClientBudget(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        
+
                     >
                         <option value="" disabled>Select budget range</option>
                         {priceRanges.map((range) => (
@@ -176,7 +199,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         onChange={(e) => setInterestedProject(e.target.value)}
                         placeholder="Enter project name"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        
+
                     />
                 </div>
 
@@ -192,7 +215,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         onChange={(e) => setLocation(e.target.value)}
                         placeholder="Enter location"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        
+
                     />
                 </div>
 
@@ -219,7 +242,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         value={preferred_configuration}
                         onChange={(e) => setPreferredConfig(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-                        
+
                     >
                         <option value="" disabled>Select preferred configuration</option>
                         {preferredConfigs.map((config) => (
@@ -271,7 +294,7 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         value={lead_status}
                         onChange={(e) => setLeadStatus(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded bg-orange-200 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring"
-                        
+
                     >
                         <option value="" disabled>Select lead status</option>
                         {leadStatuses.map((status) => (
@@ -279,7 +302,29 @@ const LeadEditForm = ( {leadId} :leadIdType ) => {
                         ))}
                     </select>
                 </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-700">
+                        Schedule Call Date
+                    </label>
+                    <input
+                        type="date"
+                        value={schedule_date}
+                        onChange={(e) => setScheduleDate(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
+                    />
+                </div>
 
+                <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-700">
+                        Schedule Call Time
+                    </label>
+                    <input
+                        type="time"
+                        value={schedule_time}
+                        onChange={(e) => setScheduleTime(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
+                    />
+                </div>
 
                 {/* Comments */}
                 <div className="md:col-span-2">
