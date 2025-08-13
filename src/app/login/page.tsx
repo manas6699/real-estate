@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { useState , useEffect } from 'react';
 
+
 import Loader from '@/components/loader';
 import { API_BASE_URL } from '@/config/api';
 import useRoleRedirect from '../hooks/useRoleRedirect';
@@ -34,7 +35,9 @@ export default function LoginPage() {
         }
     }, []);
 
-    useRoleRedirect({ role });
+ 
+    
+    useRoleRedirect({ role , token: localStorage.getItem('token') });
 
 
     const handleLogin = async (e: React.FormEvent) => {
