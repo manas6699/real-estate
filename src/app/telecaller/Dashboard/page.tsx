@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import axios from 'axios';
 import { GET_LEAD_BY_ID, WEB_SOCKET_URL } from '@/config/api';
 import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 
-
+import { jwtDecode } from 'jwt-decode';
 
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
@@ -38,31 +40,57 @@ type Assign = {
 
 const TelecallerDashboardPage = () => {
     const [assigns, setAssigns] = useState<Assign[]>([]);
-
     type Notification = { title: string; message: string };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const [notifications, setNotifications] = useState<Notification[]>([]);
-
+    const [socket, setSocket] = useState<any>(null);
+    const [autoassignedNotifications, setAutoAssignedNotifications] = useState<Notification[]>([]);
     const [userId, setUserId] = useState<string | null>(null);
-
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId'); // optional, example
-
+        if (!storedToken || !isTokenValid(storedToken)) {
+            window.location.href = "/login";
+            return;
+        }
         setToken(storedToken);
         setUserId(storedUserId);
 
+        // Create socket only here when token is ready
+        const newSocket = io(WEB_SOCKET_URL, {
+            transports: ["websocket"],
+            auth: { token: storedToken }
+        });
+
+        setSocket(newSocket);
+
+        return () => {
+            newSocket.disconnect();
+        };
     }, []);
 
 
-    const socket = io(WEB_SOCKET_URL, {
-        transports: ['websocket'],
-        auth: {
-            token: token
+    function isTokenValid(token: string) {
+        try {
+            const decoded: any = jwtDecode(token);
+            const currentTime = Math.floor(Date.now() / 1000);
+            return decoded.exp > currentTime;
+        } catch {
+            return false;
         }
-    });
+    }
+
+
+
+    // const socket = io(WEB_SOCKET_URL, {
+    //     transports: ['websocket'],
+    //     auth: {
+    //         token: token
+    //     },
+    //     autoConnect: isTokenValid(token) ? true : false
+    // });
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -106,6 +134,7 @@ const TelecallerDashboardPage = () => {
 
     // need to seperate out in a hook
     useEffect(() => {
+        if (!socket || !userId || !token) return;
         // ✅ Request browser notification permission if needed
         if (Notification.permission === 'default' || Notification.permission === 'denied') {
             Notification.requestPermission().then(permission => {
@@ -124,7 +153,7 @@ const TelecallerDashboardPage = () => {
         }
 
         // ✅ Handle incoming notification
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    
         socket.on('lead-assigned', (data: any) => {
             console.log('📥 Lead assigned:', data);
 
@@ -151,9 +180,40 @@ const TelecallerDashboardPage = () => {
             setNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
         });
 
+        socket.on('lead-auto-assigned', (data: any) => {
+            console.log('📥 Lead auto assigned:', data)
+
+            // 🔔 Native Browser Notification
+            if (Notification.permission === 'granted') {
+                new Notification(data.title, {
+                    body: data.message,
+                });
+            }
+
+            // 🔥 React Toastify Notification
+            toast.info(
+                <div>
+                    <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
+                        toast.dismiss()
+                        window.location.reload();
+                    }}>Reload</button>
+
+                </div>
+            );
+
+            // ✅ Update state (optional)
+            setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
+
+        }
+        );
+
+
+
         // ✅ Optional: Cleanup on unmount
         return () => {
             socket.off('lead-assigned');
+            socket.off('lead-auto-assigned');
         };
     }, [userId, token, socket]);
 
