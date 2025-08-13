@@ -1,18 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 'use client';
 
-import { Calendar, momentLocalizer, Event as CalendarEvent } from 'react-big-calendar';
+import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useState } from 'react';
-import { format, parseISO } from 'date-fns';
+import { useState, useEffect } from 'react';
+import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
-
-// 👇 You'll use moment or date-fns for localizer.
-// This uses date-fns:
 import { dateFnsLocalizer } from 'react-big-calendar';
-
-import { parse, startOfWeek, getDay } from 'date-fns';
-import {enUS} from 'date-fns/locale/en-US';
+import { startOfWeek, getDay } from 'date-fns';
+import { enUS } from 'date-fns/locale/en-US';
+import { GET_SCHEDULES_BY_ID } from '@/config/api';
 
 const locales = {
     'en-US': enUS,
@@ -35,31 +32,46 @@ interface Event {
 
 export default function TelecallerCalendar() {
     const router = useRouter();
+    const [events, setEvents] = useState<Event[]>([]);
 
-    // Example: fetched from DB
-    const [events, setEvents] = useState<Event[]>([
-        {
-            title: 'Call John Doe',
-            start: new Date(2025, 6, 29, 10, 0),
-            end: new Date(2025, 6, 29, 10, 30),
-            leadId: '123456',
-        },
-        {
-            title: 'Follow-up with Jane',
-            start: new Date(2025, 6, 30, 14, 0),
-            end: new Date(2025, 6, 30, 14, 30),
-            leadId: '654321',
-        },
-    ]);
+    useEffect(() => {
+        const fetchSchedules = async () => {
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user._id) {
+                    console.error('User ID not found in localStorage');
+                    return;
+                }
+
+                const res = await fetch(GET_SCHEDULES_BY_ID(user._id));
+                if (!res.ok) throw new Error('Failed to fetch schedules');
+
+                const data = await res.json();
+
+                // Map API data to Calendar event format
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const mappedEvents: Event[] = data.map((item: any) => ({
+                    title: item.title || 'No Title',
+                    start: new Date(item.start),
+                    end: new Date(item.end),
+                    leadId: item.lead_id
+                }));
+
+                setEvents(mappedEvents);
+            } catch (error) {
+                console.error('Error fetching schedules:', error);
+            }
+        };
+
+        fetchSchedules();
+    }, []);
 
     const handleSelectEvent = (event: Event) => {
-        // Example: Go to lead details page
         router.push(`/telecaller/lead/${event.leadId}`);
     };
 
     return (
         <div className="p-4">
-          
             <Calendar
                 localizer={localizer}
                 events={events}
