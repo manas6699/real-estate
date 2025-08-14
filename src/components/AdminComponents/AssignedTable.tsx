@@ -7,6 +7,13 @@ import {
     ColumnDef,
 } from '@tanstack/react-table';
 
+type HistoryEntry = {
+    lead_id: string;
+    assignee_name: string;
+    updatedAt: string; // or Date
+    status: string;
+};
+
 type Assign = {
     _id: string;
     lead_id: string;
@@ -14,7 +21,7 @@ type Assign = {
     assignee_name: string;
     status: string;
     remarks: string;
-    history: string[];
+    history: HistoryEntry[];
     lead_details: {
         name: string;
         email: string;
@@ -186,11 +193,21 @@ export default function AssignCardTable({ data }: Props) {
                 <div className="p-4 flex-1 overflow-y-auto">
                     {selectedAssign?.history && selectedAssign.history.length > 0 ? (
                         <ul className="space-y-2">
-                            {selectedAssign.history.map((item, idx) => (
-                                <li key={idx} className="text-sm text-gray-700 border-b pb-2">
-                                   lead id of  {item}
-                                </li>
-                            ))}
+                            {selectedAssign?.history && selectedAssign.history.length > 0 ? (
+                                <ul className="space-y-2">
+                                    {selectedAssign.history.map((item, idx) => (
+                                        <li key={idx} className="text-sm text-gray-700 border-b pb-2">
+                                            <div>
+                                                <strong>{item.assignee_name}</strong> updated this lead on{" "}
+                                                {new Date(item.updatedAt).toLocaleString()} with status: {item.status}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-gray-500 text-sm">No history available.</p>
+                            )}
+
                         </ul>
                     ) : (
                         <p className="text-gray-500 text-sm">No history available.</p>

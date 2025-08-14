@@ -10,6 +10,13 @@ import axios from 'axios'
 import { SHOW_ALL_ASSIGNS_API } from '@/config/api';
 
 
+type HistoryEntry = {
+    lead_id: string;
+    assignee_name: string;
+    updatedAt: string; // or Date
+    status: string;
+};
+
 type Assign = {
     _id: string;
     lead_id: string;
@@ -17,7 +24,7 @@ type Assign = {
     assignee_name: string;
     status: string;
     remarks: string;
-    history: string[];
+    history: HistoryEntry[];
     lead_details: {
         name: string;
         email: string;
