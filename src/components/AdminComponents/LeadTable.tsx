@@ -81,11 +81,6 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             header: 'Phone',
         },
         {
-            accessorKey: 'budget',
-            header: 'Client budget',
-            cell: () => '60 Lacks',
-        },
-        {
             id: 'assign',
             header: '',
             cell: ({ row }) => (
@@ -102,11 +97,6 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
                     {assignbtn === 'assigned' ? 'Reassign' : 'Assign'}
                 </button>
             ),
-        },
-        {
-            id: 'select',
-            header: 'Select',
-            cell: () => <input type="checkbox" />,
         },
     ];
 
