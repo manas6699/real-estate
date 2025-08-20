@@ -5,8 +5,8 @@ import React, { useState } from 'react'
 
 import 'react-toastify/dist/ReactToastify.css';
 
+import Loader from '@/components/loader';
 import { EDIT_LEAD_FORM } from '@/config/api';
-
 import { ToastContainer, toast } from 'react-toastify';
 
 
@@ -84,12 +84,14 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [property_status, setPropertyStatus] = useState('');
     const [comments, setComments] = useState('');
     const [schedule_date, setScheduleDate] = useState("");
+    const [loading, setLoading] = useState(false);
     const [schedule_time, setScheduleTime] = useState("");
 
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
 
         // 1️⃣ Get user data from localStorage
         const userDataString = localStorage.getItem("user");
@@ -99,6 +101,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             try {
                 const userData = JSON.parse(userDataString);
                 assignee_id = userData._id || ""; // extract _id
+               
             } catch (err) {
                 console.error("Error parsing token from localStorage", err);
             }
@@ -129,7 +132,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             console.log("Lead updated successfully:", response.data);
 
             toast.success("Lead updated successfully!");
-
+           
             // ✅ Reset form fields
             setAlternatePhone("");
             setClientBudget("");
@@ -143,10 +146,12 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             setComments("");
             setScheduleDate("");
             setScheduleTime("");
+            setLoading(false);
 
         } catch (error) {
             console.error("Error updating lead:", error);
             toast.error("Error updating lead!");
+            setLoading(false);
         }
     };
 
@@ -343,9 +348,17 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 <div className="md:col-span-2">
                     <button
                         type="submit"
+                        disabled={loading}
                         className="w-full py-2 px-4 bg-black text-white rounded hover:bg-gray-900 transition"
                     >
-                        Submit
+                        {loading ? (
+                            <div className="flex justify-center items-center">
+                                <Loader color="white" />
+                                <span className="ml-2">Submitting...</span>
+                            </div>
+                        ) : (
+                            'Submit'
+                        )}
                     </button>
                 </div>
             </form>
