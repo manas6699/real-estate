@@ -5,9 +5,9 @@ import { useState } from 'react';
 import {
     LayoutDashboard,
     ClipboardList,
-    CalendarClock,
+    // CalendarClock,
     Calendar1Icon,
-    BarChart3,
+    // BarChart3,
     Menu,
     X
 } from 'lucide-react';
@@ -56,7 +56,7 @@ export default function TelecallerSidebar() {
                             <span className="text-base font-medium">Processed Leads</span>
                         </a>
                       
-                        <a href="/telecaller/follow-ups" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/follow-ups' ? 'text-pink-600 font-extrabold' : ''
+                        {/* <a href="/telecaller/follow-ups" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/follow-ups' ? 'text-pink-600 font-extrabold' : ''
                             }`} >
                             <CalendarClock className="w-5 h-5" />
                             <span className="text-base font-medium">Follow-ups Due</span>
@@ -65,7 +65,7 @@ export default function TelecallerSidebar() {
                             }`} >
                             <BarChart3 className="w-5 h-5" />
                             <span className="text-base font-medium">Performance</span>
-                        </a>
+                        </a> */}
                     </nav>
                 </div>
             </aside>
