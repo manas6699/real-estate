@@ -8,8 +8,8 @@ import { SHOW_ALL_USERS_API } from '@/config/api';
 import Navbar from '@/components/AdminComponents/Navbar';
 
 import Sidebar from '@/components/AdminComponents/Sidebar';
-import UserList from '@/components/AdminComponents/UserList';
-import Activity from '@/components/AdminComponents/Activity';
+// import UserList from '@/components/AdminComponents/UserList';
+// import Activity from '@/components/AdminComponents/Activity';
 
 import Overview from '@/components/AdminComponents/Overview';
 import UsersTable from '@/components/AdminComponents/UsersTable';
@@ -122,10 +122,10 @@ const Dashboard = () => {
                 <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
                     <div className="flex flex-col flex-1 gap-4">
                         <Overview />
-                        <UserList />
+                        {/* <UserList /> */}
                         <UsersTable data={users} />
                     </div>
-                    <Activity />
+                    {/* <Activity /> */}
                 </div>
             </main>
         </div>
