@@ -39,6 +39,7 @@ type Assign = {
         createdAt: string;
         updatedAt: string;
     };
+    createdAt: string;
 };
 
 interface Props {
@@ -128,7 +129,7 @@ export default function AssignedLeads({ data }: Props) {
                             <div className="flex flex-col text-sm text-gray-500">
                                 <span className="font-medium text-black">Assigned Date</span>
                                 <span>
-                                    {new Date(lead.createdAt).toLocaleDateString('en-GB', {
+                                    {new Date(assign.createdAt).toLocaleDateString('en-GB', {
                                         day: 'numeric',
                                         month: 'long',
                                         year: 'numeric',
