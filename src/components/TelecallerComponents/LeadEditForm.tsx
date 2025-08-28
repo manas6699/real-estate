@@ -290,10 +290,10 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                     </select>
                 </div>
 
-                {/* Lead Status */}
+                {/* Disposition Status */}
                 <div>
                     <label className="block mb-1 text-sm font-medium text-gray-700">
-                        Lead Status
+                        Disposition Status
                     </label>
                     <select
                         value={lead_status}
@@ -301,7 +301,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         className="w-full px-3 py-2 border border-gray-300 rounded bg-orange-200 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring"
 
                     >
-                        <option value="" disabled>Select lead status</option>
+                        <option value="" disabled>Select Disposition status</option>
                         {leadStatuses.map((status) => (
                             <option key={status} value={status}>{status}</option>
                         ))}
