@@ -145,7 +145,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
                 {isModalOpen && selectedLeadId && (
                     <AssignModal
                         onClose={() => setIsModalOpen(false)}
-                        leadId={selectedLeadId} // ✅ pass it as prop
+                        leadId={selectedLeadId} 
                     />
                 )}
             </div>
