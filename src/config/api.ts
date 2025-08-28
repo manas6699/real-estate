@@ -36,3 +36,16 @@ export const EDIT_LEAD_FORM = (id: string) => `${API_BASE_URL}/mmr/leads/${id}`;
 export const POST_FCM_TOKEN = `${API_BASE_URL}/push-notifications/save-token`;
 
 export const GET_SCHEDULES_BY_ID = (id: string) => `${API_BASE_URL}/calender/schedules/${id}`;
+
+// get lead history
+export const GET_LEAD_HISTORY = (id: string) => `${API_BASE_URL}/admin/assigns/history/${id}`;
+
+// fetch filtered data
+export const GET_FILTERED_DATA = `${API_BASE_URL}/admin/all/assigns`
+
+export const GET_OLD_LEADS_FOR_ADMIN = `${API_BASE_URL}/admin/oL`
+
+export const GET_OLD_LEADS_FOR_TELECALLER = `${API_BASE_URL}/admin/telecaller`
+
+// assign old leads
+export const ASSIGN_OLD_LEADS_TO_TELECALLER = `${API_BASE_URL}/admin/assign/old/to/telecaller`
