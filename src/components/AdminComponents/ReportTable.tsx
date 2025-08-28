@@ -7,42 +7,15 @@ import {
     ColumnDef,
 } from '@tanstack/react-table';
 
-type Assign = {
-    _id: string;
-    lead_id: string;
-    assignee_id: string;
-    assignee_name: string;
-    status: string;
-    remarks: string;
-    history: string[];
-    lead_details: {
-        name: string;
-        email: string;
-        phone: string;
-        source: string;
-        status: string;
-        comments: string,
-        location: string,
-        alternate_phone: string,
-        client_budget: string,
-        furnished_status: string,
-        interested_project: string,
-        lead_status: string,
-        preferred_configuration: string,
-        preferred_floor: string,
-        property_status: string,
-        createdAt: string;
-        updatedAt: string;
-    };
-};
+import AssignType from '@/types/AssignType'
 
 interface Props {
-    data: Assign[];
+    data: AssignType[];
 }
 
 export default function ReportTable({ data }: Props) {
 
-    const columns: ColumnDef<Assign>[] = [
+    const columns: ColumnDef<AssignType>[] = [
         {
             accessorKey: 'lead_details.name',
             header: 'Customer Name',
@@ -55,22 +28,8 @@ export default function ReportTable({ data }: Props) {
         getCoreRowModel: getCoreRowModel(),
     });
 
-    
-
-   
-
     return (
         <div className="space-y-4 relative">
-            {/* Header */}
-            <div className='flex'>
-                <h1 className="text-2xl font-bold mb-4">View Report</h1>
-                <div className="bg-black rounded-full h-8 ml-2.5 w-8">
-                    <span className="text-white text-xs font-extrabold flex items-center justify-center h-full">
-                        {data.length}
-                    </span>
-                </div>
-            </div>
-
             {/* Cards */}
             {table.getRowModel().rows.map(row => {
                 const lead = row.original.lead_details;
@@ -92,7 +51,7 @@ export default function ReportTable({ data }: Props) {
                                 <span>{lead.name}</span>
                             </div>
                             <div className="flex flex-col text-xs text-gray-500">
-                                <span className="font-medium text-black">Remarks</span>
+                                <span className="font-medium text-black">Admin Remark</span>
                                 <span>{assign.remarks}</span>
                             </div>
                             <div className="flex flex-col text-xs text-gray-500">
@@ -122,26 +81,25 @@ export default function ReportTable({ data }: Props) {
                                 <span className="font-medium text-black">Lead Source</span>
                                 <span>{lead.source}</span>
                             </div>
+
+                            <div className="flex flex-col text-xs text-gray-500">
+                                <span className="font-medium text-black">Disposition Statement</span>
+                                <span>{lead.comments || '------'}</span>
+                            </div>
                             <div className="flex flex-col text-xs text-gray-500">
                                 <span className="font-medium text-black">Current Status</span>
                                 <span className="flex items-center space-x-1">
-                                    <span className={`h-2 w-2 rounded-full ${assign.status === 'assigned' ? 'bg-yellow-500' : 'bg-purple-500'}`}></span>
+                                    <span className={`h-2 w-2 rounded-full ${assign.status === 'assigned' ? 'bg-red-500' : 'bg-purple-500'}`}></span>
                                     <span>{lead.lead_status ? lead.lead_status : assign.status}</span>
                                 </span>
                             </div>
-                            <div className="flex flex-col text-xs text-gray-500">
-                                <span className="font-medium text-black">Remarks</span>
-                                <span className="flex items-center space-x-1">
-                                    
-                                    <span>{lead.comments}</span>
-                                </span>
-                            </div>
+                            
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-xs px-3 py-1 rounded-md text-blue-600 font-medium">
-                                    {assign.status} by {assign.assignee_name}
+                                    {assign.status} to {assign.assignee_name}
                                 </span>
                             </div>
-                            
+
                         </div>
 
                         {/* ✅ Third row */}
@@ -167,12 +125,9 @@ export default function ReportTable({ data }: Props) {
                                 <span>{lead.interested_project || "-----"}</span>
                             </div>
                         </div>
-
                     </div>
                 );
             })}
-
-           
         </div>
     );
 }
