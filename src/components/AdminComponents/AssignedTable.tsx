@@ -12,6 +12,7 @@ type HistoryEntry = {
     assignee_name: string;
     updatedAt: string; // or Date
     status: string;
+    remarks: string;
 };
 
 type Assign = {
@@ -181,7 +182,7 @@ export default function AssignCardTable({ data }: Props) {
 
             {/* ✅ Sidebar */}
             <div
-                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
                     } flex flex-col`}
             >
                 <div className="flex justify-between items-center p-4 border-b">
@@ -193,21 +194,21 @@ export default function AssignCardTable({ data }: Props) {
                 <div className="p-4 flex-1 overflow-y-auto">
                     {selectedAssign?.history && selectedAssign.history.length > 0 ? (
                         <ul className="space-y-2">
-                            {selectedAssign?.history && selectedAssign.history.length > 0 ? (
-                                <ul className="space-y-2">
-                                    {selectedAssign.history.map((item, idx) => (
-                                        <li key={idx} className="text-sm text-gray-700 border-b pb-2">
-                                            <div>
-                                                <strong>{item.assignee_name}</strong> updated this lead on{" "}
-                                                {new Date(item.updatedAt).toLocaleString()} with status: {item.status}
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-gray-500 text-sm">No history available.</p>
-                            )}
-
+                            {selectedAssign.history.map((item, idx) => (
+                                <li key={idx} className="text-sm text-gray-700 border-b pb-2">
+                                    {typeof item === "string" ? (
+                                        // ✅ Case 1: History is a simple string
+                                        <div>{item}</div>
+                                    ) : (
+                                        // ✅ Case 2: History is an object
+                                        <div>
+                                            <strong>{item.assignee_name || "Unknown"}</strong> updated this lead on{" "}
+                                            {item.updatedAt ? new Date(item.updatedAt).toLocaleString() : "Unknown date"}{" "}
+                                            with status: {item.status || "N/A"} {item.remarks && `Remarks: ${item.remarks}`}
+                                        </div>
+                                    )}
+                                </li>
+                            ))}
                         </ul>
                     ) : (
                         <p className="text-gray-500 text-sm">No history available.</p>
@@ -222,6 +223,7 @@ export default function AssignCardTable({ data }: Props) {
                     </button>
                 </div>
             </div>
+
         </div>
     );
 }
