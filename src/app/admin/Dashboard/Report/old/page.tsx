@@ -96,7 +96,7 @@ const defaultFilters: Filters = {
     username: "",
     location: "",
     name: "",
-    phone: "",   
+    phone: "",
     disposition: "",
     pname: "",
     source: "",
@@ -147,36 +147,36 @@ export default function OldLeadsTablePage() {
         }
     };
 
-  const handleAssign = async (assignee_id: string, assignee_name: string) => {
-  if (!selectedLead?._id) return;
+    const handleAssign = async (assignee_id: string, assignee_name: string) => {
+        if (!selectedLead?._id) return;
 
-  try {
-      const response = await fetch(ASSIGN_OLD_LEADS_TO_TELECALLER, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        lead_id: selectedLead._id,
-        assignee_id,
-        assignee_name,
-        remarks,
-      }),
-    });
+        try {
+            const response = await fetch(ASSIGN_OLD_LEADS_TO_TELECALLER, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    lead_id: selectedLead._id,
+                    assignee_id,
+                    assignee_name,
+                    remarks,
+                }),
+            });
 
-    const data = await response.json();
-    if (data.success) {
-      alert("Lead assigned successfully!");
-      setIsModalOpen(false);
-      setRemarks(""); // reset remarks
-    } else {
-      alert(`Failed: ${data.message}`);
-    }
-  } catch (error) {
-    console.error("Error assigning lead:", error);
-    alert("Something went wrong while assigning lead.");
-  }
-};
+            const data = await response.json();
+            if (data.success) {
+                alert("Lead assigned successfully!");
+                setIsModalOpen(false);
+                setRemarks(""); // reset remarks
+            } else {
+                alert(`Failed: ${data.message}`);
+            }
+        } catch (error) {
+            console.error("Error assigning lead:", error);
+            alert("Something went wrong while assigning lead.");
+        }
+    };
 
     const buildQuery = useCallback(() => {
         const params = new URLSearchParams();
@@ -187,9 +187,9 @@ export default function OldLeadsTablePage() {
         if (filters.location.trim()) params.set("location", filters.location.trim());
         if (filters.name.trim()) params.set("name", filters.name.trim());
         if (filters.source.trim()) params.set("source", filters.source.trim());
-        if (filters.phone.trim()) params.set("phone", filters.phone.trim()); 
-        if(filters.disposition.trim()) params.set("disposition", filters.disposition.trim());
-        if(filters.pname.trim()) params.set("pname", filters.pname.trim());
+        if (filters.phone.trim()) params.set("phone", filters.phone.trim());
+        if (filters.disposition.trim()) params.set("disposition", filters.disposition.trim());
+        if (filters.pname.trim()) params.set("pname", filters.pname.trim());
 
         // Dates: backend expects DD-MM-YYYY
         const startDDMM = toDDMMYYYY(filters.start);
@@ -289,7 +289,7 @@ export default function OldLeadsTablePage() {
         <div>
             <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
-                <Sidebar/>   
+                <Sidebar />
                 <div className="flex-1 min-h-screen w-full bg-gradient-to-b from-slate-50 to-white overflow-x-hidden">
                     <div className="min-h-screen w-full bg-gradient-to-b from-slate-50 to-white p-4 sm:p-6">
                         {/* Header */}
@@ -307,13 +307,71 @@ export default function OldLeadsTablePage() {
                                         <label className="text-sm font-medium text-slate-700">
                                             Username
                                         </label>
-                                        <input
+                                        <select
                                             className="mt-1 rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-slate-300"
-                                            placeholder="e.g. admin or tlabhisek das"
                                             value={filters.username}
-                                            onChange={(e) => setFilters((f) => ({ ...f, username: e.target.value }))}
-                                        />
+                                            onChange={(e) =>
+                                                setFilters((f) => ({ ...f, username: e.target.value }))
+                                            }
+                                        >
+                                            <option value="">Select Username</option>
+                                            <option value="tele1">tele1</option>
+                                            <option value="tele2">tele2</option>
+                                            <option value="tlfarhat parveen">tlfarhat parveen</option>
+                                            <option value="tlgargi ray">tlgargi ray</option>
+                                            <option value="tlabhisek das">tlabhisek das</option>
+                                            <option value="tlhiranmoy halder">tlhiranmoy halder</option>
+                                            <option value="tldebosmita chatterjee">tldebosmita chatterjee</option>
+                                            <option value="tlbiswarup">tlbiswarup</option>
+                                            <option value="tlanish majumder">tlanish majumder</option>
+                                            <option value="tlsudeshna dey">tlsudeshna dey</option>
+                                            <option value="tlshital shah">tlshital shah</option>
+                                            <option value="tlamrita">tlamrita</option>
+                                            <option value="tlgourab banerjee">tlgourab banerjee</option>
+                                            <option value="tlavishek saha">tlavishek saha</option>
+                                            <option value="tlayan sarkar">tlayan sarkar</option>
+                                            <option value="deojyoti singh">deojyoti singh</option>
+                                            <option value="SHUVAM BHATTACHARYA">SHUVAM BHATTACHARYA</option>
+                                            <option value="tlpriyanka pradhan">tlpriyanka pradhan</option>
+                                            <option value="Jamaluddin Mondal">Jamaluddin Mondal</option>
+                                            <option value="SAGAR HALDER">SAGAR HALDER</option>
+                                            <option value="tlsantu naskar">tlsantu naskar</option>
+                                            <option value="tlabhisek kumar">Abhisek kumar</option>
+                                            <option value="tlrahul jha">tlrahul jha</option>
+                                            <option value="Rupa Mondal">Rupa Mondal</option>
+                                            <option value="Chiranjit Nandy">Chiranjit Nandy</option>
+                                            <option value="Sayan Biswas">Sayan Biswas</option>
+                                            <option value="Sujay Paul">Sujay Paul</option>
+                                            <option value="Chris Das">Chris Das</option>
+                                            <option value="mr_ankit doshi">Ankit doshi</option>
+                                            <option value="Arpita Banerjee">Arpita Banerjee</option>
+                                            <option value="tlsanjeev chowdhury">anjeev chowdhury</option>
+                                            <option value="Salvina Talapatra">Salvina Talapatra</option>
+                                            <option value="admin">admin</option>
+                                            <option value="Aman_Gupta">Aman gupta</option>
+                                            <option value="RohanSingh">Rohan singh</option>
+                                            <option value="agent1">agent1</option>
+                                            <option value="mr_debosmita chatterjee">Debosmita chatterjee</option>
+                                            <option value="mr_abhishek das">Abhishek das</option>
+                                            <option value="mr_hiranmoy halder">Hiranmoy halder</option>
+                                            <option value="mr_arita mondal">Arita mondal</option>
+                                            <option value="mr_abhisek kumar">Abhisek kumar</option>
+                                            <option value="mr_rahul jha">Rahul jha</option>
+                                            <option value="Bibekananda Chatterjee">Bibekananda Chatterjee</option>
+                                            <option value="mr_sanjay mondal">Sanjay mondal</option>
+                                            <option value="mr_himanshu kumar choudhary">Himanshu kumar choudhary</option>
+                                            <option value="mr_kaustav roy chowdhury">Kaustav roy chowdhury</option>
+                                            <option value="mr_suryakant sahoo">Suryakant sahoo</option>
+                                            <option value="mr_kaushik sengupta">Kaushik sengupta</option>
+                                            <option value="mr_swastik singh">Swastik singh</option>
+                                            <option value="mr_dhiraj jha">Dhiraj jha</option>
+                                            <option value="mr_santu naskar">Santu naskar</option>
+                                            <option value="mr_sudehna dey">Sudehna dey</option>
+                                            <option value="SATYABRATA BARIK">SATYABRATA BARIK</option>
+                                            <option value="krishna">krishna</option>
+                                        </select>
                                     </div>
+
                                     <div className="flex flex-col">
                                         <label className="text-sm font-medium text-slate-700">
                                             Disposition
@@ -395,7 +453,7 @@ export default function OldLeadsTablePage() {
                                     </div>
                                 </div>
 
-                                
+
                                 {/* Second row: Location + Client Name */}
                                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                                     <div className="flex flex-col">
@@ -417,7 +475,7 @@ export default function OldLeadsTablePage() {
                                         />
                                     </div>
 
-                                
+
                                     <div className="flex flex-col order-1">
                                         <label className="text-sm font-medium text-slate-700">Start Date (enq_date)</label>
                                         <input
@@ -579,7 +637,7 @@ export default function OldLeadsTablePage() {
                             Tip: The username filter matches <span className="font-semibold">Username1</span> or <span className="font-semibold">Username2</span> on the server. Location & Client Name use partial, case-insensitive match.
                         </p>
                     </div>
-                    </div>
+                </div>
 
                 {isModalOpen && (
                     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -616,7 +674,7 @@ export default function OldLeadsTablePage() {
                                     </ul>
                                 )}
 
-                              
+
                             </div>
 
                             {/* Remarks Input now below telecallers */}
