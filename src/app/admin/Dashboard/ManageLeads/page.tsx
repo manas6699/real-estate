@@ -10,10 +10,6 @@ const page = () => {
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
                 <div className="flex-1 p-4">
-                    <div className="flex">
-
-                       
-                    </div>
                     <LeadTable assignbtn='not-assigned' />
                 </div>
             </main>
