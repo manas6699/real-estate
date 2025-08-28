@@ -15,6 +15,7 @@ type HistoryEntry = {
     assignee_name: string;
     updatedAt: string; // or Date
     status: string;
+    remarks: string;
 };
 
 type Assign = {
