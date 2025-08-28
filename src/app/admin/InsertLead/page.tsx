@@ -15,6 +15,7 @@ type BrochureFormData = {
     email: string;
     phone: string;
     source: string;
+    projectSource: string;
 };
 
 const InsertLeadPage = () => {
@@ -24,6 +25,7 @@ const InsertLeadPage = () => {
         email: '',
         phone: '',
         source: '', 
+        projectSource: ""
     });
 
     const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ const InsertLeadPage = () => {
             setLoading(true);
             await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Lead posted successfully');
-            setFormData({ name: '', email: '', phone: '', source: "" });
+            setFormData({ name: '', email: '', phone: '', source: "", projectSource: "" });
             setLoading(false); // <--- Reset loading here on success
         } catch (error: unknown) {
             setLoading(false);
@@ -95,8 +97,17 @@ const InsertLeadPage = () => {
                             name="source"
                             value={formData.source}
                             onChange={handleChange}
-                            placeholder="Lead Source"
+                            placeholder="Project Name"
                             required
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
+                        />
+                        <input
+                            type="text"
+                            name="projectSource"
+                            value={formData.projectSource}
+                            onChange={handleChange}
+                            placeholder="Project Source"
+                            
                             className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
                         />
                           
