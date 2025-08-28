@@ -63,6 +63,13 @@ export default function Sidebar() {
                     >
                         <BarChart2 size={20} /> <span>View Report</span>
                     </a>
+                    <a
+                        href="/admin/Dashboard/Report/old"
+                        className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/Report/old' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
+                            }`}
+                    >
+                        <BarChart2 size={20} /> <span>View Old Leads</span>
+                    </a>
                 </nav>
             </div>
 

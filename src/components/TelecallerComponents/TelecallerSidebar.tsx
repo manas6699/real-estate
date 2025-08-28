@@ -55,6 +55,11 @@ export default function TelecallerSidebar() {
                             <ClipboardList className="w-5 h-5" />
                             <span className="text-base font-medium">Processed Leads</span>
                         </a>
+                        <a href="/telecaller/OldReport" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/OldReport' ? 'text-pink-600 font-extrabold' : ''
+                            }`} >
+                            <ClipboardList className="w-5 h-5" />
+                            <span className="text-base font-medium">Old Leads</span>
+                        </a>
                       
                         {/* <a href="/telecaller/follow-ups" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/follow-ups' ? 'text-pink-600 font-extrabold' : ''
                             }`} >
