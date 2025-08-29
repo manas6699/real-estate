@@ -34,6 +34,7 @@ type Assign = {
         createdAt: string;
         updatedAt: string;
     };
+    createdAt: string;
 };
 
 const TelecallerDashboardPage = () => {
