@@ -25,6 +25,7 @@
         createdAt: string;
         updatedAt: string;
     };
+    createdAt: string;
 };
 
 export default Assign
