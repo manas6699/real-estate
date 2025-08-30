@@ -57,7 +57,7 @@ export default function ReportTable({ data }: Props) {
                             <div className="flex flex-col text-xs text-gray-500">
                                 <span className="font-medium text-black">Assigned Date</span>
                                 <span>
-                                    {new Date(lead.createdAt).toLocaleDateString('en-GB', {
+                                    {new Date(assign.createdAt).toLocaleDateString('en-GB', {
                                         day: 'numeric',
                                         month: 'long',
                                         year: 'numeric',
