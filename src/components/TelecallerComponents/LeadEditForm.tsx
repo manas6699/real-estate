@@ -166,13 +166,18 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         Alternate Phone Number
                     </label>
                     <input
-                        type="tel"
+                        type="number"
                         value={alternate_phone}
-                        onChange={(e) => setAlternatePhone(e.target.value)}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (val.length <= 10) {
+                                setAlternatePhone(val);
+                            }
+                        }}
                         placeholder="Enter alternate phone number"
                         className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-
                     />
+
                 </div>
 
                 {/* Client Budget */}
@@ -299,7 +304,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         value={lead_status}
                         onChange={(e) => setLeadStatus(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded bg-orange-200 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring"
-
+                        required
                     >
                         <option value="" disabled>Select Disposition status</option>
                         {leadStatuses.map((status) => (
