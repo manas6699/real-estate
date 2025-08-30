@@ -4,7 +4,7 @@ import {
     useReactTable,
     ColumnDef,
 } from '@tanstack/react-table';
-import {  useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 
 import { useState } from "react";
@@ -87,12 +87,19 @@ export default function AssignedLeads({ data }: Props) {
         getCoreRowModel: getCoreRowModel(),
     });
 
+    // ✅ Only compute latestLeadId if data is not empty
+    const latestLeadId =
+        data.length > 0
+            ? data.reduce((latest, current) =>
+                new Date(current.createdAt) > new Date(latest.createdAt)
+                    ? current
+                    : latest
+            )._id
+            : null;
 
     return (
         <div className="space-y-4 relative">
             {/* Header */}
-
-           
             <div className='flex'>
                 <h1 className="text-2xl font-bold mb-4">Lead Count</h1>
                 <div className="bg-black rounded-full h-8 ml-2.5 w-8">
@@ -103,15 +110,25 @@ export default function AssignedLeads({ data }: Props) {
             </div>
 
             {/* Cards */}
-            {table.getRowModel().rows.map(row => {
+            {[...table.getRowModel().rows].reverse().map(row => {
                 const lead = row.original.lead_details;
                 const assign = row.original;
 
+                // check if this row is the latest
+                const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
                 return (
                     <div
                         key={row.id}
-                        className="bg-white rounded-2xl shadow p-6 flex flex-col space-y-4"
+                        className="bg-white rounded-2xl shadow p-6 flex flex-col space-y-4 transition relative"
                     >
+                        {/* ✅ Add NEW Tag only for the latest */}
+                        {isLatest && (
+                            <span 
+                                className="absolute -left-4 top-0 animate-ping bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">
+                                NEW
+                            </span>
+                        )}
+
                         {/* ✅ First row */}
                         <div className="flex flex-wrap justify-between gap-10">
                             <div className="flex flex-col text-sm text-gray-500">
@@ -153,13 +170,13 @@ export default function AssignedLeads({ data }: Props) {
                                 <span className="font-medium text-black">Lead Source</span>
                                 <span>{lead.source}</span>
                             </div>
-                            
+
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-sm px-3 py-1 rounded-md text-blue-600 font-medium">
-                                    {lead.status} 
+                                    {lead.status}
                                 </span>
                             </div>
-                            
+
                             <button
                                 className="px-2 rounded bg-orange-500 cursor-pointer"
                                 onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
@@ -173,9 +190,6 @@ export default function AssignedLeads({ data }: Props) {
                             >
                                 View All History
                             </button>
-
-
-
                         </div>
                     </div>
                 );
