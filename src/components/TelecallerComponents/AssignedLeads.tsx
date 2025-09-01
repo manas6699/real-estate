@@ -36,6 +36,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        lead_status: string;
         createdAt: string;
         updatedAt: string;
     };
@@ -124,7 +125,7 @@ export default function AssignedLeads({ data }: Props) {
                         {/* ✅ Add NEW Tag only for the latest */}
                         {isLatest && (
                             <span 
-                                className="absolute -left-4 top-0 animate-ping bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">
+                                className="absolute -left-4 top-0 animate-ping z-50 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">
                                 NEW
                             </span>
                         )}
@@ -170,10 +171,14 @@ export default function AssignedLeads({ data }: Props) {
                                 <span className="font-medium text-black">Lead Source</span>
                                 <span>{lead.source}</span>
                             </div>
+                            <div className="flex flex-col text-sm text-gray-500">
+                                <span className="font-medium text-black">Latest Disposition</span>
+                                <span>{assign.lead_details.lead_status}</span>
+                            </div>
 
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-sm px-3 py-1 rounded-md text-blue-600 font-medium">
-                                    {lead.status}
+                                    {assign.status}
                                 </span>
                             </div>
 
