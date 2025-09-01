@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import axios from 'axios';
-import { GET_FILTERED_DATA, GET_LEAD_BY_ID, WEB_SOCKET_URL } from '@/config/api';
+import { GET_LEAD_BY_ID, WEB_SOCKET_URL } from '@/config/api';
 import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 
@@ -19,8 +19,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // need to seperate out
 import io from 'socket.io-client';
+import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
 
-
+type assignLeadCount = {
+    newLeadCount: number;
+}
 type Assign = {
     _id: string;
     lead_id: string;
@@ -35,6 +38,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        lead_status: string;
         createdAt: string;
         updatedAt: string;
     };
@@ -202,13 +206,11 @@ const TelecallerDashboardPage = () => {
                         toast.dismiss()
                         window.location.reload();
                     }}>Reload</button>
-
                 </div>
             );
 
             // ✅ Update state (optional)
             setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
-
         }
         );
 
@@ -281,39 +283,7 @@ const TelecallerDashboardPage = () => {
                 <Navbar />
             </div>
             <section className='lg:ml-64 p-6'>
-                <h1 className='text-xl text-gray-700 font-bold mb-4'>
-                    Overview
-                </h1>
-                <section className="flex flex-col md:flex-row gap-4 mb-4">
-                    <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                        <div className="text-gray-600">Leads</div>
-                        <div className="text-2xl font-bold">0</div>
-
-                    </div>
-                    <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                        <div className="text-gray-600">Not Allotted</div>
-                        <div className="text-2xl font-bold">0</div>
-
-                    </div>
-                    <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                        <div className="text-gray-600">Allotted</div>
-                        <div className="text-2xl font-bold">0</div>
-
-                    </div>
-                    <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer">
-                        <a href="/admin/Dashboard/ManageLeads">Call Pending
-                            <div className="text-2xl font-bold">0</div>
-
-                        </a>
-                    </div>
-                    <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                        <div className="text-gray-600">Overdue</div>
-                        <div className="text-2xl font-bold">0</div>
-
-                    </div>
-                </section>
-
-
+                <TelecallerOverView newLeadCount={assigns.length}/>
                 <div className="grid grid-cols-1 md:grid-cols-9 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
                     <select
                         value={leadStatus}
@@ -385,8 +355,6 @@ const TelecallerDashboardPage = () => {
                             </option>
                         ))}
                     </select>
-
-
 
                     <button
                         onClick={resetFilters}
