@@ -31,6 +31,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        lead_status: string;
         createdAt: string;
         updatedAt: string;
     };
