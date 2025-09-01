@@ -49,3 +49,9 @@ export const GET_OLD_LEADS_FOR_TELECALLER = `${API_BASE_URL}/admin/telecaller`
 
 // assign old leads
 export const ASSIGN_OLD_LEADS_TO_TELECALLER = `${API_BASE_URL}/admin/assign/old/to/telecaller`
+
+// reassign new leads
+export const REASSIGN_NEW_LEADS = `${API_BASE_URL}/admin/reassign`
+
+// stat count 
+export const ALL_LEAD_COUNT = `${API_BASE_URL}/admin/count`
