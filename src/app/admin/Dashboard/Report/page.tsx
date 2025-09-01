@@ -6,7 +6,7 @@ import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/AdminComponents/Sidebar'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { GET_FILTERED_DATA, SHOW_ALL_ASSIGNS_API } from '@/config/api';
+import { GET_ALL_TELECALLERS_API, GET_FILTERED_DATA, SHOW_ALL_ASSIGNS_API } from '@/config/api';
 
 import AssignType from '@/types/AssignType'
 import ReportTable from '@/components/AdminComponents/ReportTable';
@@ -32,7 +32,7 @@ const ReportPage = () => {
          useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/users/telecallers");
+          const res = await axios.get(GET_ALL_TELECALLERS_API);
         if (res.data.success) {
           setTelecallers(res.data.data);
         }
