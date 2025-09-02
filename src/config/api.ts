@@ -55,3 +55,12 @@ export const REASSIGN_NEW_LEADS = `${API_BASE_URL}/admin/reassign`
 
 // stat count 
 export const ALL_LEAD_COUNT = `${API_BASE_URL}/admin/count`
+
+// post a project
+export const POST_A_PROJECT = `${API_BASE_URL}/post/addproject/projectName`
+// get all projects
+export const GET_ALL_PROJECTS = `${API_BASE_URL}/post/addproject/projectName`
+// post a location
+export const POST_A_LOCATION = `${API_BASE_URL}/locations/name`
+// get all locations
+export const GET_ALL_LOCATIONS = `${API_BASE_URL}/locations/name`
