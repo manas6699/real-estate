@@ -12,6 +12,8 @@ import Navbar from "@/components/AdminComponents/Navbar";
 import TelecallerSidebar from "@/components/TelecallerComponents/TelecallerSidebar";
 import { ASSIGN_OLD_LEADS_TO_TELECALLER, GET_ALL_TELECALLERS_API, GET_OLD_LEADS_FOR_TELECALLER } from "@/config/api";
 import { formatDateToDDMMYYYY } from "@/utils/dateformat";
+import { LOCATIONS } from "@/options/Locations";
+import leadStatuses from "@/options/Leadstatus";
 
 
 interface Telecaller {
@@ -263,62 +265,69 @@ const TelecallerPage = () => {
                         onChange={(e) => setName(e.target.value)}
                         className="border p-2 rounded w-full"
                     />
-                    <input
-                        type="text"
-                        placeholder="Location"
+                    <select
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         className="border p-2 rounded w-full"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Source"
+                    >
+                        <option value="">Select Location</option>
+                        {LOCATIONS.map((loc, index) => (
+                            <option key={index} value={loc}>
+                                {loc}
+                            </option>
+                        ))}
+                    </select>
+                    <select
                         value={source}
                         onChange={(e) => setSource(e.target.value)}
                         className="border p-2 rounded w-full"
-                    />
+                    >
+                        <option value="">Select Source</option>
+                        <option value="MagicBricks">MagicBricks</option>
+                        <option value="99acres">99acres</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Housing.com">Housing.com</option>
+                        <option value="Others">Others</option>
+                        <option value="NS">NS</option>
+                        <option value="Reference">Reference</option>
+                        <option value="99ACRES NP">99ACRES NP</option>
+                        <option value="HOUSING NP">HOUSING NP</option>
+                        <option value="Datasheet">Datasheet</option>
+                        <option value="Google">Google</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                        <option value="In House">In House</option>
+                    </select>
+
                     <select
                         className="border p-2 rounded w-full"
                         value={disposition}
                         onChange={(e) => setDisposition(e.target.value)}
                     >
                         <option value="">Select Disposition</option>
-                        <option value="Accept">Accept</option>
-                        <option value="Call Back">Call Back</option>
-                        <option value="Not Responding">Not Responding</option>
-                        <option value="Not Reachable">Not Reachable</option>
-                        <option value="Already Booked">Already Booked</option>
-                        <option value="Under Follow Up">Under Follow Up</option>
-                        <option value="Fraud">Fraud</option>
-                        <option value="Busy">Busy</option>
-                        <option value="DEO-MAIL">DEO-MAIL</option>
-                        <option value="Reject">Reject</option>
-                        <option value="Agent Switch">Agent Switch</option>
-                        <option value="Requirement Did not match">Requirement Did not match</option>
-                        <option value="Visit fixed">Visit fixed</option>
-                        <option value="Already Purchased">Already Purchased</option>
-                        <option value="Referred">Referred</option>
-                        <option value="TELE-MAIL">TELE-MAIL</option>
-                        <option value="Location Issue">Location Issue</option>
-                        <option value="Visited Followup">Visited Followup</option>
-                        <option value="Budget Issue">Budget Issue</option>
-                        <option value="Duplicate">Duplicate</option>
-                        <option value="ADMIN-MAIL">ADMIN-MAIL</option>
-                        <option value="Booking Done">Booking Done</option>
-                        <option value="AGENT-MAIL">AGENT-MAIL</option>
-                        <option value="Language barrier">Language barrier</option>
+                        {leadStatuses.map((d, index) => (
+                            <option key={index} value={d}>
+                                {d}
+                            </option>
+                        ))}
                     </select>
                     <div>
-
-                        <label className="text-sm font-medium text-slate-700">Filter by Project Name</label>
-                        <input
-                            type="text"
-                            placeholder="Project Name"
+                        <label className="text-sm font-medium text-slate-700">
+                            Filter by Project Name
+                        </label>
+                        <select
                             value={project}
                             onChange={(e) => setProject(e.target.value)}
                             className="border p-2 rounded w-full"
-                        />
+                        >
+                            <option value="">Select Project</option>
+                            <option value="The levelz">The levelz</option>
+                            <option value="sunrise aura">sunrise aura</option>
+                            <option value="Laguna bay">Laguna bay</option>
+                            <option value="Utpalaa">Utpalaa</option>
+                            <option value="Eden Meghbalika">Eden Meghbalika</option>
+                        </select>
                     </div>
+
                     <div>
                         <label className="text-sm font-medium text-slate-700">Start Date</label>
                         <input

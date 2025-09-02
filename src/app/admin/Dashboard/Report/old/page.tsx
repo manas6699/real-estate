@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2 } from 
 import { ASSIGN_OLD_LEADS_TO_TELECALLER, GET_ALL_TELECALLERS_API, GET_OLD_LEADS_FOR_ADMIN } from "@/config/api";
 import Navbar from "@/components/AdminComponents/Navbar";
 import Sidebar from "@/components/AdminComponents/Sidebar";
+import { LOCATIONS } from "@/options/Locations";
 
 // ==========================
 // Types
@@ -130,22 +131,38 @@ export default function OldLeadsTablePage() {
     // REMARKS STATE
     const [remarks, setRemarks] = useState("");
 
-    const openAssignModal = async (lead: Lead) => {
+    const openAssignModal = useCallback(async (lead: Lead) => {
+        // 1. Setup modal state
         setSelectedLead(lead);
         setIsModalOpen(true);
         setLoadingTelecallers(true);
+
         try {
+            // 2. Fetch telecallers
             const res = await fetch(GET_ALL_TELECALLERS_API);
-            if (!res.ok) throw new Error("Failed to load telecallers");
+
+            if (!res.ok) {
+                throw new Error(`Failed to load telecallers: ${res.status}`);
+            }
+
             const json = await res.json();
-            setTelecallers(json.data || []);
+
+            // 3. Validate and set data
+            if (json && Array.isArray(json.data)) {
+                setTelecallers(json.data);
+            } else {
+                setTelecallers([]);
+                console.warn("Unexpected API response:", json);
+            }
         } catch (err) {
-            console.error(err);
+            console.error("Error fetching telecallers:", err);
             setTelecallers([]);
         } finally {
+            // 4. Reset loading state
             setLoadingTelecallers(false);
         }
-    };
+    }, []);
+
 
     const handleAssign = async (assignee_id: string, assignee_name: string) => {
         if (!selectedLead?._id) return;
@@ -226,30 +243,33 @@ export default function OldLeadsTablePage() {
     }, [fetchData]);
 
     // TanStack Table Columns
+
+
     // Generate columns dynamically based on keys in rows
     // TanStack Table Columns
     const columns = useMemo<ColumnDef<Lead>[]>(() => {
-        const baseColumns: ColumnDef<Lead>[] =
-            rows.length > 0
-                ? Object.keys(rows[0])
-                    .filter((key) => {
-                        const lower = key.toLowerCase();
-                        if (lower === "password") return false;
-                        if (lower === "_id" || lower.endsWith("id")) return false;
-                        return true;
-                    })
-                    .map((key) => ({
-                        header: key
-                            .replace(/_/g, " ")
-                            .replace(/\b\w/g, (c) => c.toUpperCase()),
-                        accessorKey: key,
-                        cell: ({ getValue }) => (
-                            <span>{String(getValue() || "-")}</span>
-                        ),
-                    }))
-                : [];
+        if (rows.length === 0) return [];
 
-        // Insert Action column at 1st position
+        const allKeys = Array.from(new Set(rows.flatMap(row => Object.keys(row))));
+
+        const baseColumns: ColumnDef<Lead>[] = allKeys
+            .filter((key) => {
+                const lower = key.toLowerCase();
+                if (lower === "password") return false;
+                if (lower === "_id" || lower.endsWith("id")) return false;
+                return true;
+            })
+            .map((key) => ({
+                header: key
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (c) => c.toUpperCase()),
+                accessorFn: (row) => row[key] ?? "-",
+                cell: ({ getValue }) => (
+                    <span>{String(getValue() || "-")}</span>
+                ),
+            }));
+
+        // ✅ Insert Action column at the start
         baseColumns.splice(0, 0, {
             header: "Action",
             id: "action",
@@ -263,9 +283,9 @@ export default function OldLeadsTablePage() {
             ),
         });
 
-
         return baseColumns;
-    }, [rows]);
+    }, [rows, openAssignModal]); // ✅ add openAssignModal to deps
+
 
 
     const table = useReactTable({
@@ -444,26 +464,46 @@ export default function OldLeadsTablePage() {
 
                                     <div className="flex flex-col">
                                         <label className="text-sm font-medium text-slate-700">Source</label>
-                                        <input
-                                            className="mt-1 rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-slate-300"
-                                            placeholder="e.g. 99acres, MagicBricks"
+                                        <select
                                             value={filters.source}
                                             onChange={(e) => setFilters((f) => ({ ...f, source: e.target.value }))}
-                                        />
+                                            className="border p-2 rounded w-full"
+                                        >
+                                            <option value="">Select Source</option>
+                                            <option value="MagicBricks">MagicBricks</option>
+                                            <option value="99acres">99acres</option>
+                                            <option value="Facebook">Facebook</option>
+                                            <option value="Housing.com">Housing.com</option>
+                                            <option value="Others">Others</option>
+                                            <option value="NS">NS</option>
+                                            <option value="Reference">Reference</option>
+                                            <option value="99ACRES NP">99ACRES NP</option>
+                                            <option value="HOUSING NP">HOUSING NP</option>
+                                            <option value="Datasheet">Datasheet</option>
+                                            <option value="Google">Google</option>
+                                            <option value="Digital Marketing">Digital Marketing</option>
+                                            <option value="In House">In House</option>
+                                        </select>
+
                                     </div>
                                 </div>
-
 
                                 {/* Second row: Location + Client Name */}
                                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                                     <div className="flex flex-col">
                                         <label className="text-sm font-medium text-slate-700">Location (plocation)</label>
-                                        <input
-                                            className="mt-1 rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-slate-300"
-                                            placeholder="e.g. Southern Bypass"
+                                        <select
                                             value={filters.location}
                                             onChange={(e) => setFilters((f) => ({ ...f, location: e.target.value }))}
-                                        />
+                                            className="mt-1 rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-slate-300"
+                                        >
+                                            <option value="">Select Location</option>
+                                            {LOCATIONS.map((loc, index) => (
+                                                <option key={index} value={loc}>
+                                                    {loc}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="flex flex-col">
                                         <label className="text-sm font-medium text-slate-700">Client Name</label>

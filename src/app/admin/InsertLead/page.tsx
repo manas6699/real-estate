@@ -7,8 +7,10 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
 import Loader from '@/components/loader';
-import { LEADS_ENDPOINT } from '@/config/api';
-import React, { useState } from 'react';
+import { GET_ALL_PROJECTS, LEADS_ENDPOINT } from '@/config/api';
+import React, { useEffect, useState } from 'react';
+import AddProject from '@/components/AdminComponents/AddProject';
+import AddLocation from '@/components/AdminComponents/AddLocation';
 
 type BrochureFormData = {
     name: string;
@@ -16,6 +18,11 @@ type BrochureFormData = {
     phone: string;
     source: string;
     projectSource: string;
+};
+
+type Project = {
+    _id: string;
+    projectName: string;
 };
 
 const InsertLeadPage = () => {
@@ -30,9 +37,27 @@ const InsertLeadPage = () => {
 
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const [projects, setProjects] = useState<Project[]>([]);
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    // Fetch all projects
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const res = await axios.get(GET_ALL_PROJECTS);
+                setProjects(res.data.data || []);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+                toast.error("Failed to load projects");
+            }
+        };
+        fetchProjects();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -92,26 +117,40 @@ const InsertLeadPage = () => {
                             required
                             className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
                         />
-                        <input
-                            type="text"
+                        {/* Project Name (Dropdown) */}
+                        <select
                             name="source"
                             value={formData.source}
                             onChange={handleChange}
-                            placeholder="Project Name"
                             required
-                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
-                        />
-                        <input
-                            type="text"
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none px-1 py-2 text-sm"
+                        >
+                            <option value="">Select Project</option>
+                            {projects.map((project) => (
+                                <option key={project._id} value={project.projectName}>
+                                    {project.projectName}
+                                </option>
+                            ))}
+                        </select>
+                        {/* Project Source (Lead Source Dropdown) */}
+                        <select
                             name="projectSource"
                             value={formData.projectSource}
                             onChange={handleChange}
-                            placeholder="Project Source"
-                            
-                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none focus:ring-0 px-1 py-2 text-sm"
-                        />
-                          
-
+                            required
+                            className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none px-1 py-2 text-sm"
+                        >
+                            <option value="">Select Lead Source</option>
+                            <option value="Meta">Meta (Facebook/Instagram)</option>
+                            <option value="In-house">In-house</option>
+                            <option value="MagicBricks">MagicBricks</option>
+                            <option value="99Acres">99Acres</option>
+                            <option value="Housing.com">Housing.com</option>
+                            <option value="Google Ads">Google Ads</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Walk-in">Walk-in</option>
+                            <option value="Cold Call">Cold Call</option>
+                        </select>
                         <button
                             type="submit"
                             className="bg-orange-500 text-white text-sm cursor-pointer hover:bg-[#c42553] py-2 rounded-md transition-all"
@@ -125,6 +164,8 @@ const InsertLeadPage = () => {
                             )}
                         </button>
                     </form>
+                    <AddProject/>
+                    <AddLocation/>
                      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
                 </div>
             </main>

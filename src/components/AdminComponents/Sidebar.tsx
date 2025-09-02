@@ -26,7 +26,7 @@ export default function Sidebar() {
                         className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/InsertLead' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
                             }`}
                     >
-                        <ArrowDownLeft size={20} /> <span>Insert Lead</span>
+                        <ArrowDownLeft size={20} /> <span>Insert Data</span>
                     </a>
                     <a
                         href="/admin/Campaign"
