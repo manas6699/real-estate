@@ -173,10 +173,10 @@ export default function AssignedLeads({ data }: Props) {
                                 <span>{assign.remarks}</span>
                             </div> */}
 
-                            <div className="flex flex-col text-sm text-gray-500">
+                            {/* <div className="flex flex-col text-sm text-gray-500">
                                 <span className="font-medium text-black">Lead Source</span>
                                 <span>{lead.source}</span>
-                            </div>
+                            </div> */}
                             {assign.lead_details.lead_status && assign.lead_details.lead_status.trim() !== "" ? (
                                 <div className="flex flex-col text-sm text-gray-500">
                                     <span className="font-medium text-black">Disposition</span>
