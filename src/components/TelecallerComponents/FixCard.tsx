@@ -12,7 +12,7 @@ type LeadInfoCardProps = {
         phone: string;
         source: string;
         createdAt: string;
-        projectSource:string;
+        projectSource: string;
     };
 };
 
@@ -55,15 +55,19 @@ export default function FixCard({ leadId }: leadIdtype) {
 
     return (
         <div className="bg-yellow-100 shadow-md border-b border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 py-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="max-w-7xl mx-auto px-4 py-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
                 <div>
                     <p className="text-xs text-gray-500">Name</p>
                     <p className="font-medium">{lead.name}</p>
                 </div>
-               
+
                 <div>
                     <p className="text-xs text-gray-500">Phone</p>
                     <p className="font-medium">{lead.phone}</p>
+                </div>
+                <div>
+                    <p className="text-xs text-gray-500">Email</p>
+                    <p className="font-medium">{lead.email}</p>
                 </div>
                 <div>
                     <p className="text-xs text-gray-500">Project Name</p>
