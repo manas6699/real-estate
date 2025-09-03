@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client'
 import axios from 'axios';
 import { GET_LEAD_BY_ID, GET_ALL_LOCATIONS, GET_ALL_PROJECTS, WEB_SOCKET_URL } from '@/config/api';
@@ -33,6 +32,7 @@ type Assign = {
         source: string;
         status: string;
         lead_status: string;
+        interested_project: string;
         createdAt: string;
         updatedAt: string;
     };
@@ -40,6 +40,9 @@ type Assign = {
 };
 
 const TelecallerDashboardPage = () => {
+    type Notification = { title: string; message: string };
+
+
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [leadStatus, setLeadStatus] = useState("");
     const [location, setLocation] = useState("");
@@ -52,6 +55,11 @@ const TelecallerDashboardPage = () => {
     const [projectName, setProjectName] = useState("");
     const [projects, setProjects] = useState<Project[]>([]);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [autoassignedNotifications, setAutoAssignedNotifications] = useState<Notification[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [socket, setSocket] = useState<any>(null);
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
@@ -80,6 +88,51 @@ const TelecallerDashboardPage = () => {
         fetchProjects();
     }, []);
 
+    // socket logic
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        const storedUserId = localStorage.getItem('userId'); // optional, example
+        if (!storedToken || !isTokenValid(storedToken)) {
+            window.location.href = "/login";
+            return;
+        }
+        setToken(storedToken);
+        setUserId(storedUserId);
+
+        // Create socket only here when token is ready
+        const newSocket = io(WEB_SOCKET_URL, {
+            transports: ["websocket"],
+            auth: { token: storedToken }
+        });
+
+        setSocket(newSocket);
+
+        return () => {
+            newSocket.disconnect();
+        };
+    }, []);
+
+    // token validation logic
+        function isTokenValid(token: string) {
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const decoded: any = jwtDecode(token);
+                const currentTime = Math.floor(Date.now() / 1000);
+                return decoded.exp > currentTime;
+            } catch {
+                return false;
+            }
+        }
+
+        // stored user logic
+            useEffect(() => {
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    const parsedUser = JSON.parse(storedUser);
+                    setUserId(parsedUser._id);
+                }
+            }, []);
+
     // ✅ Fetch Assigns
     useEffect(() => {
         const fetchAssigns = async () => {
@@ -101,9 +154,93 @@ const TelecallerDashboardPage = () => {
         fetchAssigns();
     }, []);
 
+        // need to seperate out in a hook
+        useEffect(() => {
+            if (!socket || !userId || !token) return;
+            // ✅ Request browser notification permission if needed
+            if (Notification.permission === 'default' || Notification.permission === 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('✅ Notification permission granted.');
+                    } else {
+                        console.log('❌ Notification permission denied.');
+                    }
+                });
+            }
+    
+            // ✅ Emit join-room once userId is available
+            if (userId) {
+                socket.emit('join-room', userId);
+                console.log('📡 Emitted join-room with:', userId);
+            }
+    
+            // ✅ Handle incoming notification
+    
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            socket.on('lead-assigned', (data: any) => {
+                console.log('📥 Lead assigned:', data);
+    
+                // 🔔 Native Browser Notification
+                if (Notification.permission === 'granted') {
+                    new Notification(data.title, {
+                        body: data.message,
+                    });
+                }
+    
+                // 🔥 React Toastify Notification
+                toast.info(
+                    <div>
+                        <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
+                        <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
+                            toast.dismiss()
+                            window.location.reload();
+                        }}>Reload</button>
+    
+                    </div>
+                );
+    
+                // ✅ Update state (optional)
+                setNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
+            });
+    
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            socket.on('lead-auto-assigned', (data: any) => {
+                console.log('📥 Lead auto assigned:', data)
+    
+                // 🔔 Native Browser Notification
+                if (Notification.permission === 'granted') {
+                    new Notification(data.title, {
+                        body: data.message,
+                    });
+                }
+    
+                // 🔥 React Toastify Notification
+                toast.info(
+                    <div>
+                        <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
+                        <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
+                            toast.dismiss()
+                            window.location.reload();
+                        }}>Reload</button>
+                    </div>
+                );
+    
+                // ✅ Update state (optional)
+                setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
+            }
+            );
+    
+            // ✅ Optional: Cleanup on unmount
+            return () => {
+                socket.off('lead-assigned');
+                socket.off('lead-auto-assigned');
+            };
+        }, [userId, token, socket]);
+
     // ✅ Fetch Filtered Data
     const fetchFiltered = async () => {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const params: any = {};
             if (leadStatus) params.lead_status = leadStatus;
             if (phone) params.phone = phone;
