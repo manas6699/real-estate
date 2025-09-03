@@ -12,6 +12,7 @@ type LeadInfoCardProps = {
         phone: string;
         source: string;
         createdAt: string;
+        projectSource:string;
     };
 };
 
@@ -65,8 +66,12 @@ export default function FixCard({ leadId }: leadIdtype) {
                     <p className="font-medium">{lead.phone}</p>
                 </div>
                 <div>
-                    <p className="text-xs text-gray-500">Source</p>
+                    <p className="text-xs text-gray-500">Project Name</p>
                     <p className="font-medium capitalize">{lead.source}</p>
+                </div>
+                <div>
+                    <p className="text-xs text-gray-500">Project Source</p>
+                    <p className="font-medium capitalize">{lead.projectSource}</p>
                 </div>
                 <div>
                     <p className="text-xs text-gray-500">Assigned Date</p>
