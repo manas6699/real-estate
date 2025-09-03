@@ -9,6 +9,8 @@ import {
     EDIT_LEAD_FORM,
     GET_ALL_TELECALLERS_API,
     REASSIGN_NEW_LEADS,
+    GET_ALL_PROJECTS, 
+    POST_A_PROJECT, 
 } from "@/config/api";
 import BudgetInput from "@/components/TelecallerComponents/BudgetInput";
 
@@ -18,6 +20,11 @@ type Telecaller = {
     name: string;
     role: string;
     online: boolean;
+};
+
+type Project = {
+    _id: string;
+    projectName: string;
 };
 
 const leadStatuses = [
@@ -80,6 +87,10 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [telecallers, setTelecallers] = useState<Telecaller[]>([]);
     const [currentUserId, setCurrentUserId] = useState("");
     const [remarks, setRemarks] = useState("");
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [showOtherProjectInput, setShowOtherProjectInput] = useState(false);
+    const [otherProjectName, setOtherProjectName] = useState("");
+    const [addingProject, setAddingProject] = useState(false);
 
     useEffect(() => {
         const userDataString = localStorage.getItem("user");
@@ -91,7 +102,22 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 console.error("Error parsing user from localStorage", err);
             }
         }
+
+        // Fetch projects list
+        fetchProjects();
     }, []);
+
+    const fetchProjects = async () => {
+        try {
+            const res = await axios.get(GET_ALL_PROJECTS);
+            if (res.data.success) {
+                setProjects(res.data.data || []);
+            }
+        } catch (err) {
+            console.error("Error fetching projects:", err);
+            toast.error("Failed to load projects");
+        }
+    };
 
     const fetchTelecallers = async () => {
         try {
@@ -105,6 +131,50 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         } catch (err) {
             console.error("Error fetching telecallers:", err);
             toast.error("Failed to load telecallers");
+        }
+    };
+
+    const handleProjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value;
+
+        if (value === "others") {
+            setShowOtherProjectInput(true);
+            setInterestedProject("");
+        } else {
+            setShowOtherProjectInput(false);
+            setInterestedProject(value);
+            setOtherProjectName("");
+        }
+    };
+
+    const addNewProject = async () => {
+        if (!otherProjectName.trim()) {
+            toast.error("Please enter a project name");
+            return;
+        }
+
+        setAddingProject(true);
+        try {
+            const res = await axios.post(POST_A_PROJECT, {
+                projectName: otherProjectName.trim()
+            });
+
+            if (res.data.success) {
+                toast.success("Project added successfully!");
+                setInterestedProject(otherProjectName.trim());
+                setShowOtherProjectInput(false);
+                setOtherProjectName("");
+
+                // Refresh the projects list
+                fetchProjects();
+            } else {
+                toast.error(res.data.message || "Failed to add project");
+            }
+        } catch (err) {
+            console.error("Error adding project:", err);
+            toast.error("Error adding project!");
+        } finally {
+            setAddingProject(false);
         }
     };
 
@@ -127,7 +197,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         const formData = {
             alternate_phone,
             client_budget,
-            interested_project,
+            interested_project: showOtherProjectInput ? otherProjectName : interested_project,
             lead_status,
             location,
             preferred_floor,
@@ -156,6 +226,8 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             setComments("");
             setScheduleDate("");
             setScheduleTime("");
+            setShowOtherProjectInput(false);
+            setOtherProjectName("");
         } catch (error) {
             console.error("Error updating lead:", error);
             toast.error("Error updating lead!");
@@ -232,19 +304,46 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         <BudgetInput value={client_budget} onChange={setClientBudget} />
                     </div>
 
-
                     {/* Interested Project */}
                     <div>
                         <label className="block mb-1 text-sm font-medium text-gray-600">
                             Interested Project
                         </label>
-                        <input
-                            type="text"
-                            value={interested_project}
-                            onChange={(e) => setInterestedProject(e.target.value)}
-                            placeholder="Enter project name"
+                        <select
+                            value={showOtherProjectInput ? "others" : interested_project}
+                            onChange={handleProjectChange}
                             className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
+                        >
+                            <option value="" disabled>
+                                Select project
+                            </option>
+                            {projects.map((project) => (
+                                <option key={project._id} value={project.projectName}>
+                                    {project.projectName}
+                                </option>
+                            ))}
+                            <option value="others">Others (Add new project)</option>
+                        </select>
+
+                        {showOtherProjectInput && (
+                            <div className="mt-2 flex gap-2">
+                                <input
+                                    type="text"
+                                    value={otherProjectName}
+                                    onChange={(e) => setOtherProjectName(e.target.value)}
+                                    placeholder="Enter project name"
+                                    className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={addNewProject}
+                                    disabled={addingProject}
+                                    className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                                >
+                                    {addingProject ? "Adding..." : "Add"}
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Location */}
