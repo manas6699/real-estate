@@ -466,30 +466,52 @@ const TelecallerPage = () => {
                                 {telecallers.length === 0 ? (
                                     <p className="text-gray-500 text-sm">No telecallers found.</p>
                                 ) : (
-                                    telecallers.map((tc) => {
-                                        const isMe = tc.name === (userData?.name || "");
-                                        return (
-                                            <div
-                                                key={tc.id}
-                                                className="flex items-center justify-between border-b py-2"
-                                            >
-                                                <span>
-                                                    {isMe ? "Assign to Myself" : tc.name}   
-                                                </span>
-                                                <button
-                                                    disabled={assigning === tc.id}
-                                                     onClick={() => handleAssign(tc.id, tc.name)}
-                                                    className="px-3 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50"
+                                    <>
+                                        {/* Display "Assign to Myself" button first */}
+                                        {telecallers
+                                            .filter(tc => tc.name === (userData?.name || ""))
+                                            .map((tc) => (
+                                                <div
+                                                    key={tc.id}
+                                                    className="flex items-center justify-between border-b py-2"
                                                 >
-                                                    {assigning === tc.id ? "Assigning..." : "Assign"}
-                                                </button>
-                                            </div>
-                                        );
-                                    })
+                                                    <span>Assign to Myself</span>
+                                                    <button
+                                                        disabled={assigning === tc.id}
+                                                        onClick={() => handleAssign(tc.id, tc.name)}
+                                                        className="px-3 py-1 text-xs rounded bg-purple-700 text-white hover:bg-purple-600 disabled:opacity-50"
+                                                    >
+                                                        {assigning === tc.id ? "Assigning..." : "Assign"}
+                                                    </button>
+                                                </div>
+                                            ))
+                                        }
+
+                                        {/* Display other telecallers */}
+                                        {telecallers
+                                            .filter(tc => tc.name !== (userData?.name || ""))
+                                            .map((tc) => (
+                                                <div
+                                                    key={tc.id}
+                                                    className="flex items-center justify-between border-b py-2"
+                                                >
+                                                    <span>{tc.name}</span>
+                                                    <button
+                                                        disabled={assigning === tc.id}
+                                                        onClick={() => handleAssign(tc.id, tc.name)}
+                                                        className="px-3 py-1 text-xs rounded bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                                                    >
+                                                        {assigning === tc.id ? "Assigning..." : "Assign"}
+                                                    </button>
+                                                </div>
+                                            ))
+                                        }
+                                    </>
                                 )}
                             </div>
-                             {/* Remarks Input now below telecallers */}
-                            <div className="">
+
+                            {/* Remarks Input now below telecallers */}
+                            <div className="mt-4">
                                 <label className="block text-sm font-medium text-slate-700 mb-1">
                                     Remarks
                                 </label>
