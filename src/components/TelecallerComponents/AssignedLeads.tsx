@@ -124,7 +124,7 @@ export default function AssignedLeads({ data }: Props) {
                     >
                         {/* ✅ Add NEW Tag only for the latest */}
                         {isLatest && (
-                            <span 
+                            <span
                                 className="absolute -left-4 top-0 animate-ping z-50 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">
                                 NEW
                             </span>
@@ -132,6 +132,22 @@ export default function AssignedLeads({ data }: Props) {
 
                         {/* ✅ First row */}
                         <div className="flex flex-wrap justify-between gap-10">
+                            <div className="flex flex-col text-sm text-gray-500">
+                                <span className="font-medium text-black">Date & Time</span>
+                                <span>
+                                    {new Date(assign.createdAt).toLocaleDateString('en-GB', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                    })}
+                                    {' '}
+                                    {new Date(assign.createdAt).toLocaleTimeString('en-GB', {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false
+                                    })}
+                                </span>
+                            </div>
                             <div className="flex flex-col text-sm text-gray-500">
                                 <span className="font-medium text-black">Project Name</span>
                                 <span>{lead.source}</span>
@@ -141,18 +157,8 @@ export default function AssignedLeads({ data }: Props) {
                                 <span>{lead.name}</span>
                             </div>
                             <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Last Remark</span>
-                                <span>{assign.remarks}</span>
-                            </div>
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Assigned Date</span>
-                                <span>
-                                    {new Date(assign.createdAt).toLocaleDateString('en-GB', {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric',
-                                    })}
-                                </span>
+                                <span className="font-medium text-black">Client Email</span>
+                                <span>{lead.email}</span>
                             </div>
                             <div className="flex flex-col text-sm text-gray-500">
                                 <span className="font-medium text-black">Phone</span>
@@ -162,20 +168,21 @@ export default function AssignedLeads({ data }: Props) {
 
                         {/* ✅ Second row */}
                         <div className="flex flex-wrap justify-between gap-4">
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Client Email</span>
-                                <span>{lead.email}</span>
-                            </div>
+                            {/* <div className="flex flex-col text-sm text-gray-500">
+                                <span className="font-medium text-black">Last Remark</span>
+                                <span>{assign.remarks}</span>
+                            </div> */}
 
                             <div className="flex flex-col text-sm text-gray-500">
                                 <span className="font-medium text-black">Lead Source</span>
                                 <span>{lead.source}</span>
                             </div>
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Latest Disposition</span>
-                                <span>{assign.lead_details.lead_status}</span>
-                            </div>
-
+                            {assign.lead_details.lead_status && assign.lead_details.lead_status.trim() !== "" ? (
+                                <div className="flex flex-col text-sm text-gray-500">
+                                    <span className="font-medium text-black">Disposition</span>
+                                    <span>{assign.lead_details.lead_status}</span>
+                                </div>
+                            ) : null}
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-sm px-3 py-1 rounded-md text-blue-600 font-medium">
                                     {assign.status}
