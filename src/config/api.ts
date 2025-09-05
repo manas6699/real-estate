@@ -67,6 +67,11 @@ export const GET_ALL_PROJECTS = `${API_BASE_URL}/post/addproject/projectName`
 export const POST_A_LOCATION = `${API_BASE_URL}/locations/name`
 // get all locations
 export const GET_ALL_LOCATIONS = `${API_BASE_URL}/locations/name`
+// post a source
+export const  POST_A_SOURCE = `${API_BASE_URL}/sources/source`
+
+// get all sources
+export const GET_ALL_SOURCES = `${API_BASE_URL}/sources/source`
 
 // for reassign 
 export const REASSIGN_API = `${API_BASE_URL}/admin/reassign`
