@@ -111,20 +111,6 @@ export default function AssignModal({ onClose, leadId }: AssignModalProps) {
                         Assign a SalesPerson
                     </button>
                 </div>
-
-                <div className="mb-4">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            className="w-full border border-gray-300 rounded-full pl-10 py-2"
-                        />
-                        <span className="absolute left-4 top-2.5 text-gray-400">
-                            🔍
-                        </span>
-                    </div>
-                </div>
-
                 <div className="mb-4 max-h-48 overflow-y-auto">
                     <ul className="space-y-2">
                         {users.map((user) => (

@@ -157,12 +157,12 @@ export default function AssignedLeads({ data }: Props) {
                                 <span>{lead.name}</span>
                             </div>
                             <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Client Email</span>
-                                <span>{lead.email}</span>
-                            </div>
-                            <div className="flex flex-col text-sm text-gray-500">
                                 <span className="font-medium text-black">Phone</span>
                                 <span>{lead.phone}</span>
+                            </div>
+                            <div className="flex flex-col text-sm text-gray-500">
+                                <span className="font-medium text-black">Client Email</span>
+                                <span>{lead.email}</span>
                             </div>
                         </div>
 
