@@ -30,12 +30,12 @@ const AddLocation: React.FC = () => {
                     value={locationName}
                     onChange={(e) => setLocationName(e.target.value)}
                     placeholder="Enter location name"
-                    className="px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
+                    className="px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
                     required
                 />
                 <button
                     type="submit"
-                    className="bg-green-500 text-white py-2 rounded-xl hover:bg-green-600 transition"
+                    className="bg-green-500 text-white py-2 rounded-xl hover:bg-green-600 transition text-sm"
                 >
                     Add Location
                 </button>
