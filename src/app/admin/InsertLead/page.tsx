@@ -7,7 +7,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
 import Loader from '@/components/loader';
-import { GET_ALL_PROJECTS, LEADS_ENDPOINT } from '@/config/api';
+import { GET_ALL_PROJECTS, GET_ALL_SOURCES, LEADS_ENDPOINT, POST_A_SOURCE } from '@/config/api';
 import React, { useEffect, useState } from 'react';
 import AddProject from '@/components/AdminComponents/AddProject';
 import AddLocation from '@/components/AdminComponents/AddLocation';
@@ -25,8 +25,12 @@ type Project = {
     projectName: string;
 };
 
-const InsertLeadPage = () => {
+type Source = {
+    _id: string;
+    sourceName: string;
+};
 
+const InsertLeadPage = () => {
     const [formData, setFormData] = useState<BrochureFormData>({
         name: '',
         email: '',
@@ -36,13 +40,23 @@ const InsertLeadPage = () => {
     });
 
     const [loading, setLoading] = useState(false);
-
     const [projects, setProjects] = useState<Project[]>([]);
+    const [sources, setSources] = useState<Source[]>([]);
+    const [showOtherInput, setShowOtherInput] = useState(false);
+    const [newSource, setNewSource] = useState('');
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+
+        if (e.target.name === "projectSource") {
+            if (e.target.value === "Others") {
+                setShowOtherInput(true);
+            } else {
+                setShowOtherInput(false);
+            }
+        }
     };
 
     // Fetch all projects
@@ -59,6 +73,53 @@ const InsertLeadPage = () => {
         fetchProjects();
     }, []);
 
+    // Fetch lead sources
+    const fetchSources = async () => {
+        try {
+            const res = await axios.get(GET_ALL_SOURCES);
+            setSources(res.data.data || []);
+        } catch (error) {
+            console.error("Error fetching sources:", error);
+            toast.error("Failed to load lead sources");
+        }
+    };
+
+    useEffect(() => {
+        fetchSources();
+    }, []);
+
+    const handleAddSource = async () => {
+        if (!newSource.trim()) {
+            toast.error("Please enter a source name");
+            return;
+        }
+
+        try {
+            const res = await axios.post(POST_A_SOURCE, {
+                sourceName: newSource.trim(),
+            });
+
+            const addedSource = res.data?.data?.sourceName || newSource.trim();
+
+            toast.success("New source added successfully");
+
+            setNewSource('');
+            setShowOtherInput(false);
+
+            // Auto-select the newly added source
+            setFormData((prev) => ({
+                ...prev,
+                projectSource: addedSource,
+            }));
+
+            await fetchSources(); // Refresh dropdown
+        } catch (error) {
+            console.error("Error adding source:", error);
+            toast.error("Failed to add source");
+        }
+    };
+
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -66,7 +127,8 @@ const InsertLeadPage = () => {
             await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Lead posted successfully');
             setFormData({ name: '', email: '', phone: '', source: "", projectSource: "" });
-            setLoading(false); // <--- Reset loading here on success
+            setShowOtherInput(false);
+            setLoading(false);
         } catch (error: unknown) {
             setLoading(false);
             if (axios.isAxiosError(error)) {
@@ -78,6 +140,7 @@ const InsertLeadPage = () => {
             console.error('Submission error:', error);
         }
     };
+
     return (
         <div>
             <Navbar />
@@ -132,7 +195,7 @@ const InsertLeadPage = () => {
                                 </option>
                             ))}
                         </select>
-                        {/* Project Source (Lead Source Dropdown) */}
+                        {/* Lead Source (Dropdown) */}
                         <select
                             name="projectSource"
                             value={formData.projectSource}
@@ -141,16 +204,33 @@ const InsertLeadPage = () => {
                             className="bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none px-1 py-2 text-sm"
                         >
                             <option value="">Select Lead Source</option>
-                            <option value="Meta">Meta (Facebook/Instagram)</option>
-                            <option value="In-house">In-house</option>
-                            <option value="MagicBricks">MagicBricks</option>
-                            <option value="99Acres">99Acres</option>
-                            <option value="Housing.com">Housing.com</option>
-                            <option value="Google Ads">Google Ads</option>
-                            <option value="Referral">Referral</option>
-                            <option value="Walk-in">Walk-in</option>
-                            <option value="Cold Call">Cold Call</option>
+                            {sources.map((src) => (
+                                <option key={src._id} value={src.sourceName}>
+                                    {src.sourceName}
+                                </option>
+                            ))}
+                            <option value="Others">➕ Add Source</option>
                         </select>
+
+                        {showOtherInput && (
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={newSource}
+                                    onChange={(e) => setNewSource(e.target.value)}
+                                    placeholder="Enter new source"
+                                    className="flex-1 bg-transparent border-0 border-b border-gray-400 focus:border-pink-500 focus:outline-none px-1 py-2 text-sm"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddSource}
+                                    className="bg-green-500 text-white px-3 rounded-md text-sm hover:bg-green-600"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        )}
+
                         <button
                             type="submit"
                             className="bg-orange-500 text-white text-sm cursor-pointer hover:bg-[#c42553] py-2 rounded-md transition-all"
@@ -183,4 +263,4 @@ const InsertLeadPage = () => {
     )
 }
 
-export default InsertLeadPage
+export default InsertLeadPage;
