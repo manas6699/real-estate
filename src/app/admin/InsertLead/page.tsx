@@ -31,7 +31,7 @@ const InsertLeadPage = () => {
         name: '',
         email: '',
         phone: '',
-        source: '', 
+        source: '',
         projectSource: ""
     });
 
@@ -164,9 +164,19 @@ const InsertLeadPage = () => {
                             )}
                         </button>
                     </form>
-                    <AddProject/>
-                    <AddLocation/>
-                     <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+                    <div className="flex gap-5">
+                        <AddProject />
+                        <AddLocation />
+                    </div>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        closeOnClick
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                    />
                 </div>
             </main>
         </div>
