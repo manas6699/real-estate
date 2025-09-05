@@ -1,5 +1,8 @@
-export const API_BASE_URL = 'https://split-wise-clone-085p.onrender.com/api';
+
+// export const API_BASE_URL = 'https://split-wise-clone-085p.onrender.com/api';
 // export const API_BASE_URL = 'http://localhost:8000/api';
+
+export const API_BASE_URL = 'http://162.241.115.194:8000/api';
 
 
 export const LEADS_ENDPOINT = `${API_BASE_URL}/mmr/leads`;
@@ -64,3 +67,6 @@ export const GET_ALL_PROJECTS = `${API_BASE_URL}/post/addproject/projectName`
 export const POST_A_LOCATION = `${API_BASE_URL}/locations/name`
 // get all locations
 export const GET_ALL_LOCATIONS = `${API_BASE_URL}/locations/name`
+
+// for reassign 
+export const REASSIGN_API = `${API_BASE_URL}/admin/reassign`
