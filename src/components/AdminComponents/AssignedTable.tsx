@@ -6,11 +6,12 @@ import {
     useReactTable,
     ColumnDef,
 } from '@tanstack/react-table';
+import ReassignModal from '@/components/AdminComponents/ReassignModal'; // ✅ Import your modal
 
 type HistoryEntry = {
     lead_id: string;
     assignee_name: string;
-    updatedAt: string; // or Date
+    updatedAt: string;
     status: string;
     remarks: string;
 };
@@ -29,16 +30,16 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
-        comments: string,
-        location: string,
-        alternate_phone: string,
-        client_budget: string,
-        furnished_status: string,
-        interested_project: string,
-        lead_status: string,
-        preferred_configuration: string,
-        preferred_floor: string,
-        property_status: string,
+        comments: string;
+        location: string;
+        alternate_phone: string;
+        client_budget: string;
+        furnished_status: string;
+        interested_project: string;
+        lead_status: string;
+        preferred_configuration: string;
+        preferred_floor: string;
+        property_status: string;
         createdAt: string;
         updatedAt: string;
     };
@@ -52,6 +53,10 @@ interface Props {
 export default function AssignCardTable({ data }: Props) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedAssign, setSelectedAssign] = useState<Assign | null>(null);
+
+    // ✅ Modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
 
     const columns: ColumnDef<Assign>[] = [
         {
@@ -74,6 +79,17 @@ export default function AssignCardTable({ data }: Props) {
     const closeSidebar = () => {
         setIsSidebarOpen(false);
         setSelectedAssign(null);
+    };
+
+    // ✅ Modal handlers
+    const openModal = (leadId: string) => {
+        setSelectedLeadId(leadId);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedLeadId(null);
     };
 
     return (
@@ -146,18 +162,20 @@ export default function AssignCardTable({ data }: Props) {
                                     <span>{lead.lead_status ? lead.lead_status : assign.status}</span>
                                 </span>
                             </div>
-                            <div className="flex flex-col text-xs text-gray-500">
-                                <span className="font-medium text-black">Remarks</span>
-                                <span className="flex items-center space-x-1">
-                                    
-                                    <span>{lead.comments}</span>
-                                </span>
-                            </div>
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-xs px-3 py-1 rounded-md text-blue-600 font-medium">
                                     {assign.status} to {assign.assignee_name}
                                 </span>
                             </div>
+
+                            {/* ✅ Reassign button */}
+                            <button
+                                className="px-3 py-1 bg-orange-500 text-white text-xs rounded hover:bg-orange-600"
+                                onClick={() => openModal(assign.lead_id)}
+                            >
+                                Reassign
+                            </button>
+
                             <button
                                 className="p-2 rounded-full border"
                                 onClick={() => openSidebar(assign)}
@@ -198,10 +216,8 @@ export default function AssignCardTable({ data }: Props) {
                             {selectedAssign.history.map((item, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 border-b pb-2">
                                     {typeof item === "string" ? (
-                                        // ✅ Case 1: History is a simple string
                                         <div>{item}</div>
                                     ) : (
-                                        // ✅ Case 2: History is an object
                                         <div>
                                             <strong>{item.assignee_name || "Unknown"}</strong> updated this lead on{" "}
                                             {item.updatedAt ? new Date(item.updatedAt).toLocaleString() : "Unknown date"}{" "}
@@ -215,16 +231,15 @@ export default function AssignCardTable({ data }: Props) {
                         <p className="text-gray-500 text-sm">No history available.</p>
                     )}
                 </div>
-                <div className="p-4 border-t">
-                    <button className="w-full bg-red-600 text-white py-2 rounded-md mb-2 hover:bg-red-700">
-                        Ask for follow-up
-                    </button>
-                    <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
-                        Reassign
-                    </button>
-                </div>
             </div>
 
+            {/* ✅ Assign Modal */}
+            {isModalOpen && selectedLeadId && (
+                <ReassignModal
+                    onClose={closeModal}
+                    leadId={selectedLeadId}
+                />
+            )}
         </div>
     );
 }
