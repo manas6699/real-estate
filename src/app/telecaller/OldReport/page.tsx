@@ -60,21 +60,21 @@ const TelecallerPage = () => {
 
     // modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
-   
+
     const [telecallers, setTelecallers] = useState<Telecaller[]>([]);
     const [selectedLead, setSelectedLead] = useState<TelecallerData | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [assigning, setAssigning] = useState("");
 
-        // REMARKS STATE
-        const [remarks, setRemarks] = useState("");
+    // REMARKS STATE
+    const [remarks, setRemarks] = useState("");
     // Filters
     const [phone, setPhone] = useState("");
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
     const [source, setSource] = useState("");
     const [disposition, setDisposition] = useState("");
-    const [project, setProject] = useState(""); // ✅ fixed project filter
+    const [project, setProject] = useState(""); 
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
@@ -105,7 +105,7 @@ const TelecallerPage = () => {
                         disposition,
                         project, // ✅ added to query
                         startDate: formatDateToDDMMYYYY(startDate),
-                        endDate: formatDateToDDMMYYYY(endDate), 
+                        endDate: formatDateToDDMMYYYY(endDate),
                     },
                 });
 
@@ -177,7 +177,7 @@ const TelecallerPage = () => {
                     onClick={() => openModal(row.original)}
                     className="px-6 py-1 rounded-sm bg-orange-500 text-white text-xs hover:bg-orange-600"
                 >
-                    Resolve 
+                    Resolve
                 </button>
             ),
         });
@@ -205,36 +205,36 @@ const TelecallerPage = () => {
         }
     };
 
-        const handleAssign = async (assignee_id: string, assignee_name: string) => {
-            if (!selectedLead?._id) return;
-    
-            try {
-                const response = await fetch(ASSIGN_OLD_LEADS_TO_TELECALLER, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        lead_id: selectedLead._id,
-                        assignee_id,
-                        assignee_name,
-                        remarks,
-                    }),
-                });
-    
-                const data = await response.json();
-                if (data.success) {
-                    alert("Lead assigned successfully!");
-                    setIsModalOpen(false);
-                    setRemarks(""); 
-                } else {
-                    alert(`Failed: ${data.message}`);
-                }
-            } catch (error) {
-                console.error("Error assigning lead:", error);
-                alert("Something went wrong while assigning lead.");
+    const handleAssign = async (assignee_id: string, assignee_name: string) => {
+        if (!selectedLead?._id) return;
+
+        try {
+            const response = await fetch(ASSIGN_OLD_LEADS_TO_TELECALLER, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    lead_id: selectedLead._id,
+                    assignee_id,
+                    assignee_name,
+                    remarks,
+                }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                alert("Lead assigned successfully!");
+                setIsModalOpen(false);
+                setRemarks("");
+            } else {
+                alert(`Failed: ${data.message}`);
             }
-        };
+        } catch (error) {
+            console.error("Error assigning lead:", error);
+            alert("Something went wrong while assigning lead.");
+        }
+    };
     return (
         <div>
             <TelecallerSidebar />
@@ -461,6 +461,19 @@ const TelecallerPage = () => {
 
                             <h2 className="text-lg font-semibold mb-4">Assign Lead</h2>
 
+                            {/* Remarks Input */}
+                            <div className="mt-4 mb-4 p-1">
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Remarks
+                                </label>
+                                <textarea
+                                    value={remarks}
+                                    required
+                                    onChange={(e) => setRemarks(e.target.value)}
+                                    placeholder="Enter remarks..."
+                                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                />
+                            </div>
                             {/* Telecallers List */}
                             <div className="space-y-3 max-h-80 overflow-y-auto">
                                 {telecallers.length === 0 ? (
@@ -508,30 +521,6 @@ const TelecallerPage = () => {
                                         }
                                     </>
                                 )}
-                            </div>
-
-                            {/* Remarks Input now below telecallers */}
-                            <div className="mt-4">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
-                                    Remarks
-                                </label>
-                                <textarea
-                                    value={remarks}
-                                    required
-                                    onChange={(e) => setRemarks(e.target.value)}
-                                    placeholder="Enter remarks..."
-                                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                                />
-                            </div>
-
-                            {/* Footer */}
-                            <div className="mt-4 flex justify-end">
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
-                                >
-                                    Close
-                                </button>
                             </div>
                         </div>
                     </div>
