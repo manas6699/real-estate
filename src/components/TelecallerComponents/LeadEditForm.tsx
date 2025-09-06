@@ -472,7 +472,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                             value={lead_type}
                             onChange={(e) => setLeadType(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
-                            required
                         >
                             <option value="" disabled>
                                 Select Lead Type
