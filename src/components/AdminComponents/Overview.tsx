@@ -55,6 +55,9 @@ export default function Overview() {
                     { key: 'siteVisitDone', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Done` },
                     { key: 'callBack', url: `${GET_FILTERED_DATA}?lead_status=Call Back` },
                     { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Follow-Up` },
+                    { key: 'hotLeads', url: `${GET_FILTERED_DATA}?lead_type=Hot` },
+                    { key: 'coldLeads', url: `${GET_FILTERED_DATA}?lead_type=Cold` },
+                    { key: 'warmLeads', url: `${GET_FILTERED_DATA}?lead_type=Warm` },
                 ];
 
                 await Promise.all(

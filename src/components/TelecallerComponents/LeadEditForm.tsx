@@ -91,6 +91,9 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [showOtherProjectInput, setShowOtherProjectInput] = useState(false);
     const [otherProjectName, setOtherProjectName] = useState("");
     const [addingProject, setAddingProject] = useState(false);
+    // Add this with other state hooks
+    const [lead_type, setLeadType] = useState("");
+
 
     useEffect(() => {
         const userDataString = localStorage.getItem("user");
@@ -199,6 +202,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             client_budget,
             interested_project: showOtherProjectInput ? otherProjectName : interested_project,
             lead_status,
+            lead_type,
             location,
             preferred_floor,
             preferred_configuration,
@@ -228,6 +232,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             setScheduleTime("");
             setShowOtherProjectInput(false);
             setOtherProjectName("");
+            setLeadType("");
         } catch (error) {
             console.error("Error updating lead:", error);
             toast.error("Error updating lead!");
@@ -458,6 +463,26 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                             ))}
                         </select>
                     </div>
+                    {/* Lead Type */}
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-600">
+                            Lead Type
+                        </label>
+                        <select
+                            value={lead_type}
+                            onChange={(e) => setLeadType(e.target.value)}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
+                            required
+                        >
+                            <option value="" disabled>
+                                Select Lead Type
+                            </option>
+                            <option value="Hot">Hot</option>
+                            <option value="Cold">Cold</option>
+                            <option value="Warm">Warm</option>
+                        </select>
+                    </div>
+
 
                     {/* Schedule Date */}
                     <div>
