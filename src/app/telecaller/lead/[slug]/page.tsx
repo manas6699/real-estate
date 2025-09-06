@@ -1,7 +1,7 @@
 'use client'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation'; // ✅ For Next.js App Router
+import { useParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/AdminComponents/Navbar';
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +9,7 @@ import { GET_LEAD_DETAILS } from '@/config/api';
 
 const LeadDetailsPage = () => {
     const { slug } = useParams();
+    const router = useRouter();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [lead, setLead] = useState<any>(null);
 
@@ -29,6 +30,11 @@ const LeadDetailsPage = () => {
 
         fetchLeadDetails();
     }, [slug]);
+
+    const handleDisposeLead = () => {
+        if (!slug) return;
+        router.push(`/telecaller/change/${slug}`); // ✅ Redirect
+    };
 
     const displayValue = (val: string | undefined) =>
         val && val.trim() !== '' ? val : 'Empty';
@@ -67,6 +73,12 @@ const LeadDetailsPage = () => {
                 ) : (
                     <p>Loading lead details...</p>
                 )}
+                <button
+                    className='bg-black mt-5 cursor-pointer p-2 rounded text-white'
+                    onClick={handleDisposeLead}
+                >
+                    📞 Dispose This Lead
+                </button>
             </section>
         </>
     );
