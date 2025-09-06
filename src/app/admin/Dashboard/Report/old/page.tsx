@@ -256,6 +256,7 @@ export default function OldLeadsTablePage() {
             .filter((key) => {
                 const lower = key.toLowerCase();
                 if (lower === "password") return false;
+                if(lower === "matchid1" || lower === "matchid2") return false;
                 if (lower === "_id" || lower.endsWith("id")) return false;
                 return true;
             })
