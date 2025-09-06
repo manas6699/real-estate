@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GET_SCHEDULES_BY_ID } from '@/config/api';
 
+
 interface Schedule {
     _id: string;
     title: string;
@@ -58,12 +59,25 @@ const ScheduleTracker = () => {
                     const toastId = schedule._id;
 
                     if (!toast.isActive(toastId)) {
-                        toast.error(`⏰ Schedule "${schedule.title}" has exceeded time!`, {
-                            toastId,
-                            autoClose: false,
-                            closeOnClick: true,
-                            draggable: true,
-                        });
+                        toast.error(
+                            <div>
+                                ⏰ Schedule &quot;<b>{schedule.title}</b>&quot; has exceeded time!{" "}
+
+                                <a
+                                    href="/telecaller/Calender"
+                                    style={{ textDecoration: "underline", color: "#ff4444", fontWeight: "bold" }}
+                                >
+                                    VIEW CALENDAR
+                                </a>
+
+                            </div>,
+                            {
+                                toastId,
+                                autoClose: false,
+                                closeOnClick: true,
+                                draggable: true,
+                            }
+                        );
                     }
                 }
             });
