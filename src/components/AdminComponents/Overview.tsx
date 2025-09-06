@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ALL_LEAD_COUNT, GET_FILTERED_DATA } from '@/config/api';
+import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 
 type Stats = {
     totalCount: number;
@@ -93,7 +94,6 @@ export default function Overview() {
             { label: 'Site Visit Done', key: 'siteVisitDone' },
         ],
         [
-            { label: 'Overdue', key: 'overdue' },
             { label: 'Call Back', key: 'callBack' },
             { label: 'Follow Up', key: 'followUp' },
         ],
@@ -116,6 +116,12 @@ export default function Overview() {
                     ))}
                 </section>
             ))}
+
+            <section className="flex flex-col md:flex-row gap-4 mb-4">
+                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+                    <ScheduleTracker />
+                </div>
+            </section>
         </>
     );
 }
