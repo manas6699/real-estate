@@ -40,6 +40,8 @@ export const POST_FCM_TOKEN = `${API_BASE_URL}/push-notifications/save-token`;
 
 export const GET_SCHEDULES_BY_ID = (id: string) => `${API_BASE_URL}/calender/schedules/${id}`;
 
+export const GET_ALL_SCHEDULES = `${API_BASE_URL}/calender/allSchedules`;
+
 // get lead history
 export const GET_LEAD_HISTORY = (id: string) => `${API_BASE_URL}/admin/assigns/history/${id}`;
 
