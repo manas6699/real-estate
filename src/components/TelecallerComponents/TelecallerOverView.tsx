@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GET_OLD_LEADS_FOR_TELECALLER, GET_LEAD_BY_ID, GET_SCHEDULES_BY_ID } from '@/config/api';
+import ScheduleTracker from '@/components/TelecallerComponents/ScheduleTracker';
 
 type AssignLeadCount = {
     newLeadCount: number;
@@ -190,8 +191,7 @@ const TelecallerOverView = ({ newLeadCount }: AssignLeadCount) => {
                     <div className="text-2xl font-bold">{stats.callPending}</div>
                 </div>
                 <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                    <div className="text-gray-600">Overdue</div>
-                    <div className="text-2xl font-bold">0</div>
+                    <ScheduleTracker />
                 </div>
             </section>
 
@@ -211,7 +211,6 @@ const TelecallerOverView = ({ newLeadCount }: AssignLeadCount) => {
                 <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
                     <div className="text-gray-600">Call Back</div>
                     <div className="text-2xl font-bold">{stats.callBack}</div>
-                    {/* ✅ fixed */}
                 </div>
             </section>
         </section>
