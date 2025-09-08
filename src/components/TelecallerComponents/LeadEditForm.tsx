@@ -11,7 +11,10 @@ import {
     REASSIGN_NEW_LEADS,
     GET_ALL_PROJECTS, 
     POST_A_PROJECT, 
+    GET_LEAD_DETAILS
 } from "@/config/api";
+import leadStatuses from "@/options/Leadstatus"; 
+import preferredConfigs from "@/options/PreferedConfig";
 import BudgetInput from "@/components/TelecallerComponents/BudgetInput";
 
 type leadIdType = { leadId: string };
@@ -27,44 +30,7 @@ type Project = {
     projectName: string;
 };
 
-const leadStatuses = [
-    "Busy",
-    "Not responding",
-    "Network Error",
-    "Not Valid",
-    "Follow-Up",
-    "Redirection to voice-mail",
-    "Site Visit Fixed",
-    "Sold",
-    "Site Visit Done",
-    "Site Visit Cancelled",
-    "Site Visit Rescheduled",
-    "Already Booked",
-    "Call Back",
-    "Fraud",
-    "Agent Switch",
-    "Visited Followup",
-    "Location Issue",
-    "Budget Issue",
-    "Duplicate",
-    "Language barrier",
-    "Not interested",
-];
-
 const transferStatus = ["Budget Issue", "Location Issue", "Language Barrier"];
-
-const preferredConfigs = [
-    "1 BHK",
-    "2 BHK",
-    "3 BHK",
-    "4 BHK",
-    "Villa",
-    "Penthouse",
-    "Plot",
-    "Studio Apartment",
-    "Commercial Space",
-    "Office Space",
-];
 
 const furnishedOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
 const propertyStatusOptions = ["Under Construction", "Ready to Move"];
@@ -109,6 +75,37 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         // Fetch projects list
         fetchProjects();
     }, []);
+
+    useEffect(() => {
+        const fetchLeadDetails = async () => {
+            try {
+                const res = await axios.get(GET_LEAD_DETAILS(leadId));
+                if (res.data?.lead) {
+                    const lead = res.data.lead;
+                    setAlternatePhone(lead.alternate_phone || "");
+                    setClientBudget(lead.client_budget || "");
+                    setInterestedProject(lead.interested_project || "");
+                    setLeadStatus(lead.lead_status || "");
+                    setLeadType(lead.lead_type || "");
+                    setLocation(lead.location || "");
+                    setPreferredFloor(lead.preferred_floor || "");
+                    setPreferredConfig(lead.preferred_configuration || "");
+                    setFurnishedStatus(lead.furnished_status || "");
+                    setPropertyStatus(lead.property_status || "");
+                    setComments(lead.comments || "");
+                    setScheduleDate(lead.schedule_date || "");
+                    setScheduleTime(lead.schedule_time || "");
+                }
+            } catch (err) {
+                console.error("Error fetching lead details:", err);
+                toast.error("Failed to load lead details");
+            }
+        };
+
+        fetchLeadDetails();
+        fetchProjects();
+    }, [leadId]);
+
 
     const fetchProjects = async () => {
         try {
