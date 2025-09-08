@@ -490,6 +490,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </label>
                         <input
                             type="date"
+                            required
                             value={schedule_date}
                             onChange={(e) => setScheduleDate(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
@@ -503,6 +504,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </label>
                         <input
                             type="time"
+                            required
                             value={schedule_time}
                             onChange={(e) => setScheduleTime(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
