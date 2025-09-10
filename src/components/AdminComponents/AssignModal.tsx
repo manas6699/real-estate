@@ -1,12 +1,13 @@
 'use client';
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import sortTelecallerList from '@/utils/sortTelecallerList';
 import { ASSIGN_API, GET_ALL_TELECALLERS_API, GET_ALL_SALES_PERSONS_API } from '@/config/api';
 
 type User = {
     id: string;
     name: string;
-    phone: string;
+    // phone: string;
     role: string;
 };
 
@@ -30,7 +31,7 @@ export default function AssignModal({ onClose, leadId }: AssignModalProps) {
                 activeTab === 'telecaller' ? GET_ALL_TELECALLERS_API : GET_ALL_SALES_PERSONS_API;
             const response = await axios.get(apiUrl);
             console.log(`Fetched ${activeTab}s:`, response.data);
-            setUsers(response.data.data);
+            setUsers(sortTelecallerList(response.data.data));
             // Clear previous selection when switching tabs
             setSelectedUser(null);
             setAssigningId(null);
