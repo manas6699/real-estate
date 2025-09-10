@@ -9,7 +9,8 @@ import {
     ColumnDef,
     flexRender,
 } from '@tanstack/react-table';
-import { GET_ALL_LEADS } from '@/config/api';
+import { GET_ALL_UNASSIGNED_LEADS } from '@/config/api';
+import UnassignLeadsBlank from '../Blank/UnassignLeadsBlank';
 
 type Lead = {
     _id: string;
@@ -22,40 +23,42 @@ type Lead = {
 
 type assignbtntype = {
     assignbtn?: string;
-}
+};
 
 export default function LeadTable({ assignbtn }: assignbtntype) {
     const [data, setData] = useState<Lead[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
 
+    // pagination state
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [total, setTotal] = useState(0); // backend should return total leads count
 
     useEffect(() => {
         const fetchLeads = async () => {
             try {
-                const res = await axios.get(GET_ALL_LEADS);
-                // if assignbtn is assigned then filter lead.status to 'assigned'
-                if (assignbtn === 'assigned') {
-                    const assignedLeads = res.data.leads.filter(
-                        (lead: Lead) => lead.status === 'assigned'
-                    );
-                    setData(assignedLeads);
-                    return;
-                }
-                else {
-                    const unassignedLeads = res.data.leads.filter(
-                        (lead: Lead) => lead.status === 'not-assigned'
-                    );
+                const res = await axios.get(GET_ALL_UNASSIGNED_LEADS, {
+                    params: { page, limit: pageSize },
+                });
 
-                    setData(unassignedLeads);
+                let leads: Lead[] = res.data.leads || [];
+
+                // filter based on assigned/unassigned
+                if (assignbtn === 'assigned') {
+                    leads = leads.filter((lead: Lead) => lead.status === 'assigned');
+                } else {
+                    leads = leads.filter((lead: Lead) => lead.status === 'not-assigned');
                 }
+
+                setData(leads);
+                setTotal(res.data.total || 0); // assuming backend sends `total`
             } catch (err) {
                 console.error(err);
             }
         };
         fetchLeads();
-    }, [assignbtn]);
-
+    }, [assignbtn, page, pageSize]);
 
     const columns: ColumnDef<Lead>[] = [
         {
@@ -69,7 +72,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
         {
             accessorKey: 'createdAt',
             header: 'Date',
-            cell: info =>
+            cell: (info) =>
                 new Date(info.getValue() as string).toLocaleDateString('en-GB', {
                     day: 'numeric',
                     month: 'long',
@@ -90,8 +93,8 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
                         setIsModalOpen(true);
                     }}
                     className={`px-4 py-2 rounded ${assignbtn === 'assigned'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-orange-500 text-white'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-orange-500 text-white'
                         }`}
                 >
                     {assignbtn === 'assigned' ? 'Reassign' : 'Assign'}
@@ -100,56 +103,106 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
         },
     ];
 
-
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
     });
 
+    // calculate total pages
+    const totalPages = Math.ceil(total / pageSize);
+
     return (
         <>
-        <div className='flex'>
-            <h1 className="text-2xl font-bold mb-4">Unassigned Leads</h1>
-            <div className="bg-black rounded-full h-8 ml-2.5 w-8">
-                <text className="text-white text-xs font-extrabold flex items-center justify-center h-full">
-                    <span className="text-center">
+            <div className="flex">
+                <h1 className="text-2xl font-bold mb-4">
+                    {assignbtn === 'assigned' ? 'Assigned Leads' : 'Unassigned Leads'}
+                </h1>
+                <div className="bg-black rounded-full h-8 ml-2.5 w-8">
+                    <span className="text-white text-xs font-extrabold flex items-center justify-center h-full">
                         {data.length}
                     </span>
-                </text>
+                </div>
+            </div>
+            <div className="bg-red-50 border-l-4 border-red-400 p-2 sm:w-1/5  mb-4">
+                <h2 className="text-sm font-extrabold">Total Unassigned  Leads : {total}</h2>
             </div>
 
-        </div>
             <div className="space-y-4">
-                {table.getRowModel().rows.map(row => (
-                    <div
-                        key={row.id}
-                        className="flex flex-col md:flex-row justify-between items-center bg-white rounded-lg shadow p-4"
-                    >
-                        {row.getVisibleCells().map(cell => (
+                {
+                    data.length === 0 ? (
+                        <UnassignLeadsBlank />
+                    ) :
+                        table.getRowModel().rows.map((row) => (
                             <div
-                                key={cell.id}
-                                className="flex-1 mb-2 md:mb-0 md:mr-4 text-left"
+                                key={row.id}
+                                className="flex flex-col md:flex-row justify-between items-center bg-white rounded-lg shadow p-4"
                             >
-                                <div className="text-xs flex justify-center text-gray-400">
-                                    {cell.column.columnDef.header as string}
-                                </div>
-                                <div className="font-medium items-center flex justify-center mt-2">
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </div>
+                                {row.getVisibleCells().map((cell) => (
+                                    <div
+                                        key={cell.id}
+                                        className="flex-1 mb-2 md:mb-0 md:mr-4 text-left"
+                                    >
+                                        <div className="text-xs flex justify-center text-gray-400">
+                                            {cell.column.columnDef.header as string}
+                                        </div>
+                                        <div className="font-medium items-center flex justify-center mt-2">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        ))
+                }
+
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center space-x-2">
+                        <button
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                        >
+                            Prev
+                        </button>
+                        <span className="text-sm">
+                            Page {page} of {totalPages || 1}
+                        </span>
+                        <button
+                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                            disabled={page >= totalPages}
+                            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                        >
+                            Next
+                        </button>
                     </div>
-                ))}
+
+                    <div>
+                        <label className="mr-2 text-sm">Rows per page:</label>
+                        <select
+                            value={pageSize}
+                            onChange={(e) => {
+                                setPageSize(Number(e.target.value));
+                                setPage(1); // reset to first page
+                            }}
+                            className="border rounded p-1 text-sm"
+                        >
+                            {[10, 15, 20, 25].map((size) => (
+                                <option key={size} value={size}>
+                                    {size}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
 
                 {isModalOpen && selectedLeadId && (
                     <AssignModal
                         onClose={() => setIsModalOpen(false)}
-                        leadId={selectedLeadId} 
+                        leadId={selectedLeadId}
                     />
                 )}
             </div>
         </>
     );
-    
 }
