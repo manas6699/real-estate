@@ -4,7 +4,17 @@
 import { usePathname } from 'next/navigation';
 
 import React from 'react';
-import { Home, Users, BarChart2, HelpCircle, ArrowDownLeft, BadgeAlert, MonitorCog, BadgeCheck } from 'lucide-react';
+import {
+    Home,
+    Users,
+    BarChart2,
+    HelpCircle,
+    ArrowDownLeft,
+    BadgeAlert,
+    MonitorCog,
+    BadgeCheck,
+    ArrowBigUpDash
+} from 'lucide-react';
 
 export default function Sidebar() {
 
@@ -27,6 +37,13 @@ export default function Sidebar() {
                             }`}
                     >
                         <ArrowDownLeft size={20} /> <span>Insert Data</span>
+                    </a>
+                    <a
+                        href="/admin/BulkUpload"
+                        className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/BulkUpload' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
+                            }`}
+                    >
+                        <ArrowBigUpDash size={20} /> <span>Bulk Data Upload</span>
                     </a>
                     <a
                         href="/admin/Campaign"
