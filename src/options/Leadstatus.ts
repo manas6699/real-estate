@@ -3,7 +3,7 @@
         'Not responding',
         'Network Error',
         'Not Valid',
-        'Follow-Up',
+        'Under Follow Up',
         'Redirection to voice-mail',
         'Site Visit Fixed',
         'Sold',
