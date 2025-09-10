@@ -87,8 +87,8 @@ export default function Overview() {
             { label: 'Site Visit Fixed', key: 'siteVisitFixed' },
         ],
         [
-            { label: 'Hot Leads', key: 'hotLeads' },
             { label: 'Cold Leads', key: 'coldLeads' },
+            { label: 'Hot Leads', key: 'hotLeads' },
             { label: 'Warm Leads', key: 'warmLeads' },
             { label: 'Booked', key: 'booked' },
             { label: 'Site Visit Done', key: 'siteVisitDone' },
