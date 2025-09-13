@@ -1,16 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import AssignModal from './AssignModal';
 import axios from 'axios';
-import {
-    useReactTable,
-    getCoreRowModel,
-    ColumnDef,
-    flexRender,
-} from '@tanstack/react-table';
-import { GET_ALL_UNASSIGNED_LEADS } from '@/config/api';
-import UnassignLeadsBlank from '../Blank/UnassignLeadsBlank';
+import React, { useEffect, useState } from 'react';
+import { Navigation, SquareMousePointer } from 'lucide-react';
+import AssignModal from '@/components/AdminComponents/AssignModal';
+
+import UnassignLeadsBlank from '@/components/Blank/UnassignLeadsBlank';
+import { useReactTable, getCoreRowModel, ColumnDef, flexRender, } from '@tanstack/react-table';
+import { GET_ALL_UNASSIGNED_LEADS, GET_ALL_TELECALLERS_API, BULK_ASSIGN_API } from '@/config/api';
 
 type Lead = {
     _id: string;
@@ -28,12 +25,23 @@ type assignbtntype = {
 export default function LeadTable({ assignbtn }: assignbtntype) {
     const [data, setData] = useState<Lead[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // bulk assign modal
+    const [bulkModal, setBulkModal] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [telecallerList, setTelecallerList] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [selectTelecaller, setSelectTelecaller] = useState<any>("");
     const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+    // remarks state
+    const [remarks, setRemarks] = useState("")
+    // selection state
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const allSelected = data.length > 0 && selectedIds.length === data.length;
 
     // pagination state
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [total, setTotal] = useState(0); // backend should return total leads count
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
         const fetchLeads = async () => {
@@ -53,6 +61,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
 
                 setData(leads);
                 setTotal(res.data.total || 0); // assuming backend sends `total`
+                setSelectedIds([]);
             } catch (err) {
                 console.error(err);
             }
@@ -60,7 +69,96 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
         fetchLeads();
     }, [assignbtn, page, pageSize]);
 
+    useEffect(() => {
+        if (bulkModal) {
+            axios.get(GET_ALL_TELECALLERS_API).then((res) => {
+                setTelecallerList(res.data?.data || []);
+            }).catch((err) => {
+                console.error("Error fetching telecaller list", err);
+            })
+        }
+    }, [bulkModal])
+
+
+
+    // -------------------- Replace handleBulkAssign with this --------------------
+    const handleBulkAssign = async () => {
+        // basic validations
+        if (selectedIds.length === 0) {
+            alert("Please select at least one lead to assign.");
+            return;
+        }
+        if (!selectTelecaller) {
+            alert("Please select a telecaller first!");
+            return;
+        }
+
+        // IMPORTANT FIX: compare against selectTelecaller (state), not setSelectTelecaller (setter)
+        const telecaller = telecallerList.find((t) => t.name === selectTelecaller);
+
+        if (!telecaller) {
+            console.log("Telecaller not found. telecallerList:", telecallerList, "selectTelecaller:", selectTelecaller);
+            alert("Selected telecaller not found. Check the console for details.");
+            return;
+        }
+
+
+        const payload = {
+            lead_ids: selectedIds,
+            assignee_id: telecaller.id,
+            assignee_name: telecaller.name || "Unknown",
+            history: "testing",
+            remarks,
+        };
+        console.log(payload)
+
+        try {
+
+            const res = await axios.post(BULK_ASSIGN_API, payload);
+            alert(res.data?.message || "Leads assigned successfully!");
+            setBulkModal(false);
+            setSelectedIds([]); // clear selected leads after success
+
+            // optional: refresh leads list — trigger the same fetch used in your useEffect
+            // simplest quick trick: reset page which will trigger the useEffect fetch
+            setPage(1);
+            // or better: extract fetchLeads into a function and call it here (see note below)
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            console.error("Bulk assignment failed:", err);
+            alert(err?.response?.data?.message || "Something went wrong");
+        }
+    };
+
+
+    const toggleSelectAll = () => {
+        if (allSelected) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(data.map((lead) => lead._id));
+        }
+    };
+
+    const toggleSelectOne = (id: string) => {
+        setSelectedIds((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+        );
+    };
+    console.log(`Selected IDs: ${selectedIds}`)
+
     const columns: ColumnDef<Lead>[] = [
+        {
+            id: 'select',
+            header: 'Action',
+            cell: ({ row }) => (
+                <input
+                    type="checkbox"
+                    checked={selectedIds.includes(row.original._id)}
+                    onChange={() => toggleSelectOne(row.original._id)}
+                />
+            ),
+        },
         {
             accessorKey: 'source',
             header: 'Project Name',
@@ -126,6 +224,133 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             </div>
             <div className="bg-red-50 border-l-4 border-red-400 p-2 sm:w-1/5  mb-4">
                 <h2 className="text-sm font-extrabold">Total Unassigned  Leads : {total}</h2>
+            </div>
+
+            {/* ✅ Show selected IDs for debugging */}
+            {/* <div className="mb-2 text-sm text-gray-600">
+                Selected IDs: {selectedIds.join(', ') || 'None'}
+            </div> */}
+            {/* ✅ Toggle select */}
+            <div className="mb-4 text-sm text-gray-600">
+                {/* <button
+                    onClick={toggleSelectAll}
+                    className="relative px-6 py-2 text-xl font-extrabold w-60 rounded-full bg-gray-700 text-white overflow-hidden cursor-pointer"
+                >
+                    
+                    <span className="absolute inset-0 rounded-full p-[3px] bg-gradient-to-r from-pink-500 via-yellow-400 to-pink-500 animate-gradient">
+                        <span className="block h-full w-full rounded-full bg-gray-700"></span>
+                    </span>
+
+                    <span className="relative z-10">
+                        {selectedIds.length === 0 ? "Select All" : "Unselect All"}
+                    </span>
+                </button> */}
+
+                {total ?
+                    <div className='flex gap-4'>
+                        <button
+                            onClick={toggleSelectAll}
+                            className="relative px-6 py-3 text-md w-60 cursor-pointer font-bold uppercase 
+                            tracking-widest bg-slate-800 text-orange-300 rounded-md overflow-hidden  
+                            flex items-center justify-center space-x-2"
+                        >
+                            <span>
+                                {selectedIds.length < data.length ? "Select All" : "Unselect All"}
+                            </span>
+                            <SquareMousePointer />
+                            {/* Top border */}
+                            <span className="absolute left-0 top-0 h-[6px] w-full bg-gradient-to-r from-transparent to-orange-400 animate-border-top"></span>
+
+                            {/* Right border */}
+                            <span className="absolute right-[-6px] top-0 h-full w-[6px] bg-gradient-to-b from-transparent to-orange-400 animate-border-right"></span>
+
+                            {/* Bottom border */}
+                            <span className="absolute right-0 bottom-0 h-[6px] w-full bg-gradient-to-l from-transparent to-orange-400 animate-border-bottom"></span>
+
+                            {/* Left border */}
+                            <span className="absolute left-0 bottom-0 h-full w-[6px] bg-gradient-to-t from-transparent to-orange-400 animate-border-left"></span>
+                        </button>
+                        {selectedIds.length > 0 ?
+                            <button
+                                onClick={() => {
+
+                                    setBulkModal(true);
+                                }}
+                                className="relative px-6 py-3 text-md w-60 cursor-pointer font-bold uppercase tracking-widest bg-slate-800 text-green-300 rounded-md overflow-hidden flex items-center justify-center space-x-2"
+                            >
+                                <span>Bulk Assign</span>
+                                <Navigation />
+
+                                {/* Top border */}
+                                <span className="absolute left-0 top-0 h-[6px] w-full bg-gradient-to-r from-transparent to-green-400 animate-border-top"></span>
+
+                                {/* Right border */}
+                                <span className="absolute right-[-6px] top-0 h-full w-[6px] bg-gradient-to-b from-transparent to-green-400 animate-border-right"></span>
+
+                                {/* Bottom border */}
+                                <span className="absolute right-0 bottom-0 h-[6px] w-full bg-gradient-to-l from-transparent to-green-400 animate-border-bottom"></span>
+
+                                {/* Left border */}
+                                <span className="absolute left-0 bottom-0 h-full w-[6px] bg-gradient-to-t from-transparent to-green-400 animate-border-left"></span>
+                            </button>
+                            : <></>}
+                    </div>
+                    :
+                    <></>
+                }
+
+                {bulkModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white w-[400px] p-6 rounded-lg shadow-lg">
+                            <h2 className="text-xl font-bold mb-4">Bulk Assign Leads</h2>
+
+                            {/* Telecaller select */}
+                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                Select Telecaller
+                            </label>
+                            <select
+                                value={selectTelecaller}
+                                onChange={(e) => setSelectTelecaller(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                            >
+                                <option value="">-- Choose Telecaller --</option>
+                                {telecallerList.map((t) => (
+                                    <option key={t._id} value={t._id}>
+                                        {t.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* Remarks */}
+                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                Remarks (optional)
+                            </label>
+                            <textarea
+                                value={remarks}
+                                onChange={(e) => setRemarks(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                                rows={3}
+                                placeholder="Enter remarks"
+                            />
+
+                            {/* Actions */}
+                            <div className="flex justify-end space-x-2">
+                                <button
+                                    onClick={() => setBulkModal(false)}
+                                    className="px-4 cursor-pointer py-2 rounded-md bg-gray-200 text-gray-700"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleBulkAssign}
+                                    className="px-4 py-2 cursor-pointer rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="space-y-4">
