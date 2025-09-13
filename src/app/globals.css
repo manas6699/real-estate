@@ -70,3 +70,36 @@ input[type=number]::-webkit-inner-spin-button,
     animation: typewriter 4s steps(12) infinite, blink 0.7s step-end infinite;
   }
 }
+
+
+/* 🔥 custom animations for neon border */
+@keyframes border-top {
+  0% { left: -100%; }
+  50%, 100% { left: 100%; }
+}
+@keyframes border-right {
+  0% { top: -100%; }
+  50%, 100% { top: 100%; }
+}
+@keyframes border-bottom {
+  0% { right: -100%; }
+  50%, 100% { right: 100%; }
+}
+@keyframes border-left {
+  0% { bottom: -100%; }
+  50%, 100% { bottom: 100%; }
+}
+
+/* ✅ utility classes */
+.animate-border-top {
+  animation: border-top 1s linear infinite;
+}
+.animate-border-right {
+  animation: border-right 1s linear infinite 0.25s;
+}
+.animate-border-bottom {
+  animation: border-bottom 1s linear infinite 0.5s;
+}
+.animate-border-left {
+  animation: border-left 1s linear infinite 0.75s;
+}
