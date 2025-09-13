@@ -26,6 +26,16 @@ export default function BulkUploadPage() {
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
+    const handleSubmit = () => {
+        // Trigger the download
+        const link = document.createElement('a');
+        link.href = '/sample/test-bulk.csv'; // Path in the public folder
+        link.download = 'test-bulk.csv'; // Suggested filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setError(null);
         const f = e.target.files?.[0];
@@ -97,7 +107,11 @@ export default function BulkUploadPage() {
     return (
         <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
             <h1 className="text-2xl font-bold mb-6 text-gray-800">Bulk Upload Leads</h1>
-
+            <div>
+                <p className="mb-2">
+                    Download Sample CSV File <button onClick={handleSubmit} className="text-blue-500 underline cursor-pointer" >here</button>
+                </p>
+            </div>
             {/* File input */}
             <div
                 onClick={() => fileInputRef.current?.click()}
