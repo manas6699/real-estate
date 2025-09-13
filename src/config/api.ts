@@ -18,7 +18,7 @@ export const SHOW_ALL_USERS_API = `${API_BASE_URL}/show/allUsers`;
 export const SHOW_ALL_ASSIGNS_API = `${API_BASE_URL}/admin/all/assigns`;
 
 export const ASSIGN_API = `${API_BASE_URL}/admin/assign`;
-
+export const BULK_ASSIGN_API = `${API_BASE_URL}/admin/bulk/assign`
 export const WEB_SOCKET_URL = `${API_BASE_URL.replace('/api', '')}`;
 
 export const GET_ALL_TELECALLERS_API = `${API_BASE_URL}/users/telecallers`;
