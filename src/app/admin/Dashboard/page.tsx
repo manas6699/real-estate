@@ -4,25 +4,52 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { SHOW_ALL_USERS_API } from '@/config/api';
+import {SHOW_ALL_ASSIGNS_API} from '@/config/api'
 import Navbar from '@/components/AdminComponents/Navbar';
 
 import Sidebar from '@/components/AdminComponents/Sidebar';
-// import UserList from '@/components/AdminComponents/UserList';
 // import Activity from '@/components/AdminComponents/Activity';
-
+// import UserList from '@/components/AdminComponents/UserList';
 import Overview from '@/components/AdminComponents/Overview';
-import UsersTable from '@/components/AdminComponents/UsersTable';
 import { usePushNotifications } from '@/app/hooks/usePushNotifications';
+import AssignedTable from '@/components/AdminComponents/AssignedTable';
 
-type User = {
+type HistoryEntry = {
+    lead_id: string;
+    assignee_name: string;
+    updatedAt: string; // or Date
+    status: string;
+    remarks: string;
+};
+
+type Assign = {
     _id: string;
-    name: string;
-    role: string;
-    online: boolean;
-    password: string;
-    phone?: string;
-    createdAt?: string;
+    lead_id: string;
+    assignee_id: string;
+    assignee_name: string;
+    status: string;
+    remarks: string;
+    history: HistoryEntry[];
+    lead_details: {
+        name: string;
+        email: string;
+        phone: string;
+        source: string;
+        status: string;
+        comments: string,
+        location: string,
+        alternate_phone: string,
+        client_budget: string,
+        furnished_status: string,
+        interested_project: string,
+        lead_status: string,
+        preferred_configuration: string,
+        preferred_floor: string,
+        property_status: string,
+        createdAt: string;
+        updatedAt: string;
+    };
+    createdAt: string;
 };
 
 type JWTPayload = {
@@ -32,7 +59,7 @@ type JWTPayload = {
 
 const Dashboard = () => {
     const router = useRouter();
-    const [users, setUsers] = useState<User[]>([]);
+     const [assigns, setAssigns] = useState<Assign[]>([]);
 
     const [userId, setUserId] = useState<string | null>(null);
 
@@ -45,34 +72,19 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchAssigns = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const res = await axios.get<{ [key: string]: Omit<User, '_id'> }>(
-                    SHOW_ALL_USERS_API,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                if (res.data) {
-                    const usersArray: User[] = Object.entries(res.data).map(
-                        ([id, user]) => ({
-                            _id: id,
-                            ...user, // ✅ Now TS knows user is an object
-                        })
-                    );
-
-                    setUsers(usersArray);
+                const res = await axios.get(SHOW_ALL_ASSIGNS_API);
+                console.log('Assigns API Response:', res.data);
+                if (res.data && res.data.success) {
+                    setAssigns([...res.data.data].reverse());
                 }
             } catch (err) {
-                console.error('Error fetching users:', err);
+                console.error('Error fetching assigns:', err);
             }
         };
 
-        fetchUsers();
+        fetchAssigns();
     }, []);
 
     useEffect(() => {
@@ -122,8 +134,7 @@ const Dashboard = () => {
                 <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
                     <div className="flex flex-col flex-1 gap-4">
                         <Overview />
-                        {/* <UserList /> */}
-                        <UsersTable data={users} />
+                         <AssignedTable  data={assigns} />
                     </div>
                     {/* <Activity /> */}
                 </div>
