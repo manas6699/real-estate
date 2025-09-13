@@ -53,7 +53,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="w-full bg-white shadow-md py-3">
+        <nav className="w-full bg-white shadow-md py-4 rounded-lg">
             <div className="container mx-auto px-4 flex items-center justify-between">
                 {/* ADMIN PANEL text: hidden on small screens */}
                 <div className="hidden lg:flex items-center gap-2 text-gray-800 font-semibold">
