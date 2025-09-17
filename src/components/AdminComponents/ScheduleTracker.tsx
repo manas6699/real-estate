@@ -52,8 +52,8 @@ const ScheduleTracker = () => {
 
             {loading ? (
                 <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 border-2 border-gray-400 border-t-blue-500 rounded-full animate-spin"></div>
-                    <span className="text-gray-500 text-sm">Checking schedules...</span>
+                    <div className="w-8 h-8 border-2 border-gray-400 border-t-blue-500 rounded-full animate-spin"></div>
+                    {/* <span className="text-gray-500 text-sm">Checking schedules...</span> */}
                 </div>
             ) : (
                 <div className="text-2xl font-bold">{overdueCount}</div>
