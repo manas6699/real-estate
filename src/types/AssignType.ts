@@ -19,6 +19,7 @@
         furnished_status: string,
         interested_project: string,
         lead_status: string,
+        lead_type: string;
         preferred_configuration: string,
         preferred_floor: string,
         property_status: string,
