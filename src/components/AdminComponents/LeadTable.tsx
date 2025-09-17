@@ -101,13 +101,13 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             alert("Selected telecaller not found. Check the console for details.");
             return;
         }
-
+        const historyMessage = `This Lead has been assigned to ${telecaller.name}  at ${new Date().toISOString()} with remarks: "${remarks}"`;
 
         const payload = {
             lead_ids: selectedIds,
             assignee_id: telecaller.id,
             assignee_name: telecaller.name || "Unknown",
-            history: "testing",
+            history: [historyMessage],
             remarks,
         };
         console.log(payload)
