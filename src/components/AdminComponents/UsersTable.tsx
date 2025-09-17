@@ -55,8 +55,6 @@ export default function UsersTable({ data }: Props) {
                             <span>{user.role}</span>
                         </div>
 
-                     
-
                         <div className="flex flex-col text-xs text-gray-500 mb-2">
                             <span className="font-medium text-black">Phone</span>
                             <span>{user.phone}</span>

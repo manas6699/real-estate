@@ -1,7 +1,7 @@
-import LeadTable from '@/components/AdminComponents/LeadTable'
+import React from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/AdminComponents/Sidebar'
-import React from 'react'
+import LeadTable from '@/components/AdminComponents/LeadTable'
 
 const page = () => {
     return (
