@@ -37,6 +37,7 @@ type Assign = {
         furnished_status: string;
         interested_project: string;
         lead_status: string;
+        lead_type:string;
         preferred_configuration: string;
         preferred_floor: string;
         property_status: string;
@@ -116,6 +117,15 @@ export default function AssignCardTable({ data }: Props) {
                     >
                         {/* ✅ First row */}
                         <div className="flex flex-wrap justify-between gap-10">
+                            <div className="flex flex-col text-xs text-gray-500">
+                                <span className="font-medium text-black">Lead Type</span>
+                                <span>
+                                    {lead.lead_type === 'Hot' ? '🔥' :
+                                        lead.lead_type === 'Cold' ? '❄️' :
+                                            lead.lead_type === 'Warm' ? '🌤️' : '🙇‍♂️••🚫'}
+
+                                </span>
+                            </div>
                             <div className="flex flex-col text-xs text-gray-500">
                                 <span className="font-medium text-black">Project Name</span>
                                 <span>{lead.source}</span>
