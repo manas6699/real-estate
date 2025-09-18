@@ -147,7 +147,6 @@ const ReportPage = () => {
             <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
-
                 <div className="flex-1 p-4">
                     {/* Header */}
                     <div className="flex">
@@ -257,7 +256,6 @@ const ReportPage = () => {
                                 </option>
                             ))}
                         </select>
-
                         <button
                             onClick={resetFilters}
                             className="bg-red-500 text-white text-xs px-4 py-2 rounded cursor-pointer"
@@ -265,8 +263,9 @@ const ReportPage = () => {
                             Reset Filter
                         </button>
                     </div>
-
-                    <ReportTable data={assigns} />
+                    <div className='md:w-[1150px] rounded-2xl'>
+                        <ReportTable data={assigns} />
+                    </div>
                 </div>
             </main>
         </div>
