@@ -6,7 +6,7 @@ export const API_BASE_URL = 'https://mmrrealty.co.in/api';
 
 
 export const LEADS_ENDPOINT = `${API_BASE_URL}/mmr/leads`;
-export const GET_ALL_LEADS = `${API_BASE_URL}/mmr/getallleads`;
+export const GET_ALL_LEADS = `${API_BASE_URL}/mmr/getallleads`; 
 
 export const GET_ALL_UNASSIGNED_LEADS = `${API_BASE_URL}/mmr/getallleads?status=not-assigned`
 export const BACKEND_ADMIN_POST_API = `${API_BASE_URL}/mmr`;
@@ -85,3 +85,6 @@ export const REASSIGN_API = `${API_BASE_URL}/admin/reassign`
 
 // for bulk upload
 export const BULK_UPLOAD_API = `${API_BASE_URL}/upload/bulk`
+
+// for bulk upload and assign 
+export const BULK_UPLOAD_AND_ASSIGN = `${API_BASE_URL}/upload/bulk-upload-assign`
