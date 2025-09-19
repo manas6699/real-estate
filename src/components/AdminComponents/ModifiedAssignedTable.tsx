@@ -31,6 +31,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        projectSource: string;
         comments: string;
         location: string;
         alternate_phone: string;
@@ -59,26 +60,6 @@ export default function AssignCardTable({ data }: Props) {
 
     const columns: ColumnDef<Assign>[] = [
         {
-            header: 'Project Name',
-            accessorFn: row => row.lead_details.source,
-            id: 'projectName',
-        },
-        {
-            header: 'Customer Name',
-            accessorFn: row => row.lead_details.name,
-            id: 'customerName',
-        },
-        {
-            header: 'Email',
-            accessorFn: row => row.lead_details.email,
-            id: 'email',
-        },
-        {
-            header: 'Phone',
-            accessorFn: row => row.lead_details.phone,
-            id: 'phone',
-        },
-        {
             header: 'Assigned Date',
             accessorFn: row => row.createdAt,
             id: 'assignedDate',
@@ -89,6 +70,41 @@ export default function AssignCardTable({ data }: Props) {
                     year: 'numeric',
                 }),
         },
+        {
+            header: 'Assigned Time',
+            accessorFn: row => row.createdAt,
+            id: 'assignedTime',
+            cell: ({ getValue }) =>
+                new Date(getValue() as string).toLocaleTimeString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                }),
+        },
+
+        {
+            header: 'Customer Name',
+            accessorFn: row => row.lead_details.name,
+            id: 'customerName',
+        },
+        {
+            header: 'Phone Number',
+            accessorFn: row => row.lead_details.phone,
+            id: 'phone',
+        },
+        {
+            header: 'Email',
+            accessorFn: row => row.lead_details.email,
+            id: 'email',
+        },
+        {
+            header: 'Project Name',
+            accessorFn: row => row.lead_details.source,
+            id: 'projectName',
+        },
+
+
+
     ];
 
     const table = useReactTable({
@@ -113,8 +129,6 @@ export default function AssignCardTable({ data }: Props) {
 
     return (
         <div className="space-y-4 relative">
-           
-
             {/* Table */}
             <div className="overflow-x-auto rounded-md border">
                 <table className="w-full text-sm">
@@ -169,6 +183,9 @@ export default function AssignCardTable({ data }: Props) {
                                         <tr className="bg-gray-50">
                                             <td colSpan={columns.length + 2} className="px-6 py-4">
                                                 <div className="grid grid-cols-2 gap-4 text-xs text-gray-600">
+                                            <div>
+                                                <strong>Lead Source:</strong> {lead.projectSource || '—'}
+                                            </div>
                                                     <div>
                                                         <strong>Lead Type:</strong>{' '}
                                                         {lead.lead_type === 'Hot'
