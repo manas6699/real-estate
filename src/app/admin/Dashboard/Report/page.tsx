@@ -147,7 +147,7 @@ const ReportPage = () => {
             <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
-                <div className="flex-1 p-4">
+                <div className="flex-1 p-4  overflow-x-hidden">
                     {/* Header */}
                     <div className="flex">
                         <h1 className="text-2xl font-bold mb-4">View Report</h1>
@@ -263,9 +263,9 @@ const ReportPage = () => {
                             Reset Filter
                         </button>
                     </div>
-                    <div className='md:w-[1150px] rounded-2xl'>
-                        <ReportTable data={assigns} />
-                    </div>
+
+                    <ReportTable data={assigns} />
+
                 </div>
             </main>
         </div>

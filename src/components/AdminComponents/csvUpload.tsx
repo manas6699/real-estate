@@ -65,7 +65,7 @@ export default function BulkUploadPage() {
             formData.append("file", file);
             formData.append("assignee_id", selectedTelecaller.id);
             formData.append("assignee_name", selectedTelecaller.name);
-            formData.append("history", `This Lead is assigned to ${selectedTelecaller.name} at Date : ${formattedDate}`)
+            formData.append("history", `This Lead is Bulk-Assigned to ${selectedTelecaller.name} at Date : ${formattedDate}`)
 
             const res = await axios.post(BULK_UPLOAD_AND_ASSIGN, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
