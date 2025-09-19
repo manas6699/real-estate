@@ -8,7 +8,6 @@ import Sidebar from '@/components/AdminComponents/Sidebar';
 import { GET_ALL_SCHEDULES, GET_MULTIPLE_ASSIGNS } from "@/config/api";
 import AssignCardTable from "@/components/AdminComponents/ModifiedAssignedTable";
 
-
 type Schedule = {
     lead_id: string;
     assign_id: string;
@@ -38,6 +37,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        projectSource: string;
         comments: string;
         location: string;
         alternate_phone: string;
@@ -54,6 +54,7 @@ type Assign = {
     };
     createdAt: string;
 };
+
 
 // ✅ API response wrapper
 type ApiResponse<T> = {
