@@ -60,22 +60,24 @@ export default function ReportTable({ data }: Props) {
                         <thead className="bg-gray-50 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                             <tr>
                                 {[
-                                    'Project Name',
-                                    'Customer Name',
-                                    'Admin Remark',
                                     'Assigned Date',
+                                    'Time',
+                                    'Customer Name',
                                     'Phone',
-                                    'Client Email',
+                                    'Email',
+                                    'Project Name',
                                     'Lead Source',
+                                    'Client Budget',
+                                    'Configuration',
+                                    'Admin Remark',
                                     'Disposition Statement',
                                     'Current Status',
                                     'Assignee',
                                     'Location',
                                     'Alternate Phone',
-                                    'Client Budget',
                                     'Furnished Status',
                                     'Interested Project',
-                                    'Actions',
+                                    'View History',
                                 ].map((head, i) => (
                                     <th
                                         key={i}
@@ -93,9 +95,6 @@ export default function ReportTable({ data }: Props) {
 
                                 return (
                                     <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-4 py-3 truncate max-w-xs">{lead.source || '---'}</td>
-                                        <td className="px-4 py-3 truncate max-w-xs">{lead.name}</td>
-                                        <td className="px-4 py-3 truncate max-w-xs">{assign.remarks || '---'}</td>
                                         <td className="px-4 py-3 whitespace-nowrap">
                                             {new Date(assign.createdAt).toLocaleDateString('en-GB', {
                                                 day: 'numeric',
@@ -103,9 +102,21 @@ export default function ReportTable({ data }: Props) {
                                                 year: 'numeric',
                                             })}
                                         </td>
+                                        <td className="px-4 py-3 whitespace-nowrap">
+                                            {new Date(assign.createdAt).toLocaleTimeString('en-GB', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: true
+                                            })}
+                                        </td>
+                                        <td className="px-4 py-3 truncate max-w-xs">{lead.name}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.phone}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.email || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.source || '---'}</td>
+                                        <td className="px-4 py-3 truncate max-w-xs">{lead.projectSource || '---'}</td>
+                                        <td className="px-4 py-3 truncate max-w-xs">{lead.client_budget || '---'}</td>
+                                        <td className="px-4 py-3 truncate max-w-xs">{lead.preferred_configuration || '---'}</td>
+                                        <td className="px-4 py-3 truncate max-w-xs">{assign.remarks || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.comments || '---'}</td>
                                         <td className="px-4 py-3">
                                             <span className="flex items-center space-x-1.5">
@@ -125,7 +136,6 @@ export default function ReportTable({ data }: Props) {
                                         </td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.location || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.alternate_phone || '---'}</td>
-                                        <td className="px-4 py-3 truncate max-w-xs">{lead.client_budget || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.furnished_status || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.interested_project || '---'}</td>
                                         <td className="px-4 py-3 text-center">
