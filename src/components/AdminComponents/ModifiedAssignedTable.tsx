@@ -60,28 +60,27 @@ export default function AssignCardTable({ data }: Props) {
 
     const columns: ColumnDef<Assign>[] = [
         {
-            header: 'Assigned Date',
+            header: 'Assigned Date & Time',
             accessorFn: row => row.createdAt,
-            id: 'assignedDate',
-            cell: ({ getValue }) =>
-                new Date(getValue() as string).toLocaleDateString('en-GB', {
+            id: 'assignedDateTime',
+            cell: ({ getValue }) => {
+                const date = new Date(getValue() as string);
+
+                const formattedDate = date.toLocaleDateString('en-GB', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric',
-                }),
-        },
-        {
-            header: 'Assigned Time',
-            accessorFn: row => row.createdAt,
-            id: 'assignedTime',
-            cell: ({ getValue }) =>
-                new Date(getValue() as string).toLocaleTimeString('en-GB', {
+                });
+
+                const formattedTime = date.toLocaleTimeString('en-GB', {
                     hour: '2-digit',
                     minute: '2-digit',
-                    hour12: true
-                }),
-        },
+                    hour12: true,
+                });
 
+                return `${formattedDate} ${formattedTime}`;
+            },
+        },
         {
             header: 'Customer Name',
             accessorFn: row => row.lead_details.name,

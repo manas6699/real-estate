@@ -18,6 +18,7 @@ export default function BulkUploadPage() {
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [preview, setPreview] = useState<CSVRow[]>([]);
+    const [phoneError, setPhoneError] = useState<string | null>(null);
 
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,6 +34,7 @@ export default function BulkUploadPage() {
         setPreview([]);
         setError(null);
         setSelectedTelecaller(() => null)
+        setPhoneError(() => null)
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
@@ -118,7 +120,19 @@ export default function BulkUploadPage() {
             header: true,
             skipEmptyLines: true,
             complete: (results) => {
+                const rows = results.data;
                 setPreview(results.data.slice(0, 5)); // show only first 5 rows
+
+                // validate phone numbers
+                const invalidRows = rows.filter(
+                    (row) => !/^\d{10}$/.test(row.phone?.trim() || "")
+                );
+                if(invalidRows.length > 0){
+                    setPhoneError(`${invalidRows.length} rows have invalid Phone Numbers`)
+                }
+                else{
+                    setPhoneError(null)
+                }
             },
         });
     };
@@ -187,11 +201,10 @@ export default function BulkUploadPage() {
 
     return (
         <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
-
             <h1 className="text-2xl font-bold mb-6 text-gray-800">Bulk Upload Leads</h1>
             <div>
                 <p className="mb-2">
-                    Download Sample CSV File
+                    Download Sample CSV File &nbsp;
                     <button onClick={handleSubmit} className="text-blue-500 underline cursor-pointer" >
                         here
                     </button>
@@ -227,6 +240,13 @@ export default function BulkUploadPage() {
                 )}
                 <p className="text-xs text-gray-400 mt-1">Max size: 10 MB</p>
             </div>
+
+            {/* Phone Error */}
+            {phoneError && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm rounded flex items-center">
+                    <XCircle className="mr-2" size={18} /> {phoneError}
+                </div>
+            )}
 
             {/* CSV Preview */}
             {preview.length > 0 && (
@@ -278,7 +298,7 @@ export default function BulkUploadPage() {
 
                 <button
                     onClick={handleUpload}
-                    disabled={!file || uploading}
+                    disabled={!file || uploading || !!phoneError}
                     className="cursor-pointer ml-5 px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg flex items-center transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {uploading ? (
@@ -294,7 +314,7 @@ export default function BulkUploadPage() {
                     <div className="flex">
                         <button
                             onClick={handleUploadAndAssign}
-                            disabled={!file || uploadingAssign || !selectedTelecaller}
+                            disabled={!file || uploadingAssign || !selectedTelecaller || !!phoneError}
                             className="cursor-pointer px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-l-lg flex items-center transition disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {uploadingAssign ? (
@@ -316,7 +336,7 @@ export default function BulkUploadPage() {
                 </div>
                 {/* Dropdown menu */}
                 {dropdownOpen && (
-                    <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto w-56">
+                    <div className="absolute right-14 mt-12 bg-white rounded-lg shadow-lg z-50 max-h-40 overflow-y-auto">
                         {loadingTelecallers ? (
                             <div className="px-4 py-2 text-gray-500">Loading...</div>
                         ) : telecallers.length > 0 ? (

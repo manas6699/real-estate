@@ -79,9 +79,6 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
         }
     }, [bulkModal])
 
-
-
-    // -------------------- Replace handleBulkAssign with this --------------------
     const handleBulkAssign = async () => {
         // basic validations
         if (selectedIds.length === 0) {
@@ -98,7 +95,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
 
         if (!telecaller) {
             console.log("Telecaller not found. telecallerList:", telecallerList, "selectTelecaller:", selectTelecaller);
-            alert("Selected telecaller not found. Check the console for details.");
+            alert("Selected telecaller not found.");
             return;
         }
         const historyMessage = `This Lead has been assigned to ${telecaller.name}  at ${new Date().toISOString()} with remarks: "${remarks}"`;
@@ -145,7 +142,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
-    console.log(`Selected IDs: ${selectedIds}`)
+   
 
     const columns: ColumnDef<Lead>[] = [
         {
