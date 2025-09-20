@@ -1,12 +1,8 @@
 'use client';
 
-
 import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/SupervisorComponents/Sidebar'
-
 import LeadTable from '@/components/AdminComponents/LeadTable';
-
-
 
 const BulkAssignPage = () => {
 
