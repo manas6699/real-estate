@@ -34,8 +34,8 @@ const ScheduleTracker = () => {
     useEffect(() => {
         fetchSchedules();
 
-        // ✅ Optional: refresh every 10s to keep count updated
-        const interval = setInterval(fetchSchedules, 10000);
+        // ✅ Optional: refresh every 100s to keep count updated
+        const interval = setInterval(fetchSchedules, 100000);
         return () => clearInterval(interval);
     }, []);
 
