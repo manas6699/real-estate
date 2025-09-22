@@ -7,7 +7,6 @@ import Navbar from '@/components/AdminComponents/Navbar';
 
 import Overview from '@/components/AdminComponents/Overview';
 import Sidebar from '@/components/SupervisorComponents/Sidebar';
-import { usePushNotifications } from '@/app/hooks/usePushNotifications';
 
 
 type JWTPayload = {
@@ -19,6 +18,7 @@ const Dashboard = () => {
     const router = useRouter();
 
     const [userId, setUserId] = useState<string | null>(null);
+    console.log(userId)
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -64,7 +64,7 @@ const Dashboard = () => {
         fetchUsers();
     }, [router]);
 
-    usePushNotifications(userId);
+
 
     return (
         <div>
