@@ -59,6 +59,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [addingProject, setAddingProject] = useState(false);
     // Add this with other state hooks
     const [lead_type, setLeadType] = useState("");
+    const [error , setError] = useState("");
 
 
     useEffect(() => {
@@ -193,6 +194,12 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 console.error("Error parsing token from localStorage", err);
             }
         }
+        if(schedule_date && !schedule_time){
+            setError("If Schedule Date is selected, Schedule Time is mandatory.");
+            setLoading(false)
+            return;
+        }
+        setError("");
 
         const formData = {
             alternate_phone,
@@ -479,7 +486,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </select>
                     </div>
 
-
                     {/* Schedule Date */}
                     <div>
                         <label className="block mb-1 text-sm font-medium text-gray-600">
@@ -487,7 +493,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </label>
                         <input
                             type="date"
-                            required
                             value={schedule_date}
                             onChange={(e) => setScheduleDate(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
@@ -501,12 +506,15 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </label>
                         <input
                             type="time"
-                            required
+                            
                             value={schedule_time}
                             onChange={(e) => setScheduleTime(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none ${schedule_date && !schedule_time ? "border-red-500" : ""
+                                }`}
                         />
                     </div>
+
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
 
                     {/* Comments */}
                     <div className="md:col-span-2">
