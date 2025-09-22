@@ -100,7 +100,7 @@ export default function Overview() {
                     { key: 'siteVisitDone', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Done` },
                     { key: 'callBack', url: `${GET_FILTERED_DATA}?lead_status=Call Back` },
                     { key: 'booked', url: `${GET_FILTERED_DATA}?lead_status=Booked` },
-                    { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Follow-Up` },
+                    { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Under Follow Up` },
                     { key: 'hotLeads', url: `${GET_FILTERED_DATA}?lead_type=Hot` },
                     { key: 'coldLeads', url: `${GET_FILTERED_DATA}?lead_type=Cold` },
                     { key: 'warmLeads', url: `${GET_FILTERED_DATA}?lead_type=Warm` },
@@ -136,7 +136,7 @@ export default function Overview() {
             if (filter === 'siteVisitFixed') url = `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed`;
             if (filter === 'siteVisitDone') url = `${GET_FILTERED_DATA}?lead_status=Site Visit Done`;
             if (filter === 'callBack') url = `${GET_FILTERED_DATA}?lead_status=Call Back`;
-            if (filter === 'followUp') url = `${GET_FILTERED_DATA}?lead_status=Follow-Up`;
+            if (filter === 'followUp') url = `${GET_FILTERED_DATA}?lead_status=Under Follow Up`;
 
             const res = await axios.get(url);
             if (res.data && res.data.success) {
