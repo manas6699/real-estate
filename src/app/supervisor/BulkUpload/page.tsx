@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/SupervisorComponents/Sidebar'
-import BulkUpload from '@/components/AdminComponents/csvUpload';
+import BulkUpload from '@/components/SupervisorComponents/CsvUpload';
 
 
 
@@ -19,8 +19,6 @@ const BulkUploadPage = () => {
                         <div className="flex-1 p-4">
                             <BulkUpload />
                         </div>
-
-
                     </div>
                 </div>
             </main>
