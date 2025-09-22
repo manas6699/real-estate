@@ -77,11 +77,12 @@ export default function ReportTable({ data }: Props) {
                                     'Alternate Phone',
                                     'Furnished Status',
                                     'Interested Project',
+                                    'Assign Mode',
                                     'View History',
                                 ].map((head, i) => (
                                     <th
                                         key={i}
-                                        className="px-4 py-3 whitespace-nowrap border-b border-gray-200"
+                                        className="px-4 py-3 whitespace-nowrap border-b bg-blue-100 border-gray-200"
                                     >
                                         {head}
                                     </th>
@@ -94,7 +95,7 @@ export default function ReportTable({ data }: Props) {
                                 const assign = row.original;
 
                                 return (
-                                    <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={row.id} className="bg-yellow-300 hover:bg-gray-50 transition-colors">
                                         <td className="px-4 py-3 whitespace-nowrap">
                                             {new Date(assign.createdAt).toLocaleDateString('en-GB', {
                                                 day: 'numeric',
@@ -138,6 +139,7 @@ export default function ReportTable({ data }: Props) {
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.alternate_phone || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.furnished_status || '---'}</td>
                                         <td className="px-4 py-3 truncate max-w-xs">{lead.interested_project || '---'}</td>
+                                        <td className="px-4 py-3 truncate max-w-xs">{assign.assign_mode || '---'}</td>
                                         <td className="px-4 py-3 text-center">
                                             <button
                                                 onClick={() => openSidebar(assign.history)}
