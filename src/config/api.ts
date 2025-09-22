@@ -41,8 +41,6 @@ export const GET_MULTIPLE_ASSIGNS = `${API_BASE_URL}/admin/getAll/assigns`
 
 export const EDIT_LEAD_FORM = (id: string) => `${API_BASE_URL}/mmr/leads/${id}`;
 
-export const POST_FCM_TOKEN = `${API_BASE_URL}/push-notifications/save-token`;
-
 export const GET_SCHEDULES_BY_ID = (id: string) => `${API_BASE_URL}/calender/schedules/${id}`;
 
 export const GET_ALL_SCHEDULES = `${API_BASE_URL}/calender/allSchedules`;
