@@ -4,12 +4,8 @@ import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/AdminComponents/Navbar';
-
 import Sidebar from '@/components/AdminComponents/Sidebar';
-// import Activity from '@/components/AdminComponents/Activity';
-// import UserList from '@/components/AdminComponents/UserList';
 import Overview from '@/components/AdminComponents/Overview';
-import { usePushNotifications } from '@/app/hooks/usePushNotifications';
 
 
 type JWTPayload = {
@@ -21,6 +17,7 @@ const Dashboard = () => {
     const router = useRouter();
 
     const [userId, setUserId] = useState<string | null>(null);
+    console.log(userId)
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -29,8 +26,6 @@ const Dashboard = () => {
             setUserId(parsedUser._id);
         }
     }, []);
-
-
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -68,18 +63,14 @@ const Dashboard = () => {
         fetchUsers();
     }, [router]);
 
-    usePushNotifications(userId);
-
     return (
         <div>
             <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
-
                 <div className="flex flex-col md:flex-row flex-1 p-4 gap-4">
                     <div className="flex flex-col flex-1 gap-4">
                         <Overview />
-
                     </div>
                     {/* <Activity /> */}
                 </div>
