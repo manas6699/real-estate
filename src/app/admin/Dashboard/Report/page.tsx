@@ -243,6 +243,21 @@ const ReportPage = () => {
                                 </option>
                             ))}
                         </select>
+                        <select
+                            value={configuration}
+                            onChange={(e) => setConfiguration(e.target.value)}
+                            className="border p-2 rounded text-xs"
+                        >
+                            <option value="">Assign Mode</option>
+
+                            <option key="Bulk" value="Bulk">
+                                Bulk
+                            </option>
+                            <option key="Atomic" value="Atomic">
+                                Atomic
+                            </option>
+
+                        </select>
 
                         <select
                             value={user}

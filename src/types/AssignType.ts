@@ -4,6 +4,7 @@
     assignee_id: string;
     assignee_name: string;
     status: string;
+    assign_mode: string;
     remarks: string;
     history: string[];
     lead_details: {
