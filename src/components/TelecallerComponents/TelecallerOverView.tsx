@@ -100,7 +100,7 @@ const TelecallerOverView = ({ newLeadCount }: AssignLeadCount) => {
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
-                    getCount(userId, { lead_status: 'Follow-Up' }),
+                    getCount(userId, { lead_status: 'Under Follow Up' }),
                     getCount(userId, { lead_status: 'Booked' }),
                     getCount(userId, { status: 'assigned' }),
                     getCount(userId, { lead_status: 'Call Back' }),
