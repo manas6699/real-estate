@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/AdminComponents/Sidebar'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import {
     GET_ALL_LOCATIONS,
@@ -17,6 +17,7 @@ import ReportTable from '@/components/AdminComponents/ReportTable';
 
 import leadStatuses from '@/options/Leadstatus';
 import preferredConfigs from '@/options/PreferedConfig';
+import * as XLSX from 'xlsx';
 
 type Location = {
     _id: string;
@@ -44,6 +45,60 @@ const ReportPage = () => {
     const [projects, setProjects] = useState<Project[]>([]); // ✅ all projects
     const [user, setUser] = useState("");
     const [telecallers, setTelecallers] = useState<{ id: string; name: string }[]>([]);
+
+    const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const allColumns = [
+        { key: "name", label: "Name" },
+        { key: "phone", label: "Phone" },
+        { key: "lead_status", label: "Lead Status" },
+        { key: "location", label: "Location" },
+        { key: "source", label: "Project" },
+        { key: "preferred_configuration", label: "Configuration" },
+        { key: "client_budget", label: "Budget" },
+        { key: "assignee_name", label: "Telecaller" },
+    ];
+
+    // ✅ Default columns
+    useEffect(() => {
+        setSelectedColumns(["name", "phone", "lead_status"]);
+    }, []);
+
+    const handleColumnToggle = (col: string) => {
+        setSelectedColumns(prev =>
+            prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]
+        );
+    };
+
+    // ✅ Export only selected columns
+    const exportToExcel = () => {
+        if (assigns.length === 0 || selectedColumns.length === 0) return;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data = assigns.map((assign: any) => {
+            const row: Record<string, string> = {};
+
+            selectedColumns.forEach((colKey) => {
+                const col = allColumns.find((c) => c.key === colKey);
+
+                if (!col) return; // skip unknown key
+
+                // Check inside lead_details first, then fallback to assign
+                row[col.label] =
+                    assign.lead_details?.[colKey] ??
+                    assign[colKey] ??
+                    "";
+            });
+
+            return row;
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+        XLSX.writeFile(workbook, "report.xlsx");
+    };
 
     // 🔹 Fetch telecallers
     useEffect(() => {
@@ -136,6 +191,17 @@ const ReportPage = () => {
         setUser("");
         fetchFiltered();
     };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     useEffect(() => {
         fetchFiltered();
@@ -278,9 +344,49 @@ const ReportPage = () => {
                             Reset Filter
                         </button>
                     </div>
+                    {/* 🔹 Export Section */}
+                    <div className="flex items-center space-x-2 mb-5">
+                        <button
+                            onClick={exportToExcel}
+                            className="bg-green-600 text-white px-4 py-2 rounded text-sm"
+                        >
+                            Export XLSX
+                        </button>
 
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpen((prev) => !prev);
+                                }}
+                                className="bg-gray-600 text-white px-3 py-2 rounded text-sm cursor-pointer"
+                            >
+                                Select Columns
+                            </button>
+                            {open && (
+                                <div
+                                    className="absolute right-0 top-full mt-2 bg-white border shadow-lg rounded p-2 w-56 max-h-60 overflow-y-auto z-50"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {allColumns.map((col) => (
+                                        <label
+                                            key={col.key}
+                                            className="flex items-center space-x-2 text-sm mb-1"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedColumns.includes(col.key)}
+                                                onChange={() => handleColumnToggle(col.key)}
+                                            />
+                                            <span>{col.label}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     <ReportTable data={assigns} />
-
                 </div>
             </main>
         </div>
