@@ -128,6 +128,7 @@ export default function Overview() {
             let url = SHOW_ALL_ASSIGNS_API;
 
             // ✅ Apply filters dynamically
+            if(filter === '') url = `${GET_FILTERED_DATA}`;
             if (filter === 'hotLeads') url = `${GET_FILTERED_DATA}?lead_type=Hot`;
             if (filter === 'coldLeads') url = `${GET_FILTERED_DATA}?lead_type=Cold`;
             if (filter === 'warmLeads') url = `${GET_FILTERED_DATA}?lead_type=Warm`;
@@ -181,8 +182,7 @@ export default function Overview() {
                     {group.map((item) => {
                         const isDisabled =
                             item.key === 'totalCount' ||
-                            item.key === 'leadCount' ||
-                            item.key === 'assignCount';
+                            item.key === 'leadCount' ;
 
                         return (
                             <div
