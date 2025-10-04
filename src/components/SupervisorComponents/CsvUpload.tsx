@@ -307,7 +307,7 @@ export default function CsvUpload() {
 
                 <button
                     onClick={handleUpload}
-                    disabled={!file || uploading || !!phoneError}
+                    disabled={!file || uploading || !!phoneError || !!selectedTelecaller}
                     className="cursor-pointer ml-5 px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg flex items-center transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {uploading ? (
