@@ -48,7 +48,6 @@ const Dashboard = () => {
             }
 
             if (!token || isTokenExpired) {
-
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 console.error('Token is missing or expired');
@@ -56,8 +55,6 @@ const Dashboard = () => {
                 router.push('/login');
                 return;
             }
-
-
         };
 
         fetchUsers();

@@ -34,7 +34,7 @@ const CampaignPage = () => {
     auto_assign: false,
   });
 
-  
+
 
   const [telecallers, setTelecallers] = useState<Telecaller[]>([]);
   const [loading, setLoading] = useState(false);
@@ -100,7 +100,7 @@ const CampaignPage = () => {
         telecallerIds: [],
         auto_assign: false,
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       toast.error(err?.response?.data?.message || "Something went wrong");
@@ -176,11 +176,11 @@ const CampaignPage = () => {
               disabled={loading}
               className="bg-orange-500 text-white py-2 rounded hover:bg-orange-600 text-sm"
             >
-              {loading ? 
+              {loading ?
                 <div className="flex justify-center items-center">
                   <Loader color="white" />
                 </div>
-              : "Create Campaign"}
+                : "Create Campaign"}
             </button>
           </form>
 

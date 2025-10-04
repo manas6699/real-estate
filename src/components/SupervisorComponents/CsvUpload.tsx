@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import Papa from "papaparse";
-import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useRef } from "react";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -123,12 +122,21 @@ export default function CsvUpload() {
                 const rows = results.data;
                 setPreview(results.data.slice(0, 5)); // show only first 5 rows
 
+                const firstRow = rows[0];
+
+                // --- A. Header Mismatch / Missing Column Check ---
+                // Check if 'phone' header is missing or if all rows are empty
+                if (!firstRow || !results.meta.fields?.includes('phone')) {
+                    setPhoneError("Error: Missing 'phone' column or invalid CSV header. Please ensure your CSV file has a column named 'phone'.");
+                    return;
+                }
+
                 // validate phone numbers
                 const invalidRows = rows.filter(
                     (row) => !/^\d{10}$/.test(row.phone?.trim() || "")
                 );
                 if(invalidRows.length > 0){
-                    setPhoneError(`${invalidRows.length} rows have invalid Phone Numbers`)
+                    setPhoneError(`${invalidRows.length} rows have invalid phone number format. Please ensure the phone number in the 'phone' column is exactly 10 digits.`)
                 }
                 else{
                     setPhoneError(null)
@@ -239,6 +247,7 @@ export default function CsvUpload() {
                     <p className="text-sm text-gray-500">Click or drag & drop CSV here</p>
                 )}
                 <p className="text-xs text-gray-400 mt-1">Max size: 10 MB</p>
+                <p className="text-xs text-gray-400 mt-1">Or 15,000 records max</p>
             </div>
 
             {/* Phone Error */}

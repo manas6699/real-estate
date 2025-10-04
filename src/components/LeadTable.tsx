@@ -39,7 +39,7 @@ export default function LeadTable() {
         const fetchLeads = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(GET_ALL_LEADS,{
+                const res = await axios.get(GET_ALL_LEADS, {
                     withCredentials: true
                 });
                 if (Array.isArray(res.data.leads)) {
@@ -47,7 +47,7 @@ export default function LeadTable() {
                 } else {
                     throw new Error('Invalid data format from server.');
                 }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 alert(
                     error?.response?.data?.message ||
@@ -61,7 +61,7 @@ export default function LeadTable() {
         fetchLeads();
     }, []);
 
-   
+
 
     const formatDate = (isoString: string) => {
         const date = new Date(isoString);
@@ -104,13 +104,13 @@ export default function LeadTable() {
         columns,
         state: {
             sorting,
-            columnFilters, 
+            columnFilters,
         },
         onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters, 
+        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(), 
+        getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         initialState: {
             pagination: {
@@ -119,7 +119,7 @@ export default function LeadTable() {
             },
         },
     });
-      
+
 
     const exportToExcel = () => {
         const exportData = data.map((lead) => ({
@@ -140,7 +140,7 @@ export default function LeadTable() {
     };
 
 
-    const getFilteredDataLength =() => {
+    const getFilteredDataLength = () => {
         return table.getFilteredRowModel().rows.length;
     }
 
@@ -156,7 +156,6 @@ export default function LeadTable() {
                 Total {getFilteredDataLength()} lead from {getFilteredProjectName()} ,  out of   {data.length} Leads
             </h2>
             <div className="mb-4 flex items-center space-x-4">
-
                 <label className="font-medium">Filter by Source:</label>
                 <select
                     value={(table.getColumn('source')?.getFilterValue() as string) ?? ''}
@@ -170,7 +169,6 @@ export default function LeadTable() {
                         </option>
                     ))}
                 </select>
-
                 <button
                     onClick={exportToExcel}
                     className="ml-auto bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
