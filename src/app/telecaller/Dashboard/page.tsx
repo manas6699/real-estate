@@ -1,8 +1,7 @@
-
 'use client'
 import axios from 'axios';
 import { GET_LEAD_BY_ID, GET_ALL_LOCATIONS, GET_ALL_PROJECTS, WEB_SOCKET_URL } from '@/config/api';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react' // Import useCallback
 import Navbar from '@/components/AdminComponents/Navbar'
 import { jwtDecode } from 'jwt-decode';
 import leadStatuses from '@/options/Leadstatus';
@@ -10,7 +9,6 @@ import preferredConfigs from '@/options/PreferedConfig';
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import io from 'socket.io-client';
 import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
 
@@ -42,8 +40,11 @@ type Assign = {
 const TelecallerDashboardPage = () => {
     type Notification = { title: string; message: string };
 
-
+    // New state for the total *unfiltered* new leads count
+    const [totalNewLeadsCount, setTotalNewLeadsCount] = useState(0);
+    // This state holds the *filtered* list for the AssignedLeads component
     const [assigns, setAssigns] = useState<Assign[]>([]);
+
     const [leadStatus, setLeadStatus] = useState("");
     const [location, setLocation] = useState("");
     const [locations, setLocations] = useState<Location[]>([]);
@@ -54,6 +55,7 @@ const TelecallerDashboardPage = () => {
     const [configuration, setConfiguration] = useState("");
     const [projectName, setProjectName] = useState("");
     const [projects, setProjects] = useState<Project[]>([]);
+    const [activeTile, setActiveTile] = useState("");
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -63,6 +65,54 @@ const TelecallerDashboardPage = () => {
     const [socket, setSocket] = useState<any>(null);
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
+
+    // ... (Your useEffects for fetching Locations/Projects, socket logic, token validation) ...
+    // Note: The rest of the component up to fetchAssigns is omitted for brevity but should remain unchanged.
+
+    /* token validation logic */
+    function isTokenValid(token: string) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const decoded: any = jwtDecode(token);
+            const currentTime = Math.floor(Date.now() / 1000);
+            return decoded.exp > currentTime;
+        } catch {
+            return false;
+        }
+    }
+
+    /* socket logic */
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        const storedUserId = localStorage.getItem('userId'); // optional, example
+        if (!storedToken || !isTokenValid(storedToken)) {
+            window.location.href = "/login";
+            return;
+        }
+        setToken(storedToken);
+        setUserId(storedUserId);
+
+        // Create socket only here when token is ready
+        const newSocket = io(WEB_SOCKET_URL, {
+            transports: ["websocket"],
+            auth: { token: storedToken }
+        });
+
+        setSocket(newSocket);
+
+        return () => {
+            newSocket.disconnect();
+        };
+    }, []);
+
+    /* stored user logic */
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUserId(parsedUser._id);
+        }
+    }, []);
 
     // ✅ Fetch Locations & Projects
     useEffect(() => {
@@ -88,161 +138,159 @@ const TelecallerDashboardPage = () => {
         fetchProjects();
     }, []);
 
-    // socket logic
-    useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        const storedUserId = localStorage.getItem('userId'); // optional, example
-        if (!storedToken || !isTokenValid(storedToken)) {
-            window.location.href = "/login";
-            return;
+    // Function to fetch all leads (unfiltered) and set the total count
+    const fetchAllLeadsForCount = useCallback(async () => {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) return 0;
+
+        const user = JSON.parse(storedUser);
+        const id = user._id;
+
+        try {
+            const res = await axios.get(GET_LEAD_BY_ID(id));
+            if (res.data && res.data.success) {
+                // Assuming 'new leads' are ALL leads assigned to the telecaller,
+                // the total count is simply the total number of records returned.
+                setTotalNewLeadsCount(res.data.data.length);
+            }
+        } catch (err) {
+            console.error("Error fetching all assigns for count:", err);
+            setTotalNewLeadsCount(0);
         }
-        setToken(storedToken);
-        setUserId(storedUserId);
-
-        // Create socket only here when token is ready
-        const newSocket = io(WEB_SOCKET_URL, {
-            transports: ["websocket"],
-            auth: { token: storedToken }
-        });
-
-        setSocket(newSocket);
-
-        return () => {
-            newSocket.disconnect();
-        };
     }, []);
 
-    // token validation logic
-        function isTokenValid(token: string) {
-            try {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const decoded: any = jwtDecode(token);
-                const currentTime = Math.floor(Date.now() / 1000);
-                return decoded.exp > currentTime;
-            } catch {
-                return false;
-            }
-        }
-
-        // stored user logic
-            useEffect(() => {
-                const storedUser = localStorage.getItem('user');
-                if (storedUser) {
-                    const parsedUser = JSON.parse(storedUser);
-                    setUserId(parsedUser._id);
-                }
-            }, []);
-
-    // ✅ Fetch Assigns
+    // ✅ Initial Fetch Assigns (Now sets the total count and the initial assigns list)
     useEffect(() => {
-        const fetchAssigns = async () => {
-            const storedUser = localStorage.getItem('user');
-            if (!storedUser) return;
+        // This effect will run ONCE on mount to get the initial list and count.
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) return;
 
-            const user = JSON.parse(storedUser);
-            const id = user._id;
+        const user = JSON.parse(storedUser);
+        const id = user._id;
 
+        const initialFetch = async () => {
+            await fetchAllLeadsForCount(); // Get the total count right away
             try {
                 const res = await axios.get(GET_LEAD_BY_ID(id));
                 if (res.data && res.data.success) {
                     setAssigns([...res.data.data].reverse());
                 }
             } catch (err) {
-                console.error("Error fetching assigns:", err);
+                console.error("Error fetching initial assigns:", err);
             }
-        };
-        fetchAssigns();
-    }, []);
+        }
+        initialFetch();
+    }, [fetchAllLeadsForCount]); // Dependency on useCallback
 
-        // need to seperate out in a hook
-        useEffect(() => {
-            if (!socket || !userId || !token) return;
-            // ✅ Request browser notification permission if needed
-            if (Notification.permission === 'default' || Notification.permission === 'denied') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        console.log('✅ Notification permission granted.');
-                    } else {
-                        console.log('❌ Notification permission denied.');
-                    }
+    // socket logic part 2
+    useEffect(() => {
+        if (!socket || !userId || !token) return;
+        // ✅ Request browser notification permission if needed
+        if (Notification.permission === 'default' || Notification.permission === 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    console.log('✅ Notification permission granted.');
+                } else {
+                    console.log('❌ Notification permission denied.');
+                }
+            });
+        }
+
+        // ✅ Emit join-room once userId is available
+        if (userId) {
+            socket.emit('join-room', userId);
+            console.log('📡 Emitted join-room with:', userId);
+        }
+
+        // ✅ Handle incoming notification
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        socket.on('lead-assigned', (data: any) => {
+            console.log('📥 Lead assigned:', data);
+
+            // 🔔 Native Browser Notification
+            if (Notification.permission === 'granted') {
+                new Notification(data.title, {
+                    body: data.message,
                 });
             }
-    
-            // ✅ Emit join-room once userId is available
-            if (userId) {
-                socket.emit('join-room', userId);
-                console.log('📡 Emitted join-room with:', userId);
-            }
-    
-            // ✅ Handle incoming notification
-    
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            socket.on('lead-assigned', (data: any) => {
-                console.log('📥 Lead assigned:', data);
-    
-                // 🔔 Native Browser Notification
-                if (Notification.permission === 'granted') {
-                    new Notification(data.title, {
-                        body: data.message,
-                    });
-                }
-    
-                // 🔥 React Toastify Notification
-                toast.info(
-                    <div>
-                        <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
-                        <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
-                            toast.dismiss()
-                            window.location.reload();
-                        }}>Reload</button>
-    
-                    </div>
-                );
-    
-                // ✅ Update state (optional)
-                setNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
-            });
-    
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            socket.on('lead-auto-assigned', (data: any) => {
-                console.log('📥 Lead auto assigned:', data)
-    
-                // 🔔 Native Browser Notification
-                if (Notification.permission === 'granted') {
-                    new Notification(data.title, {
-                        body: data.message,
-                    });
-                }
-    
-                // 🔥 React Toastify Notification
-                toast.info(
-                    <div>
-                        <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
-                        <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
-                            toast.dismiss()
-                            window.location.reload();
-                        }}>Reload</button>
-                    </div>
-                );
-    
-                // ✅ Update state (optional)
-                setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
-            }
+
+            // 🔥 React Toastify Notification
+            toast.info(
+                <div>
+                    <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
+                        toast.dismiss()
+                        window.location.reload();
+                    }}>Reload</button>
+
+                </div>
             );
-    
-            // ✅ Optional: Cleanup on unmount
-            return () => {
-                socket.off('lead-assigned');
-                socket.off('lead-auto-assigned');
-            };
-        }, [userId, token, socket]);
+
+            // ✅ Update state (optional)
+            setNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        socket.on('lead-auto-assigned', (data: any) => {
+            console.log('📥 Lead auto assigned:', data)
+
+            // 🔔 Native Browser Notification
+            if (Notification.permission === 'granted') {
+                new Notification(data.title, {
+                    body: data.message,
+                });
+            }
+
+            // 🔥 React Toastify Notification
+            toast.info(
+                <div>
+                    <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded' onClick={() => {
+                        toast.dismiss()
+                        window.location.reload();
+                    }}>Reload</button>
+                </div>
+            );
+
+            // ✅ Update state (optional)
+            setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
+        }
+        );
+
+        // ✅ Optional: Cleanup on unmount
+        return () => {
+            socket.off('lead-assigned');
+            socket.off('lead-auto-assigned');
+        };
+    }, [userId, token, socket]);
+
+
+    const buildCallPendingFilter = (activeTile: string) => {
+        // If 'callPending' tile is active, filter by top-level 'status: assigned'
+        if (activeTile === 'callPending') {
+            return { status: 'assigned' };
+        }
+
+        if (activeTile === 'scheduleCall'){
+            return {status: 'processed'};
+        }
+        return {};
+    };
 
     // ✅ Fetch Filtered Data
     const fetchFiltered = async () => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const params: any = {};
-            if (leadStatus) params.lead_status = leadStatus;
+
+            const primaryFilter = buildCallPendingFilter(activeTile);
+            Object.assign(params, primaryFilter);
+            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall';
+            if (!isTopLevelStatusFilter && leadStatus) {
+                params.lead_status = leadStatus;
+            }
+          
             if (phone) params.phone = phone;
             if (location) params.location = location;
             if (name) params.name = name;
@@ -275,13 +323,42 @@ const TelecallerDashboardPage = () => {
         setEndDate("");
         setProjectName("");
         setConfiguration("");
-        fetchFiltered();
+        // No need to manually call fetchFiltered here, the useEffect below handles it
     };
 
+    // This effect runs whenever a filter state changes and updates the 'assigns' list
     useEffect(() => {
         fetchFiltered();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leadStatus, phone, name, startDate, location, endDate, projectName, configuration]);
+
+    const tileToStatusMap: Record<string, string> = {
+        new: "", // empty status filter will show all leads (i.e., new leads)
+        SiteVisitFixed: "Site Visit Fixed",
+        SiteVisitDone: "Site Visit Done",
+        followUp: "Under Follow Up",
+        booked: "Booked",
+        callPending: "assigned",
+        scheduleCall: "processed",
+        callBack: "Call Back",
+    };
+
+    const handleTileClick = (tile: string) => {
+        // toggle if clicked same tile again
+        if (activeTile === tile) {
+            setActiveTile("");
+            resetFilters();
+            return;
+        }
+
+        setActiveTile(tile);
+
+        // Update leadStatus filter based on tile
+        const status = tileToStatusMap[tile];
+        if (status !== undefined) {
+            setLeadStatus(status);
+        }
+    };
 
     return (
         <>
@@ -290,7 +367,14 @@ const TelecallerDashboardPage = () => {
                 <Navbar />
             </div>
             <section className='lg:ml-64 p-6'>
-                <TelecallerOverView newLeadCount={assigns.length} />
+                {/* ✅ Change: Pass the TOTAL UNFILTERED count here 
+                    This number will not change when filters are applied.
+                */}
+                <TelecallerOverView
+                    newLeadCount={totalNewLeadsCount}
+                    onTileClick={handleTileClick}
+                    activeTile={activeTile}
+                />
 
                 {/* Filters */}
                 <div className="grid grid-cols-1 md:grid-cols-9 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
@@ -304,8 +388,7 @@ const TelecallerDashboardPage = () => {
                             <option key={status} value={status}>{status}</option>
                         ))}
                     </select>
-
-                    {/* ✅ Location Dropdown */}
+                    {/* ... (Other filter inputs) ... */}
                     <select
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
@@ -333,7 +416,7 @@ const TelecallerDashboardPage = () => {
                         className="border p-2 rounded text-xs"
                     />
 
-                    {/* ✅ Project Dropdown */}
+
                     <select
                         value={projectName}
                         onChange={(e) => setProjectName(e.target.value)}
@@ -378,6 +461,7 @@ const TelecallerDashboardPage = () => {
                     </button>
                 </div>
 
+                {/* Assigned Leads Table: uses the currently filtered 'assigns' list */}
                 <AssignedLeads data={assigns} />
                 <ToastContainer position="top-right" autoClose={3000} />
             </section>
