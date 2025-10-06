@@ -126,17 +126,17 @@ export default function CsvUpload() {
 
                 // --- A. Header Mismatch / Missing Column Check ---
                 // Check if 'phone' header is missing or if all rows are empty
-                if (!firstRow || !results.meta.fields?.includes('phone')) {
-                    setPhoneError("Error: Missing 'phone' column or invalid CSV header. Please ensure your CSV file has a column named 'phone'.");
+                if (!firstRow || !results.meta.fields?.includes('PHONE')) {
+                    setPhoneError("Error: Missing 'PHONE' column or invalid CSV header. Please ensure your CSV file has a column named 'PHONE'.");
                     return;
                 }
 
                 // validate phone numbers
                 const invalidRows = rows.filter(
-                    (row) => !/^\d{10}$/.test(row.phone?.trim() || "")
+                    (row) => !/^\d{10}$/.test(row.PHONE?.trim() || "")
                 );
                 if(invalidRows.length > 0){
-                    setPhoneError(`${invalidRows.length} rows have invalid phone number format. Please ensure the phone number in the 'phone' column is exactly 10 digits.`)
+                    setPhoneError(`${invalidRows.length} rows have invalid phone number format. Please ensure the phone number in the 'PHONE' column is exactly 10 digits.`)
                 }
                 else{
                     setPhoneError(null)
