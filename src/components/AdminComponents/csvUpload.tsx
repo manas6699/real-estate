@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import Papa from "papaparse";
-import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useRef } from "react";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -13,7 +12,7 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 type CSVRow = Record<string, string>;
 
-export default function BulkUploadPage() {
+export default function CsvUpload() {
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -123,14 +122,23 @@ export default function BulkUploadPage() {
                 const rows = results.data;
                 setPreview(results.data.slice(0, 5)); // show only first 5 rows
 
+                const firstRow = rows[0];
+
+                // --- A. Header Mismatch / Missing Column Check ---
+                // Check if 'phone' header is missing or if all rows are empty
+                if (!firstRow || !results.meta.fields?.includes('PHONE')) {
+                    setPhoneError("Error: Missing 'PHONE' column or invalid CSV header. Please ensure your CSV file has a column named 'PHONE'.");
+                    return;
+                }
+
                 // validate phone numbers
                 const invalidRows = rows.filter(
-                    (row) => !/^\d{10}$/.test(row.phone?.trim() || "")
+                    (row) => !/^\d{10}$/.test(row.PHONE?.trim() || "")
                 );
-                if(invalidRows.length > 0){
-                    setPhoneError(`${invalidRows.length} rows have invalid Phone Numbers`)
+                if (invalidRows.length > 0) {
+                    setPhoneError(`${invalidRows.length} rows have invalid phone number format. Please ensure the phone number in the 'PHONE' column is exactly 10 digits.`)
                 }
-                else{
+                else {
                     setPhoneError(null)
                 }
             },
@@ -230,7 +238,7 @@ export default function BulkUploadPage() {
                     className="hidden"
                     onChange={handleFileChange}
                 />
-                <FileUp size={80} className="mx-auto text-orange-500 mb-2" />
+                <FileUp size={80} className="mx-auto text-purple-500 mb-2" />
                 {file ? (
                     <p className="text-sm text-gray-700">
                         Selected: <strong>{file.name}</strong>
@@ -239,6 +247,7 @@ export default function BulkUploadPage() {
                     <p className="text-sm text-gray-500">Click or drag & drop CSV here</p>
                 )}
                 <p className="text-xs text-gray-400 mt-1">Max size: 10 MB</p>
+                <p className="text-xs text-gray-400 mt-1">Or 15,000 records max</p>
             </div>
 
             {/* Phone Error */}
@@ -298,7 +307,7 @@ export default function BulkUploadPage() {
 
                 <button
                     onClick={handleUpload}
-                    disabled={!file || uploading || !!phoneError}
+                    disabled={!file || uploading || !!phoneError || !!selectedTelecaller}
                     className="cursor-pointer ml-5 px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg flex items-center transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {uploading ? (
