@@ -4,9 +4,9 @@ import axios from 'axios';
 import { GET_OLD_LEADS_FOR_TELECALLER, GET_LEAD_BY_ID, GET_SCHEDULES_BY_ID } from '@/config/api';
 import ScheduleTracker from '@/components/TelecallerComponents/ScheduleTracker';
 
-type AssignLeadCount = {
-    newLeadCount: number;
-};
+// type AssignLeadCount = {
+//     newLeadCount: number;
+// };
 
 type Stats = {
     oldLeadCount: number;
@@ -31,7 +31,13 @@ type OldLeadsResponse = {
     message?: string;
 };
 
-const TelecallerOverView = ({ newLeadCount }: AssignLeadCount) => {
+type TelecallerOverViewProps = {
+    newLeadCount: number;
+    onTileClick: (filterType: string) => void;
+    activeTile: string; // <-- from parent for styling
+};
+
+const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: TelecallerOverViewProps) => {
     const [stats, setStats] = useState<Stats>({
         oldLeadCount: 0,
         siteVisitFixed: 0,
@@ -161,7 +167,7 @@ const TelecallerOverView = ({ newLeadCount }: AssignLeadCount) => {
         fetchSchedules();
     }, []);
 
-    const totalLeads = newLeadCount + stats.oldLeadCount;
+
 
     return (
         <section>
@@ -174,41 +180,83 @@ const TelecallerOverView = ({ newLeadCount }: AssignLeadCount) => {
             )}
 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                    <div className="text-gray-600">My Total Leads</div>
-                    <div className="text-2xl font-bold">{totalLeads}</div>
+                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer">
+                    <a href="/telecaller/OldReport">
+                        <div className="text-gray-600">Old Leads</div>
+                        <div className="text-2xl font-bold">{stats.oldLeadCount}</div>
+                    </a>
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'new' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('new')}
+                >
+                    <div className="text-gray-600">New Leads</div>
+                    <div className="text-2xl font-bold">{newLeadCount}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'SiteVisitFixed' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('SiteVisitFixed')}
+                >
                     <div className="text-gray-600">Site Visit Fixed</div>
                     <div className="text-2xl font-bold">{stats.siteVisitFixed}</div>
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                    <div className="text-gray-600">Site Visit Done</div>
-                    <div className="text-2xl font-bold">{stats.siteVisitDone}</div>
-                </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'callPending' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('callPending')}
+                >
                     <div className="text-gray-600">Call Pending</div>
                     <div className="text-2xl font-bold">{stats.callPending}</div>
                 </div>
                 <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                    <ScheduleTracker />
+                    <a href="/telecaller/Calender">
+                        <ScheduleTracker />
+                    </a>
                 </div>
             </section>
 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('SiteVisitDone')}
+                >
+                    <div className="text-gray-600">Site Visit Done</div>
+                    <div className="text-2xl font-bold">{stats.siteVisitDone}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'scheduleCall' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('scheduleCall')}
+                >
                     <div className="text-gray-600">Schedule Calls</div>
                     <div className="text-2xl font-bold">{scheduleCallCount}</div>
+
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'followUp' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('followUp')}
+                >
                     <div className="text-gray-600">Follow Up</div>
                     <div className="text-2xl font-bold">{stats.followUp}</div>
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'booked' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('booked')}
+                >
                     <div className="text-gray-600">Booked</div>
                     <div className="text-2xl font-bold">{stats.booked}</div>
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'callBack' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('callBack')}
+                >
                     <div className="text-gray-600">Call Back</div>
                     <div className="text-2xl font-bold">{stats.callBack}</div>
                 </div>
