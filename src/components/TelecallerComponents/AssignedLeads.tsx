@@ -216,7 +216,7 @@ export default function AssignedLeads({ data }: Props) {
                         <div className="space-y-3 max-h-96 overflow-y-auto">
                             {history.length > 0 ? (
                                 <ul className="space-y-2">
-                                    {history.map((item, idx) => {
+                                    {[...history].reverse().map((item, idx) => {
                                         if (typeof item === 'string') {
                                             return (
                                                 <li key={idx} className="text-sm text-gray-700 border-b pb-2 bg-gray-50 p-3 rounded">
