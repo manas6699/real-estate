@@ -18,6 +18,7 @@ import ReportTable from '@/components/AdminComponents/ReportTable';
 import leadStatuses from '@/options/Leadstatus';
 import preferredConfigs from '@/options/PreferedConfig';
 import * as XLSX from 'xlsx';
+import { FileSliders } from 'lucide-react';
 
 type Location = {
     _id: string;
@@ -349,8 +350,9 @@ const ReportPage = () => {
                     <div className="flex items-center space-x-2 mb-5">
                         <button
                             onClick={exportToExcel}
-                            className="bg-green-600 text-white px-4 py-2 rounded text-sm"
+                            className="text border px-4 py-2 flex gap-2 rounded cursor-pointer  text-sm"
                         >
+                            <FileSliders size={20} />
                             Export XLSX
                         </button>
 
@@ -361,7 +363,7 @@ const ReportPage = () => {
                                     e.stopPropagation();
                                     setOpen((prev) => !prev);
                                 }}
-                                className="bg-gray-600 text-white px-3 py-2 rounded text-sm cursor-pointer"
+                                className="border  px-3 py-2 rounded text-sm cursor-pointer"
                             >
                                 Select Columns
                             </button>
