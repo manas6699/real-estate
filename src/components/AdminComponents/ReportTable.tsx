@@ -70,9 +70,9 @@ export default function ReportTable({ data }: Props) {
                                     'Client Budget',
                                     'Configuration',
                                     'Admin Remark',
-                                    'Disposition Statement',
-                                    'Current Status',
-                                    'Assignee',
+                                    'Remarks',
+                                    'Disposition',
+                                    'User',
                                     'Location',
                                     'Alternate Phone',
                                     'Furnished Status',
@@ -82,7 +82,7 @@ export default function ReportTable({ data }: Props) {
                                 ].map((head, i) => (
                                     <th
                                         key={i}
-                                        className="px-4 py-3 whitespace-nowrap border-b bg-blue-100 border-gray-200"
+                                        className="px-4 py-3 whitespace-nowrap border-b bg-blue-200 border-gray-200"
                                     >
                                         {head}
                                     </th>
@@ -95,7 +95,7 @@ export default function ReportTable({ data }: Props) {
                                 const assign = row.original;
 
                                 return (
-                                    <tr key={row.id} className="bg-yellow-300 hover:bg-gray-50 transition-colors">
+                                    <tr key={row.id} className="bg-blue-50 hover:bg-gray-50 transition-colors">
                                         <td className="px-4 py-3 whitespace-nowrap">
                                             {new Date(assign.createdAt).toLocaleDateString('en-GB', {
                                                 day: 'numeric',
@@ -226,7 +226,7 @@ export default function ReportTable({ data }: Props) {
                     <div className="p-4 overflow-y-auto h-[calc(100%-4rem)]">
                         {selectedHistory && selectedHistory.length > 0 ? (
                             <ul className="space-y-3">
-                                {selectedHistory.map((h, idx) => (
+                                {[...selectedHistory].reverse().map((h, idx) => (
                                     <li key={idx} className="p-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-700">
                                         {typeof h === 'string' ? (
                                             <span>{h}</span>
@@ -259,6 +259,7 @@ export default function ReportTable({ data }: Props) {
                                 <p className="text-sm">No history available</p>
                             </div>
                         )}
+
                     </div>
                 </div>
             )}
