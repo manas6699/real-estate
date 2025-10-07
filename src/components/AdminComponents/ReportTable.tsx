@@ -33,7 +33,19 @@ interface Props {
 }
 
 // --------------------------------------------------------------------------------
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TextFilter = ({ column }: { column: any }) => {
+    const columnFilterValue = column.getFilterValue();
+    return (
+        <input
+            type="text"
+            value={(columnFilterValue ?? '')}
+            onChange={e => column.setFilterValue(e.target.value)}
+            placeholder={`Search ${column.columnDef.header}...`}
+            className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+    );
+};
 // FIXED Select Filter Component - Now shows only values from filtered data
 function SelectFilter({
     column,
@@ -98,17 +110,9 @@ function DateRangeFilter({ column }: { column: any }) {
     };
 
     const clearFilter = () => {
-        // This clears the filter in TanStack Table, which in turn causes a re-render
-        // and sets `startDate` and `endDate` back to `undefined`, correctly clearing the inputs.
         setFilter(undefined, undefined);
-
-        // ⚠️ REMOVED: You should NOT manually manipulate the DOM in a React component
-        // like this. The `value={startDate || ''}` prop handles clearing automatically.
-        // const inputs = document.querySelectorAll(`input[data-column="${column.id}"]`) as NodeListOf<HTMLInputElement>;
-        // inputs.forEach(input => input.value = '');
     };
 
-    // The JSX remains correct for displaying the dates from state/filter value.
     return (
         <div className="flex flex-col space-y-2 p-1">
             {/* ... (Start Date Input) ... */}
@@ -215,6 +219,7 @@ export default function ReportTable({ data }: Props) {
     const columns = useMemo<ColumnDef<AssignType>[]>(
         () => [
             {
+                id: 'createdAt', // Explicit ID
                 accessorKey: 'createdAt',
                 header: 'Assigned Date & Time',
                 enableColumnFilter: true,
@@ -231,52 +236,62 @@ export default function ReportTable({ data }: Props) {
                 },
             },
             {
+                id: 'customer_name', // Explicit ID for Customer Name
                 accessorKey: 'lead_details.name',
                 header: 'Customer Name',
                 enableColumnFilter: true,
                 filterFn: 'includesString',
             },
             {
+                id: 'phone', // Explicit ID for Phone
                 accessorKey: 'lead_details.phone',
                 header: 'Phone',
                 enableColumnFilter: true
             },
             {
+                id: 'email', // Explicit ID for Email
                 accessorKey: 'lead_details.email',
                 header: 'Email',
                 enableColumnFilter: true
             },
             {
+                id: 'project_name', // Explicit ID
                 accessorKey: 'lead_details.source',
                 header: 'Project Name',
                 enableColumnFilter: true
             },
             {
+                id: 'lead_source', // Explicit ID
                 accessorKey: 'lead_details.projectSource',
                 header: 'Lead Source',
                 enableColumnFilter: true
             },
             {
+                id: 'client_budget', // Explicit ID
                 accessorKey: 'lead_details.client_budget',
                 header: 'Client Budget',
                 enableColumnFilter: true
             },
             {
+                id: 'configuration', // Explicit ID
                 accessorKey: 'lead_details.preferred_configuration',
                 header: 'Configuration',
                 enableColumnFilter: true
             },
             {
+                id: 'admin_remark', // Explicit ID
                 accessorKey: 'remarks',
                 header: 'Admin Remark',
                 enableColumnFilter: false
             },
             {
+                id: 'remarks', // Explicit ID
                 accessorKey: 'lead_details.comments',
                 header: 'Remarks',
                 enableColumnFilter: false
             },
             {
+                id: 'disposition', // Explicit ID
                 accessorKey: 'lead_details.lead_status',
                 header: 'Disposition',
                 enableColumnFilter: true,
@@ -297,36 +312,43 @@ export default function ReportTable({ data }: Props) {
                 },
             },
             {
+                id: 'user', // Explicit ID
                 accessorKey: 'assignee_name',
                 header: 'User',
                 enableColumnFilter: true
             },
             {
+                id: 'location', // Explicit ID
                 accessorKey: 'lead_details.location',
                 header: 'Location',
                 enableColumnFilter: true
             },
             {
+                id: 'alternate_phone', // Explicit ID
                 accessorKey: 'lead_details.alternate_phone',
                 header: 'Alternate Phone',
                 enableColumnFilter: true
             },
             {
+                id: 'furnished_status', // Explicit ID
                 accessorKey: 'lead_details.furnished_status',
                 header: 'Furnished Status',
                 enableColumnFilter: true
             },
             {
+                id: 'interested_project', // Explicit ID
                 accessorKey: 'lead_details.interested_project',
                 header: 'Interested Project',
                 enableColumnFilter: true
             },
             {
+                id: 'assign_mode', // Explicit ID
                 accessorKey: 'assign_mode',
                 header: 'Assign Mode',
                 enableColumnFilter: true
             },
             {
+                id: 'history', // Explicit ID
                 accessorKey: 'history',
                 header: 'View History',
                 enableColumnFilter: false,
@@ -477,6 +499,15 @@ export default function ReportTable({ data }: Props) {
                                 <tr key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => {
                                         if (!header.column.getIsVisible()) return null;
+
+                                        const TEXT_FILTER_COLUMNS = [
+                                            'customer_name',    // Customer Name
+                                            'phone',           // Phone
+                                            'email',           // Email
+                                            'alternate_phone', // Alternate Phone
+                                        ];
+                                        const isTextFilter = TEXT_FILTER_COLUMNS.includes(header.column.id);
+
                                         return (
                                             <th
                                                 key={header.id}
@@ -488,7 +519,9 @@ export default function ReportTable({ data }: Props) {
                                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                                     </span>
                                                     {header.column.getCanFilter() ? (
-                                                        header.column.id === 'createdAt' ? (
+                                                        isTextFilter ? (
+                                                            <TextFilter column={header.column} />
+                                                        ) : header.column.id === 'createdAt' ? (
                                                             <DateRangeFilter column={header.column} />
                                                         ) : (
                                                             <SelectFilter column={header.column} />
