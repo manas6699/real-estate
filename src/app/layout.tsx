@@ -1,13 +1,13 @@
-import "./globals.css";
+import './globals.css'
 import type { Metadata } from "next";
-import { Lora } from 'next/font/google';
+import { SUSE } from 'next/font/google';
 import Script from 'next/script'; // ✅ Import Script
 import { GoogleAnalytics } from '@next/third-parties/google';
 
-const lora = Lora({
+const lora = SUSE({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-lora',
+  variable: '--font-suse',
   display: 'swap',
 });
 
