@@ -153,7 +153,7 @@ export default function AssignCardTable({ data }: Props) {
                             return (
                                 <React.Fragment key={row.id}>
                                     {/* Main Row */}
-                                    <tr className="border-b bg-blue-600 text-white">
+                                    <tr className="border-b bg-yellow-50">
                                         <td className="px-4 py-2">
                                             <button
                                                 onClick={() => toggleExpand(assign._id)}

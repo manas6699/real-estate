@@ -212,7 +212,6 @@ export default function Overview() {
                 <div className="rounded-lg shadow p-4 flex gap-6 items-center">
                     <ScheduleTracker />
                     <a href="/admin/Dashboard/overdue">
-
                         <ExternalLink size={30} className='text-blue-500 cursor-pointer' />
                     </a>
                 </div>
@@ -220,8 +219,8 @@ export default function Overview() {
             {/* Header */}
             <div className="flex items-center mb-4">
                 <h1 className="text-2xl font-bold">Leads</h1>
-                <div className="rounded-full h-10 ml-2.5 w-10 border-amber-400 border-4">
-                    <span className="text-lg font-extrabold flex items-center justify-center h-full">
+                <div className="rounded-full h-10 ml-2.5 w-10 bg-amber-300">
+                    <span className="text-xs font-extrabold flex items-center justify-center h-full">
                         {assigns.length}
                     </span>
                 </div>
