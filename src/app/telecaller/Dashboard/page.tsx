@@ -325,6 +325,7 @@ const TelecallerDashboardPage = () => {
         setProjectName("");
         setConfiguration("");
         // No need to manually call fetchFiltered here, the useEffect below handles it
+        window.location.reload()
     };
 
     // This effect runs whenever a filter state changes and updates the 'assigns' list
