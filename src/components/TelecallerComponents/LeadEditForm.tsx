@@ -16,7 +16,7 @@ import {
 import leadStatuses from "@/options/Leadstatus"; 
 import preferredConfigs from "@/options/PreferedConfig";
 import BudgetInput from "@/components/TelecallerComponents/BudgetInput";
-
+import {whoami} from '@/utils/whoami'
 type leadIdType = { leadId: string };
 type Telecaller = {
     id: string;
@@ -30,7 +30,7 @@ type Project = {
     projectName: string;
 };
 
-const transferStatus = ["Budget Issue", "Location Issue", "Language Barrier"];
+const transferStatus = ["Hot", "Cold", "Warm" , "Refer" , "Urgent"];
 
 const furnishedOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
 const propertyStatusOptions = ["Under Construction", "Ready to Move"];
@@ -256,11 +256,13 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             return;
         }
 
+        const history = `This Lead has been reassigned to ${telecaller.name} by ${whoami()} with remarks : ${remarks}`
         const payload = {
             lead_id: leadId,
             assignee_id: telecaller.id,
             assignee_name: telecaller.name,
             remarks,
+            history_entry: history
         };
 
         try {
