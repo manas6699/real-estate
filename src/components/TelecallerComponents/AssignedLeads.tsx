@@ -112,7 +112,7 @@ export default function AssignedLeads({ data }: Props) {
             </div>
 
             {/* Cards */}
-            {[...table.getRowModel().rows].reverse().map(row => {
+            {[...table.getRowModel().rows].map(row => {
                 const lead = row.original.lead_details;
                 const assign = row.original;
 
