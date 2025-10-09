@@ -1,8 +1,11 @@
+
+
 import './globals.css'
 import type { Metadata } from "next";
 import { SUSE } from 'next/font/google';
 import Script from 'next/script'; // ✅ Import Script
 import { GoogleAnalytics } from '@next/third-parties/google';
+import RoleGuardProvider from './providers/RoleGuardProvider';
 
 const lora = SUSE({
   subsets: ['latin'],
@@ -80,7 +83,10 @@ export default function RootLayout({
         </Script>
       </head>
       <body>
-        {children}
+        <RoleGuardProvider>
+
+          {children}
+        </RoleGuardProvider>
         <GoogleAnalytics gaId="G-2XE1CXQ699" />
       </body>
     </html>
