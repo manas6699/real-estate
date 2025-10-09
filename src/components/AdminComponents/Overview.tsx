@@ -109,13 +109,13 @@ const initialStats: Stats = {
 };
 
 /* -------------------------------------------------------------------------- */
-/*                               🧠 MAIN COMPONENT                             */
+/*                               🧠 MAIN COMPONENT           */
 /* -------------------------------------------------------------------------- */
 export default function Overview() {
     const [stats, setStats] = useState<Stats>(initialStats);
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
-    const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+    
 
     /* ------------------------------ 📊 Fetch Stats ----------------------------- */
     useEffect(() => {
@@ -266,28 +266,10 @@ export default function Overview() {
                 </div>
             </section>
 
-            {/* ------------------------- 📊 Rows per Page Filter ----------------------- */}
-            <div className="flex justify-end items-center gap-2 mb-3">
-                <label htmlFor="rowsPerPage" className="text-sm font-medium text-gray-700">
-                    Rows per page:
-                </label>
-                <select
-                    id="rowsPerPage"
-                    value={rowsPerPage}
-                    onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                    className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                >
-                    {[10, 25, 50].map((num) => (
-                        <option key={num} value={num}>
-                            {num}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
+         
             {/* ------------------------------ 📋 Table -------------------------------- */}
             <div className="w-full overflow-x-auto">
-                <AssignCardTable data={assigns.slice(0, rowsPerPage)} />
+                <AssignCardTable data={assigns} />
             </div>
         </div>
     );
