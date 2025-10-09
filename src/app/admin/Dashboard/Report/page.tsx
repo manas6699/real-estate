@@ -30,10 +30,10 @@ const ReportPage = () => {
 
     return (
         <div>
-            <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
-                <div className="flex-1 p-4  overflow-x-hidden">
+                <div className="flex-1 overflow-x-hidden lg:ml-64 p-6">
+                    <Navbar />
                     {/* Header */}
                     <div className="flex">
                         <h1 className="text-2xl font-bold mb-4">View Report</h1>

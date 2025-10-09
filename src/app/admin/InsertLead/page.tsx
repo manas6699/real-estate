@@ -143,10 +143,10 @@ const InsertLeadPage = () => {
 
     return (
         <div>
-            <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
-                <div className="p-4 text-2xl font-semibold  mb-2">
+                <div className="flex flex-col flex-1 gap-4 mb-2 lg:ml-64 p-6">
+                    <Navbar />
                     Insert Lead Manually
                     <form
                         onSubmit={handleSubmit}

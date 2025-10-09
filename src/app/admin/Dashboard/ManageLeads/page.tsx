@@ -5,7 +5,7 @@ import LeadTable from '@/components/AdminComponents/LeadTable'
 
 const page = () => {
     return (
-        <div>
+        <div className="flex flex-col flex-1 gap-4 lg:ml-64 p-6">
             <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />

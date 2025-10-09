@@ -116,15 +116,11 @@ const OverdueLeadDetailsPage = () => {
 
     return (
         <div>
-            <Navbar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100 overflow-x-hidden">
-                {/* Sidebar should keep a fixed width */}
-                {/* <div className="w-full md:w-64 flex-shrink-0"> */}
                 <Sidebar />
-                {/* </div> */}
-
                 {/* Main content takes remaining space */}
-                <div className="flex flex-col flex-1 p-4 gap-4 overflow-x-hidden">
+                <div className="flex flex-col flex-1 gap-4 lg:ml-64 p-6">
+                    <Navbar />
                     {/* Breadcrumb */}
                     <div className="flex items-center gap-2 mt-6">
                         <a href="/admin/Dashboard">
@@ -145,7 +141,7 @@ const OverdueLeadDetailsPage = () => {
                     {/* AssignedTable */}
                     {!loading && assigns.length > 0 && (
                         // <OverdueTable data={assigns} />
-                          <AssignCardTable data={assigns}/> 
+                        <AssignCardTable data={assigns} />
                     )}
 
                     {!loading && assigns.length === 0 && (
