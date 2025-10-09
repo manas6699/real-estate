@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     getCoreRowModel,
     useReactTable,
     ColumnDef,
-    flexRender, // ✅ Import this
+    flexRender,
+    getPaginationRowModel,
+    PaginationState,
 } from '@tanstack/react-table';
 import ReassignModal from '@/components/AdminComponents/ReassignModal';
 
@@ -30,23 +32,19 @@ type Assign = {
         email: string;
         phone: string;
         source: string;
-        status: string;
         projectSource: string;
-        comments: string;
-        location: string;
-        alternate_phone: string;
-        client_budget: string;
-        furnished_status: string;
-        interested_project: string;
+        status: string;
         lead_status: string;
-        lead_type: string;
-        preferred_configuration: string;
-        preferred_floor: string;
-        property_status: string;
+        comments: string;
+        lead_type?: string;
+        client_budget?: string;
+        location?: string;
+        preferred_configuration?: string;
         createdAt: string;
         updatedAt: string;
     };
     createdAt: string;
+    updatedAt: string;
 };
 
 interface Props {
@@ -58,63 +56,118 @@ export default function AssignCardTable({ data }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
 
+    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    });
+
+    const [filters, setFilters] = useState({
+        startDate: '',
+        endDate: '',
+        user: '',
+        disposition: '',
+        leadSource: '',
+        projectName: '',
+        clientBudget: '',
+        location: '',
+        preferredConfiguration: '',
+    });
+
+    const dropdownOptions = useMemo(() => {
+        const unique = <T extends string | undefined>(arr: T[]) =>
+            Array.from(new Set(arr.filter(Boolean))) as string[];
+
+        return {
+            users: unique(data.map(d => d.assignee_name)),
+            dispositions: unique(data.map(d => d.status)),
+            leadSources: unique(data.map(d => d.lead_details.projectSource)),
+            projectNames: unique(data.map(d => d.lead_details.source)),
+            budgets: unique(data.map(d => d.lead_details.client_budget)),
+            locations: unique(data.map(d => d.lead_details.location)),
+            configurations: unique(data.map(d => d.lead_details.preferred_configuration)),
+        };
+    }, [data]);
+
+    const filteredData = useMemo(() => {
+        setPagination(prev => ({ ...prev, pageIndex: 0 }));
+
+        return data.filter(item => {
+            const lead = item.lead_details;
+            const updatedAt = new Date(item.updatedAt);
+
+            const afterStart =
+                !filters.startDate || updatedAt >= new Date(filters.startDate);
+            const beforeEnd =
+                !filters.endDate ||
+                updatedAt <= new Date(filters.endDate + 'T23:59:59');
+
+            const matchUser = !filters.user || item.assignee_name === filters.user;
+            const matchDisposition = !filters.disposition || item.status === filters.disposition;
+            const matchLeadSource = !filters.leadSource || lead.projectSource === filters.leadSource;
+            const matchProjectName = !filters.projectName || lead.source === filters.projectName;
+            const matchBudget = !filters.clientBudget || lead.client_budget === filters.clientBudget;
+            const matchLocation = !filters.location || lead.location === filters.location;
+            const matchConfig =
+                !filters.preferredConfiguration ||
+                lead.preferred_configuration === filters.preferredConfiguration;
+
+            return (
+                afterStart &&
+                beforeEnd &&
+                matchUser &&
+                matchDisposition &&
+                matchLeadSource &&
+                matchProjectName &&
+                matchBudget &&
+                matchLocation &&
+                matchConfig
+            );
+        });
+    }, [data, filters]);
+
     const columns: ColumnDef<Assign>[] = [
         {
-            header: 'Assigned Date & Time',
-            accessorFn: row => row.createdAt,
+            header: 'Date/Time',
+            accessorFn: r => r.updatedAt,
             id: 'assignedDateTime',
             cell: ({ getValue }) => {
                 const date = new Date(getValue() as string);
-
                 const formattedDate = date.toLocaleDateString('en-GB', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric',
                 });
-
                 const formattedTime = date.toLocaleTimeString('en-GB', {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: true,
                 });
-
-                return `${formattedDate} ${formattedTime}`;
+                return <div className="min-w-[100px] whitespace-nowrap">{`${formattedDate} ${formattedTime}`}</div>;
             },
         },
-        {
-            header: 'Customer Name',
-            accessorFn: row => row.lead_details.name,
-            id: 'customerName',
-        },
-        {
-            header: 'Phone Number',
-            accessorFn: row => row.lead_details.phone,
-            id: 'phone',
-        },
-        {
-            header: 'Email',
-            accessorFn: row => row.lead_details.email,
-            id: 'email',
-        },
-        {
-            header: 'Project Name',
-            accessorFn: row => row.lead_details.source,
-            id: 'projectName',
-        },
-
-
-
+        { header: 'Customer', accessorFn: r => r.lead_details.name, id: 'customerName', cell: ({ getValue }) => <div className="truncate max-w-[120px]">{getValue() as string}</div> },
+        { header: 'Phone', accessorFn: r => r.lead_details.phone, id: 'phone', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
+        // { header: 'Email', accessorFn: r => r.lead_details.email, id: 'email', cell: ({ getValue }) => <div className="truncate max-w-[150px]" title={getValue() as string}>{getValue() as string}</div> },
+        { header: 'Project', accessorFn: r => r.lead_details.source, id: 'projectName', cell: ({ getValue }) => <div className="truncate max-w-[120px]">{getValue() as string}</div> },
+        { header: 'Source', accessorFn: r => r.lead_details.projectSource, id: 'leadSource', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
+        { header: 'Assignee', accessorFn: r => r.assignee_name, id: 'assignee', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
+        { header: 'Status', accessorFn: r => r.status, id: 'status', cell: ({ getValue }) => <div className="truncate max-w-[80px]">{getValue() as string}</div> },
     ];
 
+    const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
+
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onPaginationChange: setPagination,
+        state: { pagination },
     });
 
-    const toggleExpand = (id: string) => {
-        setExpandedRow(expandedRow === id ? null : id);
-    };
+    const filteredCount = filteredData.length;
+
+    const toggleExpand = (id: string) => setExpandedRow(expandedRow === id ? null : id);
 
     const openModal = (leadId: string) => {
         setSelectedLeadId(leadId);
@@ -126,21 +179,101 @@ export default function AssignCardTable({ data }: Props) {
         setSelectedLeadId(null);
     };
 
+    const handleClearFilters = () => {
+        setFilters({
+            startDate: '',
+            endDate: '',
+            user: '',
+            disposition: '',
+            leadSource: '',
+            projectName: '',
+            clientBudget: '',
+            location: '',
+            preferredConfiguration: '',
+        });
+        window.location.reload();
+        setPagination({ pageIndex: 0, pageSize: 10 });
+    };
+
     return (
-        <div className="space-y-4 relative">
-            {/* Table */}
-            <div className="overflow-x-auto rounded-md border">
-                <table className="w-full text-sm">
+        <div className="space-y-6 overflow-x-hidden">
+            <div className="text-lg font-bold text-gray-700">
+                Lead Count: {filteredCount}
+            </div>
+
+            {/* Filters Section */}
+            <div className="bg-white p-4 rounded-md shadow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 text-sm">
+                {/* Dates */}
+                <div>
+                    <label className="block text-gray-600 mb-1">Start Date</label>
+                    <input
+                        type="date"
+                        value={filters.startDate}
+                        onChange={e => setFilters({ ...filters, startDate: e.target.value })}
+                        className="border px-2 py-1 rounded w-full"
+                    />
+                </div>
+                <div>
+                    <label className="block text-gray-600 mb-1">End Date</label>
+                    <input
+                        type="date"
+                        value={filters.endDate}
+                        onChange={e => setFilters({ ...filters, endDate: e.target.value })}
+                        className="border px-2 py-1 rounded w-full"
+                    />
+                </div>
+
+                {/* Dropdown Filters */}
+                {[
+                    { key: 'user', label: 'User', options: dropdownOptions.users },
+                    { key: 'disposition', label: 'Disposition', options: dropdownOptions.dispositions },
+                    { key: 'leadSource', label: 'Lead Source', options: dropdownOptions.leadSources },
+                    { key: 'projectName', label: 'Project Name', options: dropdownOptions.projectNames },
+                    { key: 'clientBudget', label: 'Client Budget', options: dropdownOptions.budgets },
+                    { key: 'location', label: 'Location', options: dropdownOptions.locations },
+                    { key: 'preferredConfiguration', label: 'Preferred Configuration', options: dropdownOptions.configurations },
+                ].map(({ key, label, options }) => (
+                    <div key={key}>
+                        <label className="block text-gray-600 mb-1">{label}</label>
+                        <select
+                            value={filters[key as keyof typeof filters]}
+                            onChange={e => setFilters({ ...filters, [key]: e.target.value })}
+                            className="border px-2 py-1 rounded w-full"
+                        >
+                            <option value="">All</option>
+                            {options.map(opt => (
+                                <option key={opt} value={opt}>
+                                    {opt}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                ))}
+
+                {/* Clear Button */}
+                <div className="flex items-end justify-end">
+                    <button
+                        onClick={handleClearFilters}
+                        className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded w-full sm:w-auto"
+                    >
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+
+            {/* Table Section */}
+            <div className="overflow-x-auto border rounded-md bg-white">
+                <table className="min-w-full text-sm">
                     <thead className="bg-gray-100 text-left text-xs font-medium text-gray-600 uppercase">
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 <th className="px-4 py-2"></th>
                                 {headerGroup.headers.map(header => (
-                                    <th key={header.id} className="px-4 py-2">
+                                    <th key={header.id} className="px-4 py-2 whitespace-nowrap">
                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                     </th>
                                 ))}
-                                <th className="px-4 py-2">Actions</th>
+                                <th className="px-4 py-2 whitespace-nowrap">Actions</th>
                             </tr>
                         ))}
                     </thead>
@@ -152,24 +285,23 @@ export default function AssignCardTable({ data }: Props) {
 
                             return (
                                 <React.Fragment key={row.id}>
-                                    {/* Main Row */}
-                                    <tr className="border-b bg-yellow-50">
+                                    <tr className="border-b hover:bg-yellow-50">
                                         <td className="px-4 py-2">
                                             <button
                                                 onClick={() => toggleExpand(assign._id)}
-                                                className="p-2 rounded border text-blue-600 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                                                className="text-blue-600 text-xs border px-2 py-1 rounded bg-gray-50 hover:bg-gray-100"
                                             >
                                                 {isExpanded ? '➖' : '➕'}
                                             </button>
                                         </td>
                                         {row.getVisibleCells().map(cell => (
-                                            <td key={cell.id} className="px-4 py-2">
+                                            <td key={cell.id} className="px-4 py-2 truncate max-w-[150px]">
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </td>
                                         ))}
                                         <td className="px-4 py-2">
                                             <button
-                                                className="px-2 py-1 text-xs bg-orange-500 text-white rounded"
+                                                className="px-2 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600"
                                                 onClick={() => openModal(assign.lead_id)}
                                             >
                                                 Reassign
@@ -177,59 +309,17 @@ export default function AssignCardTable({ data }: Props) {
                                         </td>
                                     </tr>
 
-                                    {/* Expanded Row */}
                                     {isExpanded && (
                                         <tr className="bg-gray-50">
-                                            <td colSpan={columns.length + 2} className="px-6 py-4">
-                                                <div className="grid grid-cols-2 gap-4 text-xs text-gray-600">
-                                            <div>
-                                                <strong>Lead Source:</strong> {lead.projectSource || '—'}
-                                            </div>
-                                                    <div>
-                                                        <strong>Lead Type:</strong>{' '}
-                                                        {lead.lead_type === 'Hot'
-                                                            ? '🔥'
-                                                            : lead.lead_type === 'Cold'
-                                                                ? '❄️'
-                                                                : lead.lead_type === 'Warm'
-                                                                    ? '🌤️'
-                                                                    : '🙇‍♂️••🚫'}
-                                                    </div>
-                                                    <div>
-                                                        <strong>Remarks:</strong> {assign.remarks || '—'}
-                                                    </div>
-                                                    <div>
-                                                        <strong>Status:</strong> {assign.status}
-                                                    </div>
-                                                    <div>
-                                                        <strong>Assignee:</strong> {assign.assignee_name}
-                                                    </div>
-                                                    <div className="col-span-2">
-                                                        <strong>History:</strong>
-                                                        {assign.history?.length ? (
-                                                            <ul className="list-disc list-inside">
-                                                                {assign.history.map((h, idx) => (
-                                                                    <li key={idx} className="text-sm text-gray-700">
-                                                                        {typeof h === 'string' ? (
-                                                                            <span className="italic text-gray-500">{h}</span>
-                                                                        ) : (
-                                                                            <span>
-                                                                                <strong>{h.assignee_name || 'Unknown'}</strong> updated on{' '}
-                                                                                {h.updatedAt
-                                                                                    ? new Date(h.updatedAt).toLocaleString()
-                                                                                    : 'Unknown date'}{' '}
-                                                                                →{' '}
-                                                                                <span className="font-medium">{h.status || 'N/A'}</span>
-                                                                                {h.remarks && ` (Remarks: ${h.remarks})`}
-                                                                            </span>
-                                                                        )}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        ) : (
-                                                            <span className="text-gray-500 text-sm">No history available</span>
-                                                        )}
-                                                    </div>
+                                            <td colSpan={columns.length + 2} className="p-4">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-xs text-gray-700 break-words">
+                                                    <div><strong>Disposition:</strong> {lead.lead_status || '—'}</div>
+                                                    <div><strong>Lead Type:</strong> {lead.lead_type || '—'}</div>
+                                                    <div><strong>Client Budget:</strong> {lead.client_budget || '—'}</div>
+                                                    <div><strong>Location:</strong> {lead.location || '—'}</div>
+                                                    <div><strong>Preferred Config:</strong> {lead.preferred_configuration || '—'}</div>
+                                                    <div><strong>Remarks:</strong> {lead.comments || '—'}</div>
+                                                    <div><strong>Client Email:</strong> {lead.email || '—'}</div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -239,9 +329,77 @@ export default function AssignCardTable({ data }: Props) {
                         })}
                     </tbody>
                 </table>
+
+                {filteredData.length === 0 && (
+                    <div className="text-center py-6 text-gray-500 text-sm">
+                        No leads found matching your filters.
+                    </div>
+                )}
             </div>
 
-            {/* Modal */}
+            {/* Pagination */}
+            {filteredData.length > 0 && (
+                <div className="flex flex-wrap items-center justify-between gap-3 py-4 text-sm">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                            onClick={() => table.setPageIndex(0)}
+                            disabled={!table.getCanPreviousPage()}
+                            className="p-1 border rounded disabled:opacity-50"
+                        >
+                            {'<<'}
+                        </button>
+                        <button
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                            className="p-1 border rounded disabled:opacity-50"
+                        >
+                            {'<'}
+                        </button>
+                        <button
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                            className="p-1 border rounded disabled:opacity-50"
+                        >
+                            {'>'}
+                        </button>
+                        <button
+                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                            disabled={!table.getCanNextPage()}
+                            className="p-1 border rounded disabled:opacity-50"
+                        >
+                            {'>>'}
+                        </button>
+                    </div>
+
+                    <span>
+                        Page{' '}
+                        <strong>
+                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        </strong>
+                    </span>
+
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <label>Rows per page:</label>
+                        <select
+                            value={pageSize}
+                            onChange={e =>
+                                setPagination(prev => ({
+                                    ...prev,
+                                    pageSize: Number(e.target.value),
+                                }))
+                            }
+                            className="border rounded px-2 py-1"
+                        >
+                            {[10, 25, 50].map(size => (
+                                <option key={size} value={size}>
+                                    {size}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            )}
+
             {isModalOpen && selectedLeadId && (
                 <ReassignModal onClose={closeModal} leadId={selectedLeadId} />
             )}
