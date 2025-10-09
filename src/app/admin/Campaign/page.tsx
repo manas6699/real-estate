@@ -111,11 +111,14 @@ const CampaignPage = () => {
 
   return (
     <div>
-      <Navbar />
       <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
         <Sidebar />
-        <div className="p-4 text-2xl font-semibold mb-2 flex-1">
-          <h1 className='text-3xl font-bold  mb-6'>
+        <div className="p-6 text-xl font-semibold mb-4 flex-1 lg:ml-64">
+          <div className="mb-2">
+
+            <Navbar />
+          </div>
+          <h1 className='text-2xl font-bold  mb-6'>
             Start a New Campaign
           </h1>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-lg">

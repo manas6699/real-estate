@@ -10,7 +10,9 @@ const InsertLeadPage = () => {
             <Sidebar />
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <div className="flex-1 lg:ml-64 p-6">
-                    <Navbar />
+                    <div className="mb-2">
+                        <Navbar />
+                    </div>
                     <BulkUpload />
                 </div>
             </main>
