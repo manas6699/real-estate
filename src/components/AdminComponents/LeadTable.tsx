@@ -42,13 +42,29 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [total, setTotal] = useState(0);
+    // filter states
+    const [filters, setFilters] = useState({
+        startDate: '',
+        endDate: '',
+        source: '',
+        projectSource: '',
+    });
+
 
     useEffect(() => {
         const fetchLeads = async () => {
             try {
                 const res = await axios.get(GET_ALL_UNASSIGNED_LEADS, {
-                    params: { page, limit: pageSize },
+                    params: {
+                        page,
+                        limit: pageSize,
+                        startDate: filters.startDate || undefined,
+                        endDate: filters.endDate || undefined,
+                        source: filters.source || undefined,
+                        projectSource: filters.projectSource || undefined,
+                    },
                 });
+
 
                 let leads: Lead[] = res.data.leads || [];
 
@@ -67,7 +83,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             }
         };
         fetchLeads();
-    }, [assignbtn, page, pageSize]);
+    }, [assignbtn, page, pageSize, filters]);
 
     useEffect(() => {
         if (bulkModal) {
@@ -142,7 +158,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
-   
+
 
     const columns: ColumnDef<Lead>[] = [
         {
@@ -159,6 +175,10 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
         {
             accessorKey: 'source',
             header: 'Project Name',
+        },
+        {
+            accessorKey: 'projectSource',
+            header: 'Project Source',
         },
         {
             accessorKey: 'name',
@@ -229,19 +249,75 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             </div> */}
             {/* ✅ Toggle select */}
             <div className="mb-4 text-sm text-gray-600">
-                {/* <button
-                    onClick={toggleSelectAll}
-                    className="relative px-6 py-2 text-xl font-extrabold w-60 rounded-full bg-gray-700 text-white overflow-hidden cursor-pointer"
-                >
-                    
-                    <span className="absolute inset-0 rounded-full p-[3px] bg-gradient-to-r from-pink-500 via-yellow-400 to-pink-500 animate-gradient">
-                        <span className="block h-full w-full rounded-full bg-gray-700"></span>
-                    </span>
+                {/* 🔍 Filters */}
+                <div className="flex flex-wrap gap-3 mb-4 items-end">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                        <input
+                            type="date"
+                            value={filters.startDate}
+                            onChange={(e) =>
+                                setFilters((prev) => ({ ...prev, startDate: e.target.value }))
+                            }
+                            className="border rounded p-2 text-sm"
+                        />
+                    </div>
 
-                    <span className="relative z-10">
-                        {selectedIds.length === 0 ? "Select All" : "Unselect All"}
-                    </span>
-                </button> */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">End Date</label>
+                        <input
+                            type="date"
+                            value={filters.endDate}
+                            onChange={(e) =>
+                                setFilters((prev) => ({ ...prev, endDate: e.target.value }))
+                            }
+                            className="border rounded p-2 text-sm"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Lead Source</label>
+                        <input
+                            type="text"
+                            value={filters.source}
+                            onChange={(e) =>
+                                setFilters((prev) => ({ ...prev, source: e.target.value }))
+                            }
+                            placeholder="e.g., Uttalika"
+                            className="border rounded p-2 text-sm"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Project Source</label>
+                        <input
+                            type="text"
+                            value={filters.projectSource}
+                            onChange={(e) =>
+                                setFilters((prev) => ({ ...prev, projectSource: e.target.value }))
+                            }
+                            placeholder="e.g., In House"
+                            className="border rounded p-2 text-sm"
+                        />
+                    </div>
+
+                    <button
+                        onClick={() => setPage(1)} // triggers re-fetch with filters
+                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Apply
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            setFilters({ startDate: '', endDate: '', source: '', projectSource: '' });
+                            setPage(1);
+                        }}
+                        className="px-4 py-2 bg-gray-300 text-gray-800 rounded"
+                    >
+                        Clear
+                    </button>
+                </div>
 
                 {total ?
                     <div className='flex gap-4'>
