@@ -41,7 +41,7 @@ export default function Sidebar() {
             >
                 <div className='p-6'>
                     <div className="text-2xl font-bold mb-8">LEAD CRM</div>
-                    <nav className="flex flex-col space-y-8">
+                    <nav className="flex flex-col space-y-6">
                         <a
                             href="/admin/Dashboard"
                             className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
