@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import Papa from "papaparse";
+import { whoami } from "@/utils/whoami";
 import React, { useState, useRef } from "react";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -48,6 +49,11 @@ export default function CsvUpload() {
     }
 
     const handleUploadAndAssign = async () => {
+        const assigend_lead_by = whoami()
+        if (!assigend_lead_by) {
+            setError("Uploader ID not found. Please log in again.");
+            return;
+        }
         const formattedDate = new Date().toLocaleString();
         if (!file) {
             setError("Please select a file first.");
@@ -66,6 +72,7 @@ export default function CsvUpload() {
             formData.append("file", file);
             formData.append("assignee_id", selectedTelecaller.id);
             formData.append("assignee_name", selectedTelecaller.name);
+            formData.append("upload_by", assigend_lead_by);
             formData.append("history", `This Lead is Bulk-Assigned to ${selectedTelecaller.name} at Date : ${formattedDate}`)
 
             const res = await axios.post(BULK_UPLOAD_AND_ASSIGN, formData, {
@@ -151,13 +158,19 @@ export default function CsvUpload() {
             return;
         }
 
+        const uploaderId = whoami()
+        if (!uploaderId) {
+            setError("Uploader ID not found. Please log in again.");
+            return;
+        }
+
         setUploading(true);
         setError(null);
 
         try {
             const formData = new FormData();
             formData.append("file", file);
-
+            formData.append("upload_by", uploaderId);
             const res = await axios.post(BULK_UPLOAD_API, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });

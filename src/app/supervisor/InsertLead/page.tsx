@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import Loader from '@/components/loader';
 import React, { useEffect, useState } from 'react';
+import { whoami } from '@/utils/whoami';
 import { toast, ToastContainer } from 'react-toastify';
 
 import Navbar from '@/components/AdminComponents/Navbar'
@@ -18,6 +19,8 @@ type BrochureFormData = {
     phone: string;
     source: string;
     projectSource: string;
+    upload_type: string;
+    upload_by: string | null
 };
 
 type Project = {
@@ -31,12 +34,15 @@ type Source = {
 };
 
 const InsertLeadPage = () => {
+    const uploader_name = whoami()
     const [formData, setFormData] = useState<BrochureFormData>({
         name: '',
         email: '',
         phone: '',
         source: '',
-        projectSource: ""
+        projectSource: "",
+        upload_type: "single",
+        upload_by: uploader_name,
     });
 
     const [loading, setLoading] = useState(false);
@@ -126,7 +132,7 @@ const InsertLeadPage = () => {
             setLoading(true);
             await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Lead posted successfully');
-            setFormData({ name: '', email: '', phone: '', source: "", projectSource: "" });
+            setFormData({ name: '', email: '', phone: '', source: "", projectSource: "", upload_by: "" , upload_type: ""});
             setShowOtherInput(false);
             setLoading(false);
         } catch (error: unknown) {

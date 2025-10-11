@@ -348,6 +348,18 @@ export default function ReportTable({ data }: Props) {
                 enableColumnFilter: true
             },
             {
+                id: 'upload_by', // Explicit ID
+                accessorKey: 'lead_details.upload_by',
+                header: 'Upload By',
+                enableColumnFilter: true
+            },
+            {
+                id: 'upload_type', // Explicit ID
+                accessorKey: 'lead_details.upload_type',
+                header: 'Upload Type',
+                enableColumnFilter: true
+            },
+            {
                 id: 'history', // Explicit ID
                 accessorKey: 'history',
                 header: 'View History',
