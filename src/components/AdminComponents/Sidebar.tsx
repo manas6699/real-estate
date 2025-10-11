@@ -2,114 +2,94 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link'; // Use Link for Next.js navigation
 import { usePathname } from 'next/navigation';
-
 import {
-    Home,
-    Users,
-    BarChart2,
-    ArrowDownLeft,
-    BadgeAlert,
-    MonitorCog,
-    BadgeCheck,
-    ArrowBigUpDash,
-    X,
-    Menu
+    Home, Users, ArrowDownLeft, BadgeAlert, MonitorCog, BadgeCheck, ArrowBigUpDash, X, Menu, LineChart, Clock
 } from 'lucide-react';
 
+// --- Menu Item Definition for cleaner code ---
+const navItems = [
+    { href: '/admin/Dashboard', icon: Home, label: 'Dashboard' },
+    { href: '/admin/InsertLead', icon: ArrowDownLeft, label: 'Insert Data' },
+    { href: '/admin/BulkUpload', icon: ArrowBigUpDash, label: 'Bulk Data Upload' },
+    { href: '/admin/Campaign', icon: MonitorCog, label: 'Manage Campaign' },
+    { href: '/admin/ManageUser', icon: Users, label: 'Manage User' },
+    { href: '/admin/Dashboard/ManageLeads', icon: BadgeAlert, label: 'Unassigned Leads' },
+    { href: '/admin/Dashboard/assigned', icon: BadgeCheck, label: 'Assigned Leads' },
+    { href: '/admin/Dashboard/Report', icon: LineChart, label: 'View Report' },
+    { href: '/admin/Dashboard/Report/old', icon: Clock, label: 'View Old Leads' },
+];
+
+// --- Component ---
 export default function Sidebar() {
-    const [isOpen, setisOpen] = useState(false);
-
+    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+
     const toggleSidebar = () => {
-        setisOpen(!isOpen);
+        setIsOpen(!isOpen);
     };
+
+    // Base styling for all links
+    const baseLinkClasses = "flex items-center space-x-3 p-3 rounded-xl font-semibold text-gray-600 transition-colors duration-150 hover:bg-blue-50 hover:text-blue-700";
+    // Active styling for the current link
+    const activeLinkClasses = "bg-blue-100 text-blue-700 shadow-sm";
+
     return (
-        <div>
-            {/* Mobile toggle button */}
+        <>
+            {/* Mobile toggle button (Hamburger/X) */}
             <button
-                className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-gray-100 rounded-md shadow-md"
+                className="lg:hidden fixed top-4 right-4 z-[60] p-2 text-gray-800 bg-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
                 onClick={toggleSidebar}
+                aria-label="Toggle Menu"
             >
-                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />
-                }
+                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            <></>
+
+            {/* Mobile Overlay (Darkens background when sidebar is open) */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black opacity-30 z-50 lg:hidden"
+                    onClick={toggleSidebar} // Close sidebar on overlay click
+                />
+            )}
+
+            {/* Sidebar Element */}
             <aside
-                className={`fixed top-0 left-0 h-full bg-white shadow-md transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
-                    } lg:translate-x-0 transition-transform duration-200 w-64 z-40`}
+                className={`fixed top-0 left-0 h-full bg-white shadow-xl transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                    } lg:translate-x-0 transition-transform duration-300 w-64 z-50 overflow-y-auto`}
             >
-                <div className='p-6'>
-                    <div className="text-2xl font-bold mb-8">LEAD CRM</div>
-                    <nav className="flex flex-col space-y-6">
-                        <a
-                            href="/admin/Dashboard"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <Home size={20} /> <span>Dashboard</span>
-                        </a>
-                        <a
-                            href="/admin/InsertLead"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/InsertLead' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <ArrowDownLeft size={20} /> <span>Insert Data</span>
-                        </a>
-                        <a
-                            href="/admin/BulkUpload"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/BulkUpload' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <ArrowBigUpDash size={20} /> <span>Bulk Data Upload</span>
-                        </a>
-                        <a
-                            href="/admin/Campaign"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Campaign' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <MonitorCog size={20} /> <span>Manage Campaign</span>
-                        </a>
-                        <a
-                            href="/admin/ManageUser"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/ManageUser' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <Users size={20} /> <span>Manage User</span>
-                        </a>
-                        <a
-                            href="/admin/Dashboard/ManageLeads"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/ManageLeads' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <BadgeAlert size={20} /> <span>Unassigned Leads</span>
-                        </a>
-                        <a
-                            href="/admin/Dashboard/assigned"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/assigned' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <BadgeCheck size={20} /> <span>Assigned Leads</span>
-                        </a>
-                        <a
-                            href="/admin/Dashboard/Report"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/Report' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <BarChart2 size={20} /> <span>View Report</span>
-                        </a>
-                        <a
-                            href="/admin/Dashboard/Report/old"
-                            className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/admin/Dashboard/Report/old' ? 'bg-blue-50 text-blue-600 rounded-lg px-2 py-1' : ''
-                                }`}
-                        >
-                            <BarChart2 size={20} /> <span>View Old Leads</span>
-                        </a>
+                <div className="p-6 h-full flex flex-col">
+
+                    {/* Header/Logo */}
+                    <div className="text-3xl font-extrabold text-blue-600 mb-10 border-b pb-4">
+                        <span className="text-gray-900">LEAD</span> CRM
+                    </div>
+
+                    {/* Navigation Links */}
+                    <nav className="flex flex-col space-y-2 flex-grow">
+                        {navItems.map(item => {
+                            const isActive = pathname === item.href;
+                            const Icon = item.icon; // Component from lucide-react
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`${baseLinkClasses} ${isActive ? activeLinkClasses : ''}`}
+                                    onClick={toggleSidebar} // Close sidebar on link click (mobile)
+                                >
+                                    <Icon size={20} className="min-w-[20px]" />
+                                    <span>{item.label}</span>
+                                </Link>
+                            );
+                        })}
                     </nav>
+
+
+
                 </div>
-
-
             </aside>
-        </div>
+        </>
     );
 }
