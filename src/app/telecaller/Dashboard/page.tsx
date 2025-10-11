@@ -1,16 +1,17 @@
 'use client'
 import axios from 'axios';
-import { GET_LEAD_BY_ID, GET_ALL_LOCATIONS, GET_ALL_PROJECTS, WEB_SOCKET_URL } from '@/config/api';
-import React, { useEffect, useState, useCallback } from 'react' // Import useCallback
-import Navbar from '@/components/AdminComponents/Navbar'
+import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode';
 import leadStatuses from '@/options/Leadstatus';
-import preferredConfigs from '@/options/PreferedConfig';
-import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
-import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
 import { toast, ToastContainer } from 'react-toastify';
-import io from 'socket.io-client';
+
+import preferredConfigs from '@/options/PreferedConfig';
+import React, { useEffect, useState, useCallback } from 'react' // Import useCallback
+import Navbar from '@/components/AdminComponents/Navbar'
+import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
+import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
+import { GET_LEAD_BY_ID, GET_ALL_LOCATIONS, GET_ALL_PROJECTS, WEB_SOCKET_URL } from '@/config/api';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
@@ -57,6 +58,7 @@ const TelecallerDashboardPage = () => {
     const [projectName, setProjectName] = useState("");
     const [projects, setProjects] = useState<Project[]>([]);
     const [activeTile, setActiveTile] = useState("");
+    const [uploadType, setUploadType] = useState("");
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -66,9 +68,6 @@ const TelecallerDashboardPage = () => {
     const [socket, setSocket] = useState<any>(null);
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
-
-    // ... (Your useEffects for fetching Locations/Projects, socket logic, token validation) ...
-    // Note: The rest of the component up to fetchAssigns is omitted for brevity but should remain unchanged.
 
     /* token validation logic */
     function isTokenValid(token: string) {
@@ -273,8 +272,8 @@ const TelecallerDashboardPage = () => {
             return { status: 'assigned' };
         }
 
-        if (activeTile === 'scheduleCall'){
-            return {status: 'processed'};
+        if (activeTile === 'scheduleCall') {
+            return { status: 'processed' };
         }
         return {};
     };
@@ -291,7 +290,7 @@ const TelecallerDashboardPage = () => {
             if (!isTopLevelStatusFilter && leadStatus) {
                 params.lead_status = leadStatus;
             }
-          
+
             if (phone) params.phone = phone;
             if (location) params.location = location;
             if (name) params.name = name;
@@ -299,6 +298,7 @@ const TelecallerDashboardPage = () => {
             if (projectName) params.source = projectName;
             if (endDate) params.endDate = endDate;
             if (configuration) params.preferred_configuration = configuration;
+            if (uploadType) params.upload_type = uploadType;
 
             const storedUser = localStorage.getItem('user');
             if (!storedUser) return;
@@ -324,6 +324,7 @@ const TelecallerDashboardPage = () => {
         setEndDate("");
         setProjectName("");
         setConfiguration("");
+        setUploadType("");
         // No need to manually call fetchFiltered here, the useEffect below handles it
         window.location.reload()
     };
@@ -332,7 +333,7 @@ const TelecallerDashboardPage = () => {
     useEffect(() => {
         fetchFiltered();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [leadStatus, phone, name, startDate, location, endDate, projectName, configuration]);
+    }, [leadStatus, phone, name, startDate, uploadType, location, endDate, projectName, configuration]);
 
     const tileToStatusMap: Record<string, string> = {
         new: "", // empty status filter will show all leads (i.e., new leads)
@@ -379,7 +380,7 @@ const TelecallerDashboardPage = () => {
                 />
 
                 {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-9 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
                     <select
                         value={leadStatus}
                         onChange={(e) => setLeadStatus(e.target.value)}
@@ -396,7 +397,7 @@ const TelecallerDashboardPage = () => {
                         onChange={(e) => setLocation(e.target.value)}
                         className="border p-2 rounded text-xs"
                     >
-                        <option value="">Select Location</option>
+                        <option value="">Location</option>
                         {locations.map((loc) => (
                             <option key={loc._id} value={loc.locationName}>{loc.locationName}</option>
                         ))}
@@ -424,10 +425,19 @@ const TelecallerDashboardPage = () => {
                         onChange={(e) => setProjectName(e.target.value)}
                         className="border p-2 rounded text-xs"
                     >
-                        <option value="">Select Project</option>
+                        <option value="">Project</option>
                         {projects.map((proj) => (
                             <option key={proj._id} value={proj.projectName}>{proj.projectName}</option>
                         ))}
+                    </select>
+                    <select
+                        value={uploadType}
+                        onChange={(e) => setUploadType(e.target.value)}
+                        className="border p-2 rounded text-xs"
+                    >
+                        <option value="">Type</option>
+                        <option value="Single">Data-Sheet</option>
+                        <option value="Bulk">In House</option>
                     </select>
 
                     <input
@@ -449,11 +459,12 @@ const TelecallerDashboardPage = () => {
                         onChange={(e) => setConfiguration(e.target.value)}
                         className="border p-2 rounded text-xs"
                     >
-                        <option value="">Select Configuration</option>
+                        <option value="">Configuration</option>
                         {preferredConfigs.map((config) => (
                             <option key={config} value={config}>{config}</option>
                         ))}
                     </select>
+
 
                     <button
                         onClick={resetFilters}
