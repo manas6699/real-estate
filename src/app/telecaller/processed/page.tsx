@@ -29,6 +29,7 @@ type Assign = {
         name: string;
         email: string;
         phone: string;
+        upload_type: string;
         source: string;
         status: string;
         lead_status: string;

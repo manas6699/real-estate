@@ -30,6 +30,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        upload_type: string;
         lead_status: string;
         interested_project: string;
         createdAt: string;
@@ -436,8 +437,8 @@ const TelecallerDashboardPage = () => {
                         className="border p-2 rounded text-xs"
                     >
                         <option value="">Type</option>
-                        <option value="Single">Data-Sheet</option>
-                        <option value="Bulk">In House</option>
+                        <option value="Bulk">Data-Sheet</option>
+                        <option value="single">In House</option>
                     </select>
 
                     <input

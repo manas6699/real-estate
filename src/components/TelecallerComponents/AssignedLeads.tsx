@@ -36,6 +36,7 @@ type Assign = {
         phone: string;
         source: string;
         status: string;
+        upload_type: string;
         lead_status: string;
         createdAt: string;
         updatedAt: string;
@@ -184,12 +185,17 @@ export default function AssignedLeads({ data }: Props) {
                                     <span>{assign.lead_details.lead_status}</span>
                                 </div>
                             ) : null}
+
+                            <div className="flex flex-col text-sm text-gray-500">
+                                <span className="font-medium text-black">Upload Type</span>
+                                <span> {lead.upload_type === 'single' ? `In House` : `Data Sheet`}</span>
+                            </div>
                             <div className="flex items-center">
                                 <span className="bg-yellow-200 text-sm px-3 py-1 rounded-md text-blue-600 font-medium">
                                     {assign.status}
                                 </span>
                             </div>
-
+                           
                             <button
                                 className="px-2 rounded bg-orange-500 cursor-pointer"
                                 onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
