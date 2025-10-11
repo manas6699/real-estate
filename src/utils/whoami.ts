@@ -6,6 +6,10 @@ export interface User {
 }
 
 export function whoami(key: string = 'user'): string | null {
+  if (typeof window === 'undefined') {
+    // This code is running on the server; safely exit.
+    return null;
+  }
   try {
     // 1. Retrieve the string value from localStorage
     const userString = localStorage.getItem(key);
