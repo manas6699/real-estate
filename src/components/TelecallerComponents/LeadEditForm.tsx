@@ -485,6 +485,8 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                             <option value="Hot">Hot</option>
                             <option value="Cold">Cold</option>
                             <option value="Warm">Warm</option>
+                            <option value="Junk">Junk</option>
+                            <option value="Retry">Retry</option>
                         </select>
                     </div>
 
