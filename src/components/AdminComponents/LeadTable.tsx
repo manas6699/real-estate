@@ -199,6 +199,14 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             header: 'Phone',
         },
         {
+            accessorKey: 'upload_by',
+            header: 'Upload By',
+        },
+        {
+            accessorKey: 'upload_type',
+            header: 'Type',
+        },
+        {
             id: 'assign',
             header: '',
             cell: ({ row }) => (
@@ -439,7 +447,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
                                 {row.getVisibleCells().map((cell) => (
                                     <div
                                         key={cell.id}
-                                        className="flex-1 mb-2 md:mb-0 md:mr-4 text-left"
+                                        className="flex-1 mb-2 md:mb-0 md:mr-4 text-left text-sm"
                                     >
                                         <div className="text-xs flex justify-center text-gray-400">
                                             {cell.column.columnDef.header as string}
