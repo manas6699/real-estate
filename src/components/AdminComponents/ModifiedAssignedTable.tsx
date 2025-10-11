@@ -321,6 +321,72 @@ export default function AssignCardTable({ data }: Props) {
                                                     <div><strong>Remarks:</strong> {lead.comments || '—'}</div>
                                                     <div><strong>Client Email:</strong> {lead.email || '—'}</div>
                                                 </div>
+                                                {Array.isArray(assign.history) && assign.history.length > 0 && (
+                                                    <div className="mt-6 text-sm text-gray-800 border-t pt-4">
+                                                        <strong className="block mb-4 text-base font-semibold text-gray-900">
+                                                            Activity History (Newest First)
+                                                        </strong>
+
+                                                        {/* Timeline Container */}
+                                                        <div className="relative border-l border-gray-200 space-y-4 ml-2 pl-4">
+
+                                                            {/* KEEPING .reverse() to show newest at the top */}
+                                                            {[...assign.history].reverse().map((item, index) => (
+                                                                <div key={index} className="relative">
+
+                                                                    {/* Timeline Dot/Marker */}
+                                                                    <div className={`
+                        absolute w-3 h-3 rounded-full mt-4 -left-[22.5px] border border-white
+                        ${typeof item === 'string' ? 'bg-orange-400' : 'bg-indigo-500'}
+                    `}></div>
+
+                                                                    {typeof item === 'string' ? (
+                                                                        /* String Entry (e.g., Bulk Assignment) - styled to look like an important event */
+                                                                        <div className="p-3 bg-orange-50 rounded-lg shadow-sm border border-orange-200">
+                                                                            <p className="font-medium text-orange-800">
+                                                                                {item}
+                                                                            </p>
+                                                                        </div>
+                                                                    ) : (
+                                                                        /* Object Entry (e.g., Status Update) */
+                                                                        <div className="p-4 bg-white rounded-lg shadow-md border border-gray-100">
+
+                                                                            {/* Header: Status & Updated At */}
+                                                                            <div className="flex justify-between items-start mb-2">
+                                                                                <span className={`
+                                    font-bold text-base 
+                                    ${item.status === 'Booked' ? 'text-green-600' : 'text-indigo-600'}
+                                `}>
+                                                                                    {item.status || 'Status Updated'}
+                                                                                </span>
+                                                                                <span className="text-xs text-gray-500">
+                                                                                    {item.updatedAt
+                                                                                        ? new Date(item.updatedAt).toLocaleString()
+                                                                                        : '—'}
+                                                                                </span>
+                                                                            </div>
+
+                                                                            {/* Assignee */}
+                                                                            <div className="text-xs text-gray-600 mb-1">
+                                                                                <span className="font-medium">Assignee:</span> {item.assignee_name || '—'}
+                                                                            </div>
+
+                                                                            {/* Remarks */}
+                                                                            {item.remarks && (
+                                                                                <div className="mt-2 p-2 bg-indigo-50 rounded-md border border-indigo-100">
+                                                                                    <strong className="block text-xs text-indigo-700">Remarks:</strong>
+                                                                                    <p className="text-xs text-indigo-800">{item.remarks}</p>
+                                                                                </div>
+                                                                            )}
+
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                     )}
