@@ -503,7 +503,7 @@ export default function ReportTable({ data }: Props) {
             </div>
 
             {/* Desktop Table */}
-            <div className="hidden md:block relative rounded-b-lg border-x border-b border-gray-200 bg-white shadow-sm">
+            <div className="relative rounded-b-lg border-x border-b border-gray-200 bg-white shadow-sm">
                 <div className="overflow-x-auto scrollbar-hide">
                     <table className="w-full min-w-max border-collapse text-sm rounded-xl">
                         <thead className="bg-gray-50 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -553,7 +553,7 @@ export default function ReportTable({ data }: Props) {
                                 return (
                                     <tr key={row.id} className="bg-white hover:bg-gray-50 transition-colors">
                                         {row.getVisibleCells().map(cell => (
-                                            <td key={cell.id} className="px-4 py-3 truncate max-w-xs text-gray-900">
+                                            <td key={cell.id} className="px-4 py-3  max-w-xs text-gray-900">
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </td>
                                         ))}
@@ -566,7 +566,7 @@ export default function ReportTable({ data }: Props) {
             </div>
 
             {/* --------------------- Pagination Controls --------------------- */}
-            <div className="hidden md:flex justify-between items-center px-4 py-3 bg-white border-x border-b border-gray-200 rounded-b-lg text-sm">
+            <div className=" justify-between items-center px-4 py-3 bg-white border-x border-b border-gray-200 rounded-b-lg text-sm">
                 <div className="flex items-center space-x-2">
                     <span className="text-gray-600">Rows per page:</span>
                     <select
@@ -615,57 +615,6 @@ export default function ReportTable({ data }: Props) {
             </div>
             {/* ------------------- End Pagination Controls ------------------- */}
 
-            {/* Mobile Card View */}
-            <div className="md:hidden space-y-4 p-4">
-                {table.getRowModel().rows.map((row) => {
-                    const lead = row.original.lead_details;
-                    const assign = row.original;
-                    return (
-                        <div
-                            key={row.id}
-                            className="border border-gray-200 rounded-lg p-4 shadow-sm space-y-3 text-sm bg-white"
-                        >
-                            <p className="flex justify-between">
-                                <span className="font-semibold text-gray-700">Customer:</span>
-                                <span className="text-right">{lead.name}</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="font-semibold text-gray-700">Phone:</span>
-                                <span className="text-right">{lead.phone}</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="font-semibold text-gray-700">Email:</span>
-                                <span className="text-right">{lead.email || '---'}</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="font-semibold text-gray-700">Status:</span>
-                                <span className="text-right">{assign.status} → {assign.assignee_name}</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="font-semibold text-gray-700">Remarks:</span>
-                                <span className="text-right">{assign.remarks || '---'}</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="font-semibold text-gray-700">Date:</span>
-                                <span className="text-right">
-                                    {new Date(assign.createdAt).toLocaleDateString('en-GB', {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric',
-                                    })}
-                                </span>
-                            </p>
-                            <button
-                                onClick={() => openSidebar(assign.history)}
-                                className="flex items-center justify-center w-full py-2 mt-2 text-blue-600 hover:text-blue-800 border border-blue-100 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors"
-                            >
-                                <History className="mr-1.5" size={16} /> View History
-                            </button>
-                        </div>
-                    );
-                })}
-            </div>
-
             {/* Sidebar */}
             {isSidebarOpen && (
                 <div className="fixed top-0 right-0 md:w-96 w-full h-full bg-white shadow-xl border-l transform transition-transform duration-300 ease-in-out z-50">
@@ -697,11 +646,11 @@ export default function ReportTable({ data }: Props) {
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center">
-                                                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                                                    <span className="text-xs font-extrabold px-2 py-0.5 text-blue-800">
                                                         {h.status || 'N/A'}
                                                     </span>
                                                     {h.remarks && (
-                                                        <span className="ml-2 text-xs text-gray-600 truncate">
+                                                        <span className="ml-2 text-xs text-gray-600">
                                                             Remarks: {h.remarks}
                                                         </span>
                                                     )}
