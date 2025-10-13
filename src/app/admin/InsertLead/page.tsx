@@ -132,7 +132,15 @@ const InsertLeadPage = () => {
             setLoading(true);
             await axios.post(LEADS_ENDPOINT, formData);
             toast.success('Lead posted successfully');
-            setFormData({ name: '', email: '', phone: '', source: "", projectSource: "", upload_by: "" , upload_type: ""});
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                source: "",
+                projectSource: "",
+                upload_type: "single",
+                upload_by: uploader_name,
+            });
             setShowOtherInput(false);
             setLoading(false);
         } catch (error: unknown) {
