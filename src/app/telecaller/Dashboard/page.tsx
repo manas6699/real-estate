@@ -288,8 +288,14 @@ const TelecallerDashboardPage = () => {
             const primaryFilter = buildCallPendingFilter(activeTile);
             Object.assign(params, primaryFilter);
             const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall';
+            const isLeadTypeFilter = ['hot', 'cold', 'warm', 'retry', 'junk'].includes(activeTile);
             if (!isTopLevelStatusFilter && leadStatus) {
-                params.lead_status = leadStatus;
+                if (isLeadTypeFilter) {
+                    params.lead_type = leadStatus; // leadStatus holds the value (e.g., "Hot")
+                } else {
+                    // Otherwise, apply the filter to the lead_status field.
+                    params.lead_status = leadStatus;
+                }
             }
 
             if (phone) params.phone = phone;
@@ -342,6 +348,11 @@ const TelecallerDashboardPage = () => {
         SiteVisitDone: "Site Visit Done",
         followUp: "Under Follow Up",
         booked: "Booked",
+        hot: "Hot",
+        cold: "Cold",
+        warm: "Warm",
+        retry: "Retry",
+        junk: "Junk",
         callPending: "assigned",
         scheduleCall: "processed",
         callBack: "Call Back",
