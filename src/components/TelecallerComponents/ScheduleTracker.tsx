@@ -93,8 +93,8 @@ const ScheduleTracker = () => {
     }, [schedules, overdueIds]);
 
     return (
-        <div>
-            <div className="text-gray-600">Overdue</div>
+        <div className='flex flex-col'>
+            <p className="text-gray-600">Overdue</p>
 
             {loading ? (
                 <div className="flex items-center space-x-2">
@@ -103,7 +103,7 @@ const ScheduleTracker = () => {
                     <span className="text-gray-500 text-sm">Checking schedules...</span>
                 </div>
             ) : (
-                <div className="text-2xl font-bold">{overdueIds.length}</div>
+                <div className="text-2xl font-bold pt-6">{overdueIds.length}</div>
             )}
 
             <ToastContainer position="top-right" />
