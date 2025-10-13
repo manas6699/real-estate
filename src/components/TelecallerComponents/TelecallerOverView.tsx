@@ -1,21 +1,26 @@
 'use client';
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { GET_OLD_LEADS_FOR_TELECALLER, GET_LEAD_BY_ID, GET_SCHEDULES_BY_ID } from '@/config/api';
+import React, { useEffect, useState } from 'react';
 import ScheduleTracker from '@/components/TelecallerComponents/ScheduleTracker';
+import { GET_LEAD_BY_ID, GET_SCHEDULES_BY_ID } from '@/config/api';
 
 // type AssignLeadCount = {
 //     newLeadCount: number;
 // };
 
 type Stats = {
-    oldLeadCount: number;
     siteVisitFixed: number;
     siteVisitDone: number;
     followUp: number;
     booked: number;
+    hot: number,
+    cold: number,
+    warm: number,
+    retry: number,
+    junk: number,
     callPending: number;
     callBack: number;   // ✅ added here
+    todayLeadsCount: number;
 };
 
 type AssignsCountResponse = {
@@ -25,11 +30,7 @@ type AssignsCountResponse = {
     message?: string;
 };
 
-type OldLeadsResponse = {
-    success: boolean;
-    total: number;
-    message?: string;
-};
+
 
 type TelecallerOverViewProps = {
     newLeadCount: number;
@@ -37,15 +38,35 @@ type TelecallerOverViewProps = {
     activeTile: string; // <-- from parent for styling
 };
 
+// Function to get the start and end of the current day in ISO format
+const getTodayDateRange = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Start of tomorrow (end of today)
+
+    return {
+        startDate: today.toISOString(),
+        endDate: tomorrow.toISOString(),
+    };
+};
+
+
 const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: TelecallerOverViewProps) => {
     const [stats, setStats] = useState<Stats>({
-        oldLeadCount: 0,
         siteVisitFixed: 0,
         siteVisitDone: 0,
         followUp: 0,
         booked: 0,
+        hot: 0,
+        cold: 0,
+        warm: 0,
+        retry: 0,
+        junk: 0,
         callPending: 0,
         callBack: 0,   // ✅ initialize correctly
+        todayLeadsCount: 0
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -89,11 +110,12 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
                     return;
                 }
 
-                // Old leads total
-                const oldLeadRes = await axios.get<OldLeadsResponse>(
-                    `${GET_OLD_LEADS_FOR_TELECALLER}?userId=${encodeURIComponent(userId)}`
-                );
-                const oldLeadCount = oldLeadRes.data?.success ? oldLeadRes.data.total : 0;
+                // ✅ Prepare the date range for today's leads
+                const todayRange = getTodayDateRange();
+                const todayLeadsParams = {
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
+                };
 
                 // Parallel counts
                 const [
@@ -101,25 +123,42 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
                     siteVisitDone,
                     followUp,
                     booked,
+                    hot,
+                    cold,
+                    warm,
+                    retry,
+                    junk,
                     callPending,
                     callBack,
+                    todayLeadsCount
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
                     getCount(userId, { lead_status: 'Under Follow Up' }),
                     getCount(userId, { lead_status: 'Booked' }),
+                    getCount(userId, { lead_type: 'Hot' }),
+                    getCount(userId, { lead_type: 'Cold' }),
+                    getCount(userId, { lead_type: 'Warm' }),
+                    getCount(userId, { lead_type: 'Retry' }),
+                    getCount(userId, { lead_type: 'Junk' }),
                     getCount(userId, { status: 'assigned' }),
                     getCount(userId, { lead_status: 'Call Back' }),
+                    getCount(userId, todayLeadsParams)
                 ]);
 
                 safeSet(() => ({
-                    oldLeadCount,
                     siteVisitFixed,
                     siteVisitDone,
                     followUp,
                     booked,
+                    hot,
+                    cold,
+                    warm,
+                    retry,
+                    junk,
                     callPending,
-                    callBack,   // ✅ correctly store callBack
+                    callBack,
+                    todayLeadsCount
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -180,20 +219,79 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
             )}
 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer">
-                    <a href="/telecaller/OldReport">
-                        <div className="text-gray-600">Old Leads</div>
-                        <div className="text-2xl font-bold">{stats.oldLeadCount}</div>
-                    </a>
-                </div>
                 <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
                     ${activeTile === 'new' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('new')}
                 >
-                    <div className="text-gray-600">New Leads</div>
+                    <div className="text-gray-600">Total Leads</div>
                     <div className="text-2xl font-bold">{newLeadCount}</div>
                 </div>
+                <div
+                    className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
+
+                >
+                    <div className="text-gray-600">Today Leads</div>
+                    <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
+                </div>
+
+
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'callPending' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('callPending')}
+                >
+                    <div className="text-gray-600"> Pending</div>
+                    <div className="text-2xl font-bold">{stats.callPending}</div>
+                </div>
+                <div className=" bg-white rounded-lg shadow p-4">
+                    <a href="/telecaller/Calender">
+                        <ScheduleTracker />
+                    </a>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'hot' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('hot')}
+                >
+                    <div className="text-gray-600">Hot </div>
+                    <div className="text-2xl font-bold">{stats.hot}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'cold' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('cold')}
+                >
+                    <div className="text-gray-600">Cold </div>
+                    <div className="text-2xl font-bold">{stats.cold}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'warm' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('warm')}
+                >
+                    <div className="text-gray-600">Warm </div>
+                    <div className="text-2xl font-bold">{stats.warm}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'retry' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('retry')}
+                >
+                    <div className="text-gray-600">Retry </div>
+                    <div className="text-2xl font-bold">{stats.retry}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'junk' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('junk')}
+                >
+                    <div className="text-gray-600">Junk</div>
+                    <div className="text-2xl font-bold">{stats.junk}</div>
+                </div>
+            </section>
+
+            <section className="flex flex-col md:flex-row gap-4 mb-4">
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitFixed' ? 'ring-2 ring-blue-500' : ''}`}
@@ -202,23 +300,6 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
                     <div className="text-gray-600">Site Visit Fixed</div>
                     <div className="text-2xl font-bold">{stats.siteVisitFixed}</div>
                 </div>
-
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
-                    ${activeTile === 'callPending' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('callPending')}
-                >
-                    <div className="text-gray-600">Call Pending</div>
-                    <div className="text-2xl font-bold">{stats.callPending}</div>
-                </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                    <a href="/telecaller/Calender">
-                        <ScheduleTracker />
-                    </a>
-                </div>
-            </section>
-
-            <section className="flex flex-col md:flex-row gap-4 mb-4">
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
