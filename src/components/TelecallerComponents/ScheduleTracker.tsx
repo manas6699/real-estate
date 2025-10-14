@@ -1,8 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'react-toastify';
 import { GET_SCHEDULES_BY_ID } from '@/config/api';
 
 
@@ -63,12 +64,16 @@ const ScheduleTracker = () => {
                             <div>
                                 ⏰ Schedule &quot;<b>{schedule.title}</b>&quot; has exceeded time!{" "}
 
-                                <a
+                                <Link
                                     href="/telecaller/Calender"
-                                    style={{ textDecoration: "underline", color: "#ff4444", fontWeight: "bold" }}
+                                    style={{
+                                        textDecoration: "underline",
+                                        color: "#ff4444",
+                                        fontWeight: "bold"
+                                    }}
                                 >
                                     VIEW CALENDAR
-                                </a>
+                                </Link>
 
                             </div>,
                             {
