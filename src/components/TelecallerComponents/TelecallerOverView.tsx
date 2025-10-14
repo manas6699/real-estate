@@ -30,12 +30,11 @@ type AssignsCountResponse = {
     message?: string;
 };
 
-
-
 type TelecallerOverViewProps = {
     newLeadCount: number;
     onTileClick: (filterType: string) => void;
     activeTile: string; // <-- from parent for styling
+    uploadType: string
 };
 
 // Function to get the start and end of the current day in ISO format
@@ -53,7 +52,7 @@ const getTodayDateRange = () => {
 };
 
 
-const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: TelecallerOverViewProps) => {
+const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType }: TelecallerOverViewProps) => {
     const [stats, setStats] = useState<Stats>({
         siteVisitFixed: 0,
         siteVisitDone: 0,
@@ -96,8 +95,13 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
             id: string,
             params: Record<string, string>
         ): Promise<number> => {
+            // Add upload_type to params if it's set
+            const finalParams = { ...params };
+            if (uploadType) {
+                finalParams.upload_type = uploadType;
+            }
             const url = GET_LEAD_BY_ID(id);
-            const { data } = await axios.get<AssignsCountResponse>(url, { params });
+            const { data } = await axios.get<AssignsCountResponse>(url, { params: finalParams });
             if (!data?.success) return 0;
             return data.count ?? 0;
         };
@@ -116,6 +120,10 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
                 };
+
+                // if(uploadType){
+                //     todayLeadsParams.upload_type = uploadType;
+                // }
 
                 // Parallel counts
                 const [
@@ -173,7 +181,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
         return () => {
             mounted = false;
         };
-    }, []);
+    }, [uploadType]);
 
     useEffect(() => {
         const fetchSchedules = async () => {
@@ -204,13 +212,13 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
         };
 
         fetchSchedules();
-    }, []);
+    }, [uploadType]);
 
 
 
     return (
         <section>
-            <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
+           
 
             {error && (
                 <div className="mb-4 p-2 rounded bg-red-100 text-red-700 text-sm">
@@ -224,14 +232,14 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile }: Telecalle
                     ${activeTile === 'new' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('new')}
                 >
-                    <div className="text-gray-600">Total Leads</div>
+                    <div className="text-gray-600">Total</div>
                     <div className="text-2xl font-bold">{newLeadCount}</div>
                 </div>
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
 
                 >
-                    <div className="text-gray-600">Today Leads</div>
+                    <div className="text-gray-600">Today</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
                 </div>
 

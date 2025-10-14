@@ -6,12 +6,17 @@ import leadStatuses from '@/options/Leadstatus';
 import { toast, ToastContainer } from 'react-toastify';
 
 import preferredConfigs from '@/options/PreferedConfig';
-import React, { useEffect, useState, useCallback } from 'react' // Import useCallback
+import React, { useEffect, useState, useCallback } from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
-import { GET_LEAD_BY_ID, GET_ALL_LOCATIONS, GET_ALL_PROJECTS, WEB_SOCKET_URL } from '@/config/api';
+import {
+    GET_LEAD_BY_ID,
+    GET_ALL_LOCATIONS,
+    GET_ALL_PROJECTS,
+    WEB_SOCKET_URL
+} from '@/config/api';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
@@ -140,15 +145,19 @@ const TelecallerDashboardPage = () => {
     }, []);
 
     // Function to fetch all leads (unfiltered) and set the total count
-    const fetchAllLeadsForCount = useCallback(async () => {
+    const fetchAllLeadsForCount = useCallback(async (currentUploadType: string) => {
         const storedUser = localStorage.getItem('user');
         if (!storedUser) return 0;
 
         const user = JSON.parse(storedUser);
         const id = user._id;
+        const params: { upload_type?: string } = {};
+        if (currentUploadType) {
+            params.upload_type = currentUploadType;
+        }
 
         try {
-            const res = await axios.get(GET_LEAD_BY_ID(id));
+            const res = await axios.get(GET_LEAD_BY_ID(id), { params }); 
             if (res.data && res.data.success) {
                 // Assuming 'new leads' are ALL leads assigned to the telecaller,
                 // the total count is simply the total number of records returned.
@@ -170,7 +179,7 @@ const TelecallerDashboardPage = () => {
         const id = user._id;
 
         const initialFetch = async () => {
-            await fetchAllLeadsForCount(); // Get the total count right away
+            await fetchAllLeadsForCount(uploadType); // Get the total count right away
             try {
                 const res = await axios.get(GET_LEAD_BY_ID(id));
                 if (res.data && res.data.success) {
@@ -181,7 +190,7 @@ const TelecallerDashboardPage = () => {
             }
         }
         initialFetch();
-    }, [fetchAllLeadsForCount]); // Dependency on useCallback
+    }, [fetchAllLeadsForCount , uploadType]); // Dependency on useCallback
 
     // socket logic part 2
     useEffect(() => {
@@ -340,7 +349,28 @@ const TelecallerDashboardPage = () => {
     useEffect(() => {
         fetchFiltered();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [leadStatus, phone, name, startDate, uploadType, location, endDate, projectName, configuration]);
+    }, [activeTile ,leadStatus, phone, name, startDate, location, endDate, projectName, configuration]);
+
+    useEffect(() => {
+        // Only fetch the count when uploadType changes
+        fetchAllLeadsForCount(uploadType);
+
+        // Also run the main filter logic to update the table data
+        fetchFiltered();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        activeTile,
+  leadStatus,
+  phone,
+  location,
+  name,
+  startDate,
+  endDate,
+  projectName,
+  configuration,
+  uploadType
+    ]);
 
     const tileToStatusMap: Record<string, string> = {
         new: "", // empty status filter will show all leads (i.e., new leads)
@@ -382,13 +412,59 @@ const TelecallerDashboardPage = () => {
                 <Navbar />
             </div>
             <section className='lg:ml-64 p-6'>
+                <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
                 {/* ✅ Change: Pass the TOTAL UNFILTERED count here 
                     This number will not change when filters are applied.
                 */}
+                {/* <select
+                    value={uploadType}
+                    onChange={(e) => setUploadType(e.target.value)}
+                    className="border p-2 rounded text-xs"
+                >
+                    <option value="">Type</option>
+                    <option value="Bulk">Data-Sheet</option>
+                    <option value="single">In House</option>
+                </select> */}
+                <div className="flex items-center space-x-3  rounded-lg mb-4">
+                    
+                    <div className="flex bg-gray-100 rounded-full p-1">
+                        <button
+                            type="button"
+                            onClick={() => setUploadType("")}
+                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === ""
+                                    ? "bg-blue-500 text-white shadow-md"
+                                    : "text-gray-600 hover:text-gray-800"
+                                }`}
+                        >
+                            All
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setUploadType("Bulk")}
+                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "Bulk"
+                                    ? "bg-blue-500 text-white shadow-md"
+                                    : "text-gray-600 hover:text-gray-800"
+                                }`}
+                        >
+                            Data-Sheet
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setUploadType("single")}
+                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "single"
+                                    ? "bg-blue-500 text-white shadow-md"
+                                    : "text-gray-600 hover:text-gray-800"
+                                }`}
+                        >
+                            In House
+                        </button>
+                    </div>
+                </div>
                 <TelecallerOverView
                     newLeadCount={totalNewLeadsCount}
                     onTileClick={handleTileClick}
                     activeTile={activeTile}
+                    uploadType={uploadType}
                 />
 
                 {/* Filters */}
@@ -442,7 +518,7 @@ const TelecallerDashboardPage = () => {
                             <option key={proj._id} value={proj.projectName}>{proj.projectName}</option>
                         ))}
                     </select>
-                    <select
+                    {/* <select
                         value={uploadType}
                         onChange={(e) => setUploadType(e.target.value)}
                         className="border p-2 rounded text-xs"
@@ -450,7 +526,7 @@ const TelecallerDashboardPage = () => {
                         <option value="">Type</option>
                         <option value="Bulk">Data-Sheet</option>
                         <option value="single">In House</option>
-                    </select>
+                    </select> */}
 
                     <input
                         type="date"
