@@ -20,7 +20,9 @@
         'Budget Issue',
         'Duplicate',
         'Language barrier',
-        'Not interested'
+        'Not interested',
+        "Switch Off",
+        "Refer"
     ];
 
     export default leadStatuses

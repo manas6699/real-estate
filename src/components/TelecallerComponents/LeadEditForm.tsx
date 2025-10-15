@@ -9,14 +9,16 @@ import {
     EDIT_LEAD_FORM,
     GET_ALL_TELECALLERS_API,
     REASSIGN_NEW_LEADS,
-    GET_ALL_PROJECTS, 
-    POST_A_PROJECT, 
+    GET_ALL_PROJECTS,
+    POST_A_PROJECT,
     GET_LEAD_DETAILS
 } from "@/config/api";
 import leadStatuses from "@/options/Leadstatus"; 
 import preferredConfigs from "@/options/PreferedConfig";
 import BudgetInput from "@/components/TelecallerComponents/BudgetInput";
-import {whoami} from '@/utils/whoami'
+import {whoami} from '@/utils/whoami';
+import {Dispositions} from "@/app/data/dispositions";
+
 type leadIdType = { leadId: string };
 type Telecaller = {
     id: string;
@@ -281,6 +283,15 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         }
     };
 
+    const handleLeadStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedStatus = e.target.value;
+        setLeadStatus(selectedStatus);
+
+        // Automatically determine and set lead_type
+        const determinedType = Dispositions[selectedStatus] || ""; // Fallback to "" if not found
+        setLeadType(determinedType);
+    };
+
     return (
         <>
             <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
@@ -455,7 +466,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </label>
                         <select
                             value={lead_status}
-                            onChange={(e) => setLeadStatus(e.target.value)}
+                            onChange={handleLeadStatusChange}
                             className="w-full px-3 py-2 border rounded-lg bg-orange-100 focus:ring-2 focus:ring-orange-500 outline-none"
                             required
                         >
@@ -474,20 +485,14 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         <label className="block mb-1 text-sm font-medium text-gray-600">
                             Lead Type
                         </label>
-                        <select
-                            value={lead_type}
-                            onChange={(e) => setLeadType(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
-                        >
-                            <option value="" disabled>
-                                Select Lead Type
-                            </option>
-                            <option value="Hot">Hot</option>
-                            <option value="Cold">Cold</option>
-                            <option value="Warm">Warm</option>
-                            <option value="Junk">Junk</option>
-                            <option value="Retry">Retry</option>
-                        </select>
+                        {/* Display the determined lead_type value directly */}
+                        <div className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 font-medium">
+                            {lead_type || "Select Disposition Status"}
+                        </div>
+                        {/* Keep a hidden select or input if necessary for form serialization 
+        but since you use formData object in handleSubmit, the state is enough.
+        You can remove the whole <select> element and just keep the visual <div>.
+    */}
                     </div>
 
                     {/* Schedule Date */}
