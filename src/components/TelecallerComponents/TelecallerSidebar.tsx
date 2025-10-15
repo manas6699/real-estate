@@ -1,35 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
-    CheckCircle2, // Used for Processed Leads
-    CalendarDays, // Used for My Calendar (Standard Lucide icon)
-    Archive,      // Used for Old Leads
-    ArrowRightLeft, // Used for Transferred Leads
+    CheckCircle2,
+    CalendarDays,
+    Archive,
+    ArrowRightLeft,
     Menu,
     X,
     Users
 } from 'lucide-react';
 
-// Define the navigation items
 const navItems = [
     { href: "/telecaller/Dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/telecaller/Calender", icon: CalendarDays, label: "My Calendar" },
-    { href: "/telecaller/transfer", icon: ArrowRightLeft, label: "Transferred Leads" },
+    { href: "/telecaller/Transfer", icon: ArrowRightLeft, label: "Transferred Leads" },
     { href: "/telecaller/processed", icon: CheckCircle2, label: "Processed Leads" },
     { href: "/telecaller/OldReport", icon: Archive, label: "Old Leads" },
 ];
 
 export default function TelecallerSidebar() {
     const [isOpen, setIsOpen] = useState(false);
-    // In a single-file environment, we must mock usePathname for runnable code.
-    // In a real Next.js environment, the imported usePathname would work.
-    const pathname = typeof window !== 'undefined' ? window.location.pathname : '/telecaller/Dashboard';
+    const pathname = usePathname();
 
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
+    const toggleSidebar = () => setIsOpen(!isOpen);
 
     interface LinkItemProps {
         href: string;
@@ -38,7 +34,9 @@ export default function TelecallerSidebar() {
     }
 
     const LinkItem: React.FC<LinkItemProps> = ({ href, icon: Icon, label }) => {
-        const isActive = pathname === href;
+        // Fixed active state logic - handles exact matches and nested routes
+        const isActive = pathname === href ||
+            (href !== "/telecaller/Dashboard" && pathname.startsWith(href));
 
         return (
             <a
@@ -54,9 +52,16 @@ export default function TelecallerSidebar() {
         );
     };
 
+    // Close sidebar when clicking on a link (mobile)
+    useEffect(() => {
+        if (isOpen) {
+            setIsOpen(false);
+        }
+    }, [isOpen, pathname]);
+
     return (
         <>
-            {/* Mobile toggle button (Floating Action Button style) */}
+            {/* Mobile floating button */}
             <button
                 className="lg:hidden fixed bottom-6 right-6 z-50 p-3 bg-pink-600 text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105 active:scale-95"
                 onClick={toggleSidebar}
@@ -75,13 +80,13 @@ export default function TelecallerSidebar() {
                         <span className="text-pink-600">TC</span> Panel
                     </h2>
                 </div>
+
                 <nav className="flex flex-col p-4 space-y-2 flex-grow">
                     {navItems.map((item) => (
                         <LinkItem key={item.href} {...item} />
                     ))}
                 </nav>
 
-                {/* Optional: Footer or user details area */}
                 <div className="p-4 border-t border-gray-100 text-sm text-gray-500">
                     <div className="flex items-center space-x-2">
                         <Users className="w-4 h-4 text-pink-500" />
@@ -90,13 +95,12 @@ export default function TelecallerSidebar() {
                 </div>
             </aside>
 
-            {/* Backdrop for mobile */}
+            {/* Mobile Backdrop */}
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-gray-900 bg-opacity-40 z-30 lg:hidden"
                     onClick={toggleSidebar}
-                    aria-hidden="true"
-                ></div>
+                />
             )}
         </>
     );
