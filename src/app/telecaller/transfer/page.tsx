@@ -1,11 +1,11 @@
+"use client"
+
 import React from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
-import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import HistoryTable from '@/components/TelecallerComponents/HistoryTable'
+import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 
-
-const page = () => {
-
+const TransferPage = () => {
     return (
         <>
             <TelecallerSidebar />
@@ -17,10 +17,10 @@ const page = () => {
                     My Transfered Leads
                 </h1>
                 <HistoryTable
-                    />
+                />
             </section>
         </>
-    )
+    );
 }
 
-export default page
+export default TransferPage
