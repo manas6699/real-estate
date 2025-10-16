@@ -221,7 +221,7 @@ export default function ReportTable({ data }: Props) {
             {
                 id: 'createdAt', // Explicit ID
                 accessorKey: 'createdAt',
-                header: 'Assigned Date & Time',
+                header: 'Date & Time',
                 enableColumnFilter: true,
                 filterFn: dateRangeFilter,
                 cell: (info) => {
