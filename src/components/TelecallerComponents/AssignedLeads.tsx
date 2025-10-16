@@ -91,16 +91,6 @@ export default function AssignedLeads({ data }: Props) {
         getCoreRowModel: getCoreRowModel(),
     });
 
-    // ✅ Only compute latestLeadId if data is not empty
-    // const latestLeadId =
-    //     data.length > 0
-    //         ? data.reduce((latest, current) =>
-    //             new Date(current.createdAt) > new Date(latest.createdAt)
-    //                 ? current
-    //                 : latest
-    //         )._id
-    //         : null;
-
     return (
         <div className="space-y-4 relative">
             {/* Header */}
@@ -264,9 +254,9 @@ export default function AssignedLeads({ data }: Props) {
                                     <div>
                                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${assign.status === 'assigned' ? 'bg-blue-100 text-blue-800' :
-                                                assign.status === 'processed' ? 'bg-green-100 text-green-800' :
-                                                    assign.status === 'transferred' ? 'bg-orange-100 text-orange-800' :
-                                                        'bg-gray-100 text-gray-800'
+                                            assign.status === 'processed' ? 'bg-green-100 text-green-800' :
+                                                assign.status === 'transferred' ? 'bg-orange-100 text-orange-800' :
+                                                    'bg-gray-100 text-gray-800'
                                             }`}>
                                             {assign.status.charAt(0).toUpperCase() + assign.status.slice(1)}
                                         </span>
