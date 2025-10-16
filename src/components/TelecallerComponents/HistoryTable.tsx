@@ -11,9 +11,10 @@ import {
     useReactTable,
     ColumnFiltersState,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, Search, Clock, Filter, X, Calendar } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, Clock, Filter, X, Calendar, Edit3 } from "lucide-react";
 
 import { GET_REASSIGNS } from "@/config/api"
+import { useRouter } from 'next/navigation';
 import { whoami } from "@/utils/whoami";
 
 // Props
@@ -35,7 +36,9 @@ type LeadHistoryRow = {
     updatedAt?: string;
 };
 
+
 export default function HistoryTable() {
+    const router = useRouter()
     const username = whoami()
     const [data, setData] = useState<LeadHistoryRow[]>([]);
     const [loading, setLoading] = useState(false);
@@ -80,11 +83,13 @@ export default function HistoryTable() {
         const assignees = Array.from(new Set(data.map(item => item.assignee_name).filter(Boolean)));
         const statuses = Array.from(new Set(data.map(item => item.status).filter(Boolean)));
         const assignModes = Array.from(new Set(data.map(item => item.assign_mode).filter(Boolean)));
+        const remarks = Array.from(new Set(data.map(item => item.remarks).filter(Boolean)));
 
         return {
             assignees: assignees.sort(),
             statuses: statuses.sort(),
             assignModes: assignModes.sort(),
+            remarks: remarks.sort()
         };
     }, [data]);
 
@@ -120,6 +125,8 @@ export default function HistoryTable() {
                 return item.status;
             case "assign_mode":
                 return item.assign_mode;
+            case "dispositions":
+                return item.remarks;
             default:
                 return item[columnId as keyof LeadHistoryRow];
         }
@@ -147,6 +154,7 @@ export default function HistoryTable() {
                 (item.lead_details?.phone?.toLowerCase().includes(globalFilter.toLowerCase())) ||
                 (item.assignee_name?.toLowerCase().includes(globalFilter.toLowerCase())) ||
                 (item.status?.toLowerCase().includes(globalFilter.toLowerCase())) ||
+                (item.remarks?.toLowerCase().includes(globalFilter.toLowerCase())) ||
                 (item.assign_mode?.toLowerCase().includes(globalFilter.toLowerCase()))
             );
         }
@@ -210,7 +218,8 @@ export default function HistoryTable() {
             },
             {
                 accessorKey: "remarks",
-                header: "Remarks",
+                header: "Disposition",
+                enableColumnFilter: true
             },
             {
                 accessorKey: "createdAt",
@@ -222,21 +231,26 @@ export default function HistoryTable() {
                 header: "Updated",
                 cell: (info) => (info.getValue() ? new Date(info.getValue() as string).toLocaleString() : "—"),
             },
+           
             {
-                id: "history",
-                header: "History",
+                id: "Action",
+                header: "Action",
                 cell: ({ row }) => {
-                    const h = row.original.history || [];
-                    const preview = h.slice(-2).map((entry, idx) => {
-                        if (typeof entry === "string") return (<div key={idx} className="text-sm truncate">{entry}</div>);
-                        const label = entry.status || entry.assignee_name || JSON.stringify(entry);
-                        return (<div key={idx} className="text-sm truncate">{label}</div>);
-                    });
-                    return <div className="space-y-1">{preview}</div>;
+                    const leadId = row.original.lead_id; // This gets the lead_id from your data
+
+                    return (
+                        <button
+                            onClick={() => router.push(`/telecaller/change/${leadId}`)}
+                            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                        >
+                            <Edit3 className="w-4 h-4" />
+                            Fill Details
+                        </button>
+                    );
                 },
             },
         ],
-        []
+        [router]
     );
 
     // Filter functions
@@ -462,6 +476,23 @@ export default function HistoryTable() {
                                 ))}
                             </select>
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Dispo&n bsp;$itions
+                            </label>
+                            <select
+                                value={getColumnFilterValue("remarks")}
+                                onChange={(e) => setColumnFilter("remarks", e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="">All</option>
+                                {filterOptions.remarks.map(mode => (
+                                    <option key={mode} value={mode}>
+                                        {mode}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         {/* Date Range Filter */}
                         <div className="md:col-span-2 lg:col-span-4">
@@ -641,6 +672,8 @@ export default function HistoryTable() {
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </td>
                                             ))}
+
+                                            
                                         </tr>
 
                                         {/* expanded accordion area */}
