@@ -12,6 +12,7 @@ export const GET_ALL_UNASSIGNED_LEADS = `${API_BASE_URL}/mmr/getallleads?status=
 export const BACKEND_ADMIN_POST_API = `${API_BASE_URL}/mmr`;
 export const UPLOAD_IMAGES_BASE_URL = `${API_BASE_URL}/mmr/uploads`;
 
+export const GET_REASSIGNS = `${API_BASE_URL}/admin/all-sandwiched-history`
 
 export const SHOW_ALL_USERS_API = `${API_BASE_URL}/show/allUsers`;
 

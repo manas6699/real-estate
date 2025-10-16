@@ -1,8 +1,11 @@
 import React from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
+import HistoryTable from '@/components/TelecallerComponents/HistoryTable'
+
 
 const page = () => {
+
     return (
         <>
             <TelecallerSidebar />
@@ -13,7 +16,8 @@ const page = () => {
                 <h1 className='text-xl text-gray-700 font-bold mb-4'>
                     My Transfered Leads
                 </h1>
-
+                <HistoryTable
+                    />
             </section>
         </>
     )
