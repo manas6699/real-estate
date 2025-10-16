@@ -36,6 +36,8 @@ type Assign = {
         email: string;
         phone: string;
         source: string;
+        upload_type: string,
+        upload_by: string,
         status: string;
         projectSource: string;
         comments: string;

@@ -35,6 +35,8 @@ type Assign = {
         projectSource: string;
         status: string;
         lead_status: string;
+        upload_type: string,
+        upload_by: string,
         comments: string;
         lead_type?: string;
         client_budget?: string;
@@ -320,6 +322,8 @@ export default function AssignCardTable({ data }: Props) {
                                                     <div><strong>Preferred Config:</strong> {lead.preferred_configuration || '—'}</div>
                                                     <div><strong>Remarks:</strong> {lead.comments || '—'}</div>
                                                     <div><strong>Client Email:</strong> {lead.email || '—'}</div>
+                                                    <div><strong>Uploaded By:</strong> {lead.upload_by || '—'}</div>
+                                                    <div><strong>Upload Type:</strong> {lead.upload_type || '—'}</div>
                                                 </div>
                                                 {Array.isArray(assign.history) && assign.history.length > 0 && (
                                                     <div className="mt-6 text-sm text-gray-800 border-t pt-4">

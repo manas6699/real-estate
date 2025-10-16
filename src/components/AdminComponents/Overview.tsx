@@ -52,6 +52,8 @@ type Assign = {
         source: string;
         projectSource: string;
         status: string;
+        upload_type: string,
+        upload_by: string,
         comments: string;
         location: string;
         alternate_phone: string;
@@ -89,8 +91,9 @@ type Stats = Record<
 >;
 
 /* -------------------------------------------------------------------------- */
-/*                              🧩 INITIAL STATES                              */
+/*                              🧩 INITIAL STATES                   */
 /* -------------------------------------------------------------------------- */
+
 const initialStats: Stats = {
     totalCount: 0,
     leadCount: 0,
@@ -115,7 +118,7 @@ export default function Overview() {
     const [stats, setStats] = useState<Stats>(initialStats);
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
-    
+
 
     /* ------------------------------ 📊 Fetch Stats ----------------------------- */
     useEffect(() => {
@@ -266,7 +269,7 @@ export default function Overview() {
                 </div>
             </section>
 
-         
+
             {/* ------------------------------ 📋 Table -------------------------------- */}
             <div className="w-full overflow-x-auto">
                 <AssignCardTable data={assigns} />
