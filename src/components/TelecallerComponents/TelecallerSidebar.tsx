@@ -54,10 +54,11 @@ export default function TelecallerSidebar() {
 
     // Close sidebar when clicking on a link (mobile)
     useEffect(() => {
-        if (isOpen) {
+        if (window.innerWidth < 1024 && isOpen) {
             setIsOpen(false);
         }
-    }, [isOpen, pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ pathname]);
 
     return (
         <>

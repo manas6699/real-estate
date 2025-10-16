@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import axios from "axios";
 import { GET_LEAD_HISTORY } from '@/config/api';
+import { Activity, Building, CalendarDays, Edit3, History, Mail, MessageSquare, Phone, Upload, User } from 'lucide-react';
 
 
 // types
@@ -91,14 +92,14 @@ export default function AssignedLeads({ data }: Props) {
     });
 
     // ✅ Only compute latestLeadId if data is not empty
-    const latestLeadId =
-        data.length > 0
-            ? data.reduce((latest, current) =>
-                new Date(current.createdAt) > new Date(latest.createdAt)
-                    ? current
-                    : latest
-            )._id
-            : null;
+    // const latestLeadId =
+    //     data.length > 0
+    //         ? data.reduce((latest, current) =>
+    //             new Date(current.createdAt) > new Date(latest.createdAt)
+    //                 ? current
+    //                 : latest
+    //         )._id
+    //         : null;
 
     return (
         <div className="space-y-4 relative">
@@ -113,103 +114,190 @@ export default function AssignedLeads({ data }: Props) {
             </div>
 
             {/* Cards */}
-            {[...table.getRowModel().rows].map(row => {
+            {[...table.getRowModel().rows].map((row) => {
                 const lead = row.original.lead_details;
                 const assign = row.original;
+                // const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
+                const isLatest = (assign.status === 'assigned');
 
-                // check if this row is the latest
-                const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
                 return (
                     <div
                         key={row.id}
-                        className="bg-white rounded-2xl shadow p-6 flex flex-col space-y-4 transition relative"
+                        className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
                     >
-                        {/* ✅ Add NEW Tag only for the latest */}
+                        {/* NEW Badge with better positioning */}
                         {isLatest && (
-                            <span
-                                className="absolute -left-4 top-0 animate-ping z-50 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">
-                                NEW
-                            </span>
+                            <div className="absolute -top-0 -left-2 z-50">
+                                <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 animate-pulse">
+                                    <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
+                                    TAKE ACTION
+                                </span>
+                            </div>
                         )}
 
-                        {/* ✅ First row */}
-                        <div className="flex flex-wrap justify-between gap-10">
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Date & Time</span>
-                                <span>
-                                    {new Date(assign.updatedAt).toLocaleDateString('en-GB', {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        year: 'numeric',
-                                    })}
-                                    {' '}
-                                    {new Date(assign.createdAt).toLocaleTimeString('en-GB', {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false
-                                    })}
-                                </span>
-                            </div>
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Project Name</span>
-                                <span>{lead.source}</span>
-                            </div>
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Customer Name</span>
-                                <span>{lead.name}</span>
-                            </div>
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Phone</span>
-                                <span>{lead.phone}</span>
-                            </div>
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Client Email</span>
-                                <span>{lead.email}</span>
-                            </div>
-                        </div>
+                        {/* Background subtle pattern for latest lead */}
+                        {isLatest && (
+                            <div className="absolute inset-0 bg-gradient-to-br from-green-50/30 to-emerald-50/20 pointer-events-none"></div>
+                        )}
 
-                        {/* ✅ Second row */}
-                        <div className="flex flex-wrap justify-between gap-4">
-                            {/* <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Last Remark</span>
-                                <span>{assign.remarks}</span>
-                            </div> */}
+                        {/* Main Content Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 relative z-10 mt-2">
 
-                            {/* <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Lead Source</span>
-                                <span>{lead.source}</span>
-                            </div> */}
-                            {assign.lead_details.lead_status && assign.lead_details.lead_status.trim() !== "" ? (
-                                <div className="flex flex-col text-sm text-gray-500">
-                                    <span className="font-medium text-black">Disposition</span>
-                                    <span>{assign.lead_details.lead_status}</span>
+                            {/* Column 1: Date & Project */}
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-blue-50 rounded-lg">
+                                        <CalendarDays className="w-4 h-4 text-blue-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date & Time</p>
+                                        <p className="text-sm font-medium text-gray-900">
+                                            {new Date(assign.updatedAt).toLocaleDateString('en-GB', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric',
+                                            })}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                            {new Date(assign.createdAt).toLocaleTimeString('en-GB', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: false
+                                            })}
+                                        </p>
+                                    </div>
                                 </div>
-                            ) : null}
 
-                            <div className="flex flex-col text-sm text-gray-500">
-                                <span className="font-medium text-black">Upload Type</span>
-                                <span> {lead.upload_type === 'single' ? `In House` : `Data Sheet`}</span>
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-purple-50 rounded-lg">
+                                        <Building className="w-4 h-4 text-purple-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Project</p>
+                                        <p className="text-sm font-medium text-gray-900">{lead.source}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex items-center">
-                                <span className="bg-yellow-200 text-sm px-3 py-1 rounded-md text-blue-600 font-medium">
-                                    {assign.status}
-                                </span>
-                            </div>
-                           
-                            <button
-                                className="px-2 rounded bg-orange-500 cursor-pointer"
-                                onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
-                            >
-                                <span className="text-sm text-white">Fill Details</span>
-                            </button>
 
-                            <button
-                                className="px-2 rounded bg-orange-500 text-white cursor-pointer"
-                                onClick={() => fetchLeadHistory(assign._id)} // or assign._id depending on API
-                            >
-                                View All History
-                            </button>
+                            {/* Column 2: Customer Info */}
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-green-50 rounded-lg">
+                                        <User className="w-4 h-4 text-green-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Customer</p>
+                                        <p className="text-sm font-medium text-gray-900">{lead.name}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-orange-50 rounded-lg">
+                                        <Phone className="w-4 h-4 text-orange-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</p>
+                                        <a
+                                            href={`tel:${lead.phone}`}
+                                            className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                                        >
+                                            {lead.phone}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Column 3: Contact & Details */}
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-red-50 rounded-lg">
+                                        <Mail className="w-4 h-4 text-red-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</p>
+                                        <a
+                                            href={`mailto:${lead.email}`}
+                                            className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors break-all"
+                                        >
+                                            {lead.email}
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-indigo-50 rounded-lg">
+                                        <Upload className="w-4 h-4 text-indigo-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Upload Type</p>
+                                        <p className="text-sm font-medium text-gray-900">
+                                            {lead.upload_type === 'single' ? (
+                                                <span className="text-green-600">In House</span>
+                                            ) : (
+                                                <span className="text-blue-600">Data Sheet</span>
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Column 4: Status & Disposition */}
+                            <div className="space-y-4">
+                                {assign.lead_details.lead_status && assign.lead_details.lead_status.trim() !== "" && (
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-yellow-50 rounded-lg">
+                                            <MessageSquare className="w-4 h-4 text-yellow-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disposition</p>
+                                            <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                                                {assign.lead_details.lead_status}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="flex items-start gap-3">
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Activity className="w-4 h-4 text-gray-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${assign.status === 'assigned' ? 'bg-blue-100 text-blue-800' :
+                                                assign.status === 'processed' ? 'bg-green-100 text-green-800' :
+                                                    assign.status === 'transferred' ? 'bg-orange-100 text-orange-800' :
+                                                        'bg-gray-100 text-gray-800'
+                                            }`}>
+                                            {assign.status.charAt(0).toUpperCase() + assign.status.slice(1)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Column 5: Actions */}
+                            <div className="flex flex-col gap-3 justify-center">
+                                <button
+                                    onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
+                                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                >
+                                    <Edit3 className="w-4 h-4" />
+                                    Fill Details
+                                </button>
+
+                                <button
+                                    onClick={() => fetchLeadHistory(assign._id)}
+                                    className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 hover:border-gray-400 bg-white text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-gray-50 hover:shadow-md"
+                                >
+                                    <History className="w-4 h-4" />
+                                    View History
+                                </button>
+                            </div>
                         </div>
+
+                        {/* Bottom border accent for latest lead */}
+                        {isLatest && (
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-600"></div>
+                        )}
                     </div>
                 );
             })}

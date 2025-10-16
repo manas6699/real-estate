@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { GET_LEAD_DETAILS } from '@/config/api';
+import { User, Phone, Mail, Building, Globe, Calendar, Clock } from 'lucide-react';
 
 type LeadInfoCardProps = {
     lead: {
@@ -54,36 +55,95 @@ export default function FixCard({ leadId }: leadIdtype) {
         }) : '';
 
     return (
-        <div className="bg-yellow-100 shadow-md border-b border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 py-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
-                <div>
-                    <p className="text-xs text-gray-500">Name</p>
-                    <p className="font-medium">{lead.name}</p>
-                </div>
+        <div className="shadow-sm border-b border-amber-100">
+            <div className="max-w-7xl mx-auto px-4 py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                    {/* Name */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <User className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Name</p>
+                            <p className="text-sm font-bold text-gray-900 mt-1">{lead.name}</p>
+                        </div>
+                    </div>
 
-                <div>
-                    <p className="text-xs text-gray-500">Phone</p>
-                    <p className="font-medium">{lead.phone}</p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-500">Email</p>
-                    <p className="font-medium">{lead.email}</p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-500">Project Name</p>
-                    <p className="font-medium capitalize">{lead.source}</p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-500">Project Source</p>
-                    <p className="font-medium capitalize">{lead.projectSource}</p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-500">Assigned Date</p>
-                    <p className="font-medium">{assignedDate}</p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-500">Assigned Time</p>
-                    <p className="font-medium">{assignedTime}</p>
+                    {/* Phone */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <Phone className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Phone</p>
+                            <a
+                                href={`tel:${lead.phone}`}
+                                className="text-sm font-bold text-blue-600 hover:text-blue-700 mt-1 block transition-colors"
+                            >
+                                {lead.phone}
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <Mail className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Email</p>
+                            <a
+                                href={`mailto:${lead.email}`}
+                                className="text-sm font-bold text-blue-600 hover:text-blue-700 mt-1 block transition-colors break-all"
+                            >
+                                {lead.email}
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Project Name */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <Building className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Project</p>
+                            <p className="text-sm font-bold text-gray-900 mt-1 capitalize">{lead.source}</p>
+                        </div>
+                    </div>
+
+                    {/* Project Source */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <Globe className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Source</p>
+                            <p className="text-sm font-bold text-gray-900 mt-1 capitalize">{lead.projectSource}</p>
+                        </div>
+                    </div>
+
+                    {/* Assigned Date */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <Calendar className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Date</p>
+                            <p className="text-sm font-bold text-gray-900 mt-1">{assignedDate}</p>
+                        </div>
+                    </div>
+
+                    {/* Assigned Time */}
+                    <div className="flex items-start gap-3 group">
+                        <div className="p-2 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition-colors">
+                            <Clock className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Time</p>
+                            <p className="text-sm font-bold text-gray-900 mt-1">{assignedTime}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
