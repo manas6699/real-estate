@@ -32,7 +32,7 @@ type Project = {
     projectName: string;
 };
 
-const transferStatus = ["Hot", "Cold", "Warm" , "Refer" , "Urgent"];
+const transferStatus = ["Agent Switch", "Cold", "Warm" , "Refer" , "Hot"];
 
 const furnishedOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
 const propertyStatusOptions = ["Under Construction", "Ready to Move"];
