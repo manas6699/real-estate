@@ -1,34 +1,31 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ALL_LEAD_COUNT, GET_FILTERED_DATA, SHOW_ALL_ASSIGNS_API } from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 import { ExternalLink } from 'lucide-react';
 import AssignCardTable from './ModifiedAssignedTable';
 
-/* -------------------------------------------------------------------------- */
-/*                               🎨 COLOR PALETTE                              */
-/* -------------------------------------------------------------------------- */
 const COLOR_PALETTE = [
-    { bg: 'bg-blue-50', text: 'text-blue-800', ring: 'ring-blue-500' },
-    { bg: 'bg-indigo-50', text: 'text-indigo-800', ring: 'ring-indigo-500' },
-    { bg: 'bg-green-50', text: 'text-green-800', ring: 'ring-green-500' },
-    { bg: 'bg-yellow-50', text: 'text-yellow-800', ring: 'ring-yellow-500' },
-    { bg: 'bg-fuchsia-50', text: 'text-fuchsia-800', ring: 'ring-fuchsia-500' },
-    { bg: 'bg-sky-50', text: 'text-sky-800', ring: 'ring-sky-500' },
-    { bg: 'bg-red-50', text: 'text-red-800', ring: 'ring-red-500' },
-    { bg: 'bg-orange-50', text: 'text-orange-800', ring: 'ring-orange-500' },
+    { bg: 'bg-rose-50', text: 'text-rose-800', ring: 'ring-rose-500' },
+    { bg: 'bg-amber-50', text: 'text-amber-800', ring: 'ring-amber-500' },
+    { bg: 'bg-lime-50', text: 'text-lime-800', ring: 'ring-lime-500' },
+    { bg: 'bg-cyan-50', text: 'text-cyan-800', ring: 'ring-cyan-500' },
+    { bg: 'bg-violet-50', text: 'text-violet-800', ring: 'ring-violet-500' },
     { bg: 'bg-emerald-50', text: 'text-emerald-800', ring: 'ring-emerald-500' },
-    { bg: 'bg-purple-50', text: 'text-purple-800', ring: 'ring-purple-500' },
+    { bg: 'bg-indigo-50', text: 'text-indigo-800', ring: 'ring-indigo-500' },
+    { bg: 'bg-fuchsia-50', text: 'text-fuchsia-800', ring: 'ring-fuchsia-500' },
     { bg: 'bg-teal-50', text: 'text-teal-800', ring: 'ring-teal-500' },
+    { bg: 'bg-orange-50', text: 'text-orange-800', ring: 'ring-orange-500' },
+    { bg: 'bg-sky-50', text: 'text-sky-800', ring: 'ring-sky-500' },
+    { bg: 'bg-purple-50', text: 'text-purple-800', ring: 'ring-purple-500' },
     { bg: 'bg-pink-50', text: 'text-pink-800', ring: 'ring-pink-500' },
-    { bg: 'bg-slate-50', text: 'text-slate-800', ring: 'ring-slate-500' },
+    { bg: 'bg-yellow-50', text: 'text-yellow-800', ring: 'ring-yellow-500' },
+    { bg: 'bg-blue-50', text: 'text-blue-800', ring: 'ring-blue-500' },
 ];
 
-/* -------------------------------------------------------------------------- */
-/*                                🧱 TYPE DEFINITIONS                          */
-/* -------------------------------------------------------------------------- */
+
 type HistoryEntry = {
     lead_id: string;
     assignee_name: string;
@@ -82,6 +79,8 @@ type Stats = Record<
     | 'hotLeads'
     | 'coldLeads'
     | 'warmLeads'
+    | 'junkLeads'
+    | 'retryLeads'
     | 'booked'
     | 'overdue'
     | 'callBack'
@@ -89,10 +88,6 @@ type Stats = Record<
     | 'reassigned',
     number
 >;
-
-/* -------------------------------------------------------------------------- */
-/*                              🧩 INITIAL STATES                   */
-/* -------------------------------------------------------------------------- */
 
 const initialStats: Stats = {
     totalCount: 0,
@@ -104,6 +99,8 @@ const initialStats: Stats = {
     hotLeads: 0,
     coldLeads: 0,
     warmLeads: 0,
+    junkLeads:0,
+    retryLeads:0,
     booked: 0,
     overdue: 0,
     callBack: 0,
@@ -111,23 +108,70 @@ const initialStats: Stats = {
     reassigned: 0,
 };
 
-/* -------------------------------------------------------------------------- */
-/*                               🧠 MAIN COMPONENT           */
-/* -------------------------------------------------------------------------- */
 export default function Overview() {
     const [stats, setStats] = useState<Stats>(initialStats);
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
+    const [uploadType, setUploadType] = useState<string>('all');
 
 
-    /* ------------------------------ 📊 Fetch Stats ----------------------------- */
-    useEffect(() => {
-        const fetchStats = async () => {
+    /* --------------------------- 🔍 Fetch Assigns Data -------------------------- */
+    const fetchAssigns = useCallback(
+        async (filter: string = '', uploadTypeParam: string = uploadType) => {
             try {
-                const res = await axios.get(ALL_LEAD_COUNT);
-                if (res.data.success) setStats((prev) => ({ ...prev, ...res.data.counts }));
+                let url = SHOW_ALL_ASSIGNS_API;
+
+                const filters: Record<string, string> = {
+                    assignCount: GET_FILTERED_DATA,
+                    hotLeads: `${GET_FILTERED_DATA}?lead_type=Hot`,
+                    coldLeads: `${GET_FILTERED_DATA}?lead_type=Cold`,
+                    warmLeads: `${GET_FILTERED_DATA}?lead_type=Warm`,
+                    junkLeads: `${GET_FILTERED_DATA}?lead_type=Junk`,
+                    retryLeads: `${GET_FILTERED_DATA}?lead_type=Retry`,
+                    callPending: `${GET_FILTERED_DATA}?status=assigned`,
+                    booked: `${GET_FILTERED_DATA}?lead_status=Booked`,
+                    siteVisitFixed: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed`,
+                    siteVisitDone: `${GET_FILTERED_DATA}?lead_status=Site Visit Done`,
+                    callBack: `${GET_FILTERED_DATA}?lead_status=Call Back`,
+                    followUp: `${GET_FILTERED_DATA}?lead_status=Under Follow Up`,
+                    reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
+                };
+
+                url = filters[filter] || SHOW_ALL_ASSIGNS_API;
+
+                // ✅ add upload_type on top
+                if (uploadTypeParam !== 'all') {
+                    const connector = url.includes('?') ? '&' : '?';
+                    url = `${url}${connector}upload_type=${uploadTypeParam}`;
+                }
+
+                setSelectedFilter(filter);
+                const res = await axios.get(url);
+                if (res.data.success) setAssigns([...res.data.data].reverse());
+                else setAssigns([]);
+            } catch (err) {
+                console.error('Error fetching assigns:', err);
+                setAssigns([]);
+            }
+        },
+
+        [uploadType]
+    );
+
+
+    // ✅ 1. Wrap fetchStats in useCallback
+    const fetchStats = useCallback(
+        async (uploadTypeParam: string = uploadType) => {
+            try {
+                const uploadQuery =
+                    uploadTypeParam !== 'all' ? `?upload_type=${uploadTypeParam}` : '';
+
+                const res = await axios.get(`${ALL_LEAD_COUNT}${uploadQuery}`);
+                if (res.data.success)
+                    setStats((prev) => ({ ...prev, ...res.data.counts }));
 
                 const queries = [
+                    { key: 'assignCount', url: `${GET_FILTERED_DATA}` },
                     { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
                     { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
                     { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed` },
@@ -138,94 +182,88 @@ export default function Overview() {
                     { key: 'hotLeads', url: `${GET_FILTERED_DATA}?lead_type=Hot` },
                     { key: 'coldLeads', url: `${GET_FILTERED_DATA}?lead_type=Cold` },
                     { key: 'warmLeads', url: `${GET_FILTERED_DATA}?lead_type=Warm` },
+                    { key: 'retryLeads', url: `${GET_FILTERED_DATA}?lead_type=Retry` },
+                    { key: 'junkLeads', url: `${GET_FILTERED_DATA}?lead_type=Junk` },
+
                 ];
 
                 await Promise.all(
                     queries.map(async ({ key, url }) => {
-                        const r = await axios.get(url);
-                        if (r.data.success) setStats((prev) => ({ ...prev, [key]: r.data.count }));
+                        const connector = url.includes('?') ? '&' : '?';
+                        const fullUrl =
+                            uploadTypeParam !== 'all'
+                                ? `${url}${connector}upload_type=${uploadTypeParam}`
+                                : url;
+                        const r = await axios.get(fullUrl);
+                        if (r.data.success)
+                            setStats((prev) => ({ ...prev, [key]: r.data.count }));
                     })
                 );
             } catch (error) {
                 console.error('Error fetching stats:', error);
             }
-        };
+        },
+        [uploadType] // ✅ dependencies
+    );
 
-        fetchStats();
-    }, []);
 
-    /* --------------------------- 🔍 Fetch Assigns Data -------------------------- */
-    const fetchAssigns = async (filter: string = '') => {
-        try {
-            let url = SHOW_ALL_ASSIGNS_API;
-
-            const filters: Record<string, string> = {
-                assignCount: GET_FILTERED_DATA,
-                hotLeads: `${GET_FILTERED_DATA}?lead_type=Hot`,
-                coldLeads: `${GET_FILTERED_DATA}?lead_type=Cold`,
-                warmLeads: `${GET_FILTERED_DATA}?lead_type=Warm`,
-                callPending: `${GET_FILTERED_DATA}?status=assigned`,
-                booked: `${GET_FILTERED_DATA}?lead_status=Booked`,
-                siteVisitFixed: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed`,
-                siteVisitDone: `${GET_FILTERED_DATA}?lead_status=Site Visit Done`,
-                callBack: `${GET_FILTERED_DATA}?lead_status=Call Back`,
-                followUp: `${GET_FILTERED_DATA}?lead_status=Under Follow Up`,
-                reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
-            };
-
-            url = filters[filter] || SHOW_ALL_ASSIGNS_API;
-
-            setSelectedFilter(filter);
-
-            const res = await axios.get(url);
-            if (res.data.success) setAssigns([...res.data.data].reverse());
-            else setAssigns([]);
-        } catch (err) {
-            console.error('Error fetching assigns:', err);
-            setAssigns([]);
-        }
-    };
-
-    /* -------------------------- 🚀 Load Assigns Initially ----------------------- */
     useEffect(() => {
-        fetchAssigns('totalCount');
-    }, []);
+        fetchStats(uploadType); // ✅ Re-runs whenever uploadType changes
+        fetchAssigns('totalCount', uploadType);
+    }, [fetchAssigns, fetchStats, uploadType]);
 
-    /* -------------------------- 🧮 Lead Status Sections ------------------------- */
+    /* ------------------ Lead Status Sections ---------------- */
     const sections = [
         [
             { label: 'Total Leads', key: 'totalCount' },
             { label: 'Old Leads', key: 'leadCount' },
-            { label: 'New Lead', key: 'assignCount' },
+            { label: 'New Leads', key: 'assignCount' },
             { label: 'Call Pending', key: 'callPending' },
             { label: 'Site Visit Fixed', key: 'siteVisitFixed' },
         ],
         [
-            { label: 'Cold Leads', key: 'coldLeads' },
-            { label: 'Hot Leads', key: 'hotLeads' },
-            { label: 'Warm Leads', key: 'warmLeads' },
-            { label: 'Booked', key: 'booked' },
-            { label: 'Site Visit Done', key: 'siteVisitDone' },
+            { label: 'Cold ', key: 'coldLeads' },
+            { label: 'Hot ', key: 'hotLeads' },
+            { label: 'Warm ', key: 'warmLeads' },
+            { label: 'Junk ', key: 'junkLeads' },
+            { label: 'Retry ', key: 'retryLeads' },
         ],
         [
+            { label: 'Booked', key: 'booked' },
+            { label: 'Site Visit Done', key: 'siteVisitDone' },
             { label: 'Call Back', key: 'callBack' },
             { label: 'Follow Up', key: 'followUp' },
             { label: 'Reassign Leads', key: 'reassigned' },
         ],
     ];
-
-    /* -------------------------------------------------------------------------- */
-    /*                               🖼️ RENDER UI                                 */
-    /* -------------------------------------------------------------------------- */
     let colorIndex = 0;
 
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-inter overflow-x-hidden">
-            {/* -------------------------- 🏷️ Page Header -------------------------- */}
             <h1 className="text-2xl text-gray-900 font-black mb-8 border-b-2 border-indigo-200 pb-2">
                 Overview
             </h1>
+            <div className="flex items-center space-x-3  rounded-lg mb-4">
 
+                <div className="flex bg-white shadow-2xl rounded-full p-1">
+                    {['all', 'single', 'Bulk'].map((type) => (
+                        <button
+                            key={type}
+                            onClick={() => {
+                                setUploadType(type);
+                                fetchAssigns(selectedFilter, type); // Pass it here
+                                fetchStats(type);
+                            }}
+                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType == type
+                                ? "bg-blue-700 text-white shadow-md"
+                                : "text-gray-600 hover:text-gray-800"
+                                }`}
+                        >
+                            {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
+                        </button>
+                    ))}
+                </div>
+            </div>
             {/* ------------------------- 📦 Lead Status Cards ------------------------ */}
             {sections.map((group, i) => (
                 <section
@@ -269,8 +307,6 @@ export default function Overview() {
                 </div>
             </section>
 
-
-            {/* ------------------------------ 📋 Table -------------------------------- */}
             <div className="w-full overflow-x-auto">
                 <AssignCardTable data={assigns} />
             </div>
