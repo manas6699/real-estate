@@ -31,9 +31,9 @@ export default function Sidebar() {
     };
 
     // Base styling for all links
-    const baseLinkClasses = "flex items-center space-x-3 p-3 rounded-xl font-semibold text-gray-600 transition-colors duration-150 hover:bg-blue-50 hover:text-blue-700";
+    const baseLinkClasses = "flex items-center space-x-3 p-3 rounded-xl font-semibold text-gray-600 transition-colors duration-150 hover:bg-gray-200 hover:text-gray-900";
     // Active styling for the current link
-    const activeLinkClasses = "bg-blue-100 text-blue-700 shadow-sm";
+    const activeLinkClasses = "text-blue-700 shadow border-l-4 border-r-4 border-gray-400";
 
     return (
         <>
@@ -62,12 +62,12 @@ export default function Sidebar() {
                 <div className="p-6 h-full flex flex-col">
 
                     {/* Header/Logo */}
-                    <div className="text-3xl font-extrabold text-blue-600 mb-10 border-b pb-4">
-                        <span className="text-gray-900">LEAD</span> CRM
+                    <div className="text-xl font-extrabold text-blue-600 mb-8">
+                        <span className="text-gray-900 text-4xl">C</span> RM
                     </div>
 
                     {/* Navigation Links */}
-                    <nav className="flex flex-col space-y-2 flex-grow">
+                    <nav className="flex flex-col space-y-1 flex-grow">
                         {navItems.map(item => {
                             const isActive = pathname === item.href;
                             const Icon = item.icon; // Component from lucide-react
@@ -79,15 +79,16 @@ export default function Sidebar() {
                                     className={`${baseLinkClasses} ${isActive ? activeLinkClasses : ''}`}
                                     onClick={toggleSidebar} // Close sidebar on link click (mobile)
                                 >
-                                    <Icon size={20} className="min-w-[20px]" />
+                                    <Icon
+                                        size={27}
+                                        viewBox='true'
+                                        className="bg-gradient-to-bl from-slate-900 to-zinc-200 p-1 shadow-2xl rounded-full text-white"
+                                    />
                                     <span>{item.label}</span>
                                 </Link>
                             );
                         })}
                     </nav>
-
-
-
                 </div>
             </aside>
         </>
