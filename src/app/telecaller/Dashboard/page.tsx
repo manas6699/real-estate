@@ -157,7 +157,7 @@ const TelecallerDashboardPage = () => {
         }
 
         try {
-            const res = await axios.get(GET_LEAD_BY_ID(id), { params }); 
+            const res = await axios.get(GET_LEAD_BY_ID(id), { params });
             if (res.data && res.data.success) {
                 // Assuming 'new leads' are ALL leads assigned to the telecaller,
                 // the total count is simply the total number of records returned.
@@ -190,7 +190,7 @@ const TelecallerDashboardPage = () => {
             }
         }
         initialFetch();
-    }, [fetchAllLeadsForCount , uploadType]); // Dependency on useCallback
+    }, [fetchAllLeadsForCount, uploadType]); // Dependency on useCallback
 
     // socket logic part 2
     useEffect(() => {
@@ -349,7 +349,7 @@ const TelecallerDashboardPage = () => {
     useEffect(() => {
         fetchFiltered();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTile ,leadStatus, phone, name, startDate, location, endDate, projectName, configuration]);
+    }, [activeTile, leadStatus, phone, name, startDate, location, endDate, projectName, configuration]);
 
     useEffect(() => {
         // Only fetch the count when uploadType changes
@@ -361,15 +361,15 @@ const TelecallerDashboardPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         activeTile,
-  leadStatus,
-  phone,
-  location,
-  name,
-  startDate,
-  endDate,
-  projectName,
-  configuration,
-  uploadType
+        leadStatus,
+        phone,
+        location,
+        name,
+        startDate,
+        endDate,
+        projectName,
+        configuration,
+        uploadType
     ]);
 
     const tileToStatusMap: Record<string, string> = {
@@ -413,27 +413,15 @@ const TelecallerDashboardPage = () => {
             </div>
             <section className='lg:ml-64 p-6'>
                 <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
-                {/* ✅ Change: Pass the TOTAL UNFILTERED count here 
-                    This number will not change when filters are applied.
-                */}
-                {/* <select
-                    value={uploadType}
-                    onChange={(e) => setUploadType(e.target.value)}
-                    className="border p-2 rounded text-xs"
-                >
-                    <option value="">Type</option>
-                    <option value="Bulk">Data-Sheet</option>
-                    <option value="single">In House</option>
-                </select> */}
                 <div className="flex items-center space-x-3  rounded-lg mb-4">
-                    
+
                     <div className="flex bg-gray-100 rounded-full p-1">
                         <button
                             type="button"
                             onClick={() => setUploadType("")}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === ""
-                                    ? "bg-blue-500 text-white shadow-md"
-                                    : "text-gray-600 hover:text-gray-800"
+                                ? "bg-blue-500 text-white shadow-md"
+                                : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >
                             All
@@ -442,8 +430,8 @@ const TelecallerDashboardPage = () => {
                             type="button"
                             onClick={() => setUploadType("Bulk")}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "Bulk"
-                                    ? "bg-blue-500 text-white shadow-md"
-                                    : "text-gray-600 hover:text-gray-800"
+                                ? "bg-blue-500 text-white shadow-md"
+                                : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >
                             Data-Sheet
@@ -452,8 +440,8 @@ const TelecallerDashboardPage = () => {
                             type="button"
                             onClick={() => setUploadType("single")}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "single"
-                                    ? "bg-blue-500 text-white shadow-md"
-                                    : "text-gray-600 hover:text-gray-800"
+                                ? "bg-blue-500 text-white shadow-md"
+                                : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >
                             In House
