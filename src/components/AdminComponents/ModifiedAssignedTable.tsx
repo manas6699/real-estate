@@ -228,7 +228,7 @@ export default function AssignCardTable({ data }: Props) {
                 {/* Dropdown Filters */}
                 {[
                     { key: 'user', label: 'User', options: dropdownOptions.users },
-                    { key: 'disposition', label: 'Disposition', options: dropdownOptions.dispositions },
+                    { key: 'disposition', label: 'Status', options: dropdownOptions.dispositions },
                     { key: 'leadSource', label: 'Lead Source', options: dropdownOptions.leadSources },
                     { key: 'projectName', label: 'Project Name', options: dropdownOptions.projectNames },
                     { key: 'clientBudget', label: 'Client Budget', options: dropdownOptions.budgets },
@@ -322,7 +322,7 @@ export default function AssignCardTable({ data }: Props) {
                                                     <div><strong>Preferred Config:</strong> {lead.preferred_configuration || '—'}</div>
                                                     <div><strong>Remarks:</strong> {lead.comments || '—'}</div>
                                                     <div><strong>Client Email:</strong> {lead.email || '—'}</div>
-                                                    <div><strong>Uploaded By:</strong> {lead.upload_by || '—'}</div>
+                                                    <div><strong>Assigned By:</strong> {lead.upload_by || '—'}</div>
                                                     <div><strong>Upload Type:</strong> {lead.upload_type || '—'}</div>
                                                 </div>
                                                 {Array.isArray(assign.history) && assign.history.length > 0 && (
