@@ -368,6 +368,7 @@ export default function OldLeadsTablePage() {
                                             <option value="Arpita Banerjee">Arpita Banerjee</option>
                                             <option value="tlsanjeev chowdhury">anjeev chowdhury</option>
                                             <option value="Salvina Talapatra">Salvina Talapatra</option>
+                                            <option value="Swayam Jaiswal">Swayam Jaiswal</option>
                                             <option value="admin">admin</option>
                                             <option value="Aman_Gupta">Aman gupta</option>
                                             <option value="RohanSingh">Rohan singh</option>
