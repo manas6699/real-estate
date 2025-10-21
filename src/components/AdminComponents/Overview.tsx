@@ -2,7 +2,11 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { ALL_LEAD_COUNT, GET_FILTERED_DATA, SHOW_ALL_ASSIGNS_API } from '@/config/api';
+import {
+    ALL_LEAD_COUNT,
+    GET_FILTERED_DATA,
+    SHOW_ALL_ASSIGNS_API,
+} from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 import { ExternalLink } from 'lucide-react';
 import AssignCardTable from './ModifiedAssignedTable';
@@ -24,7 +28,6 @@ const COLOR_PALETTE = [
     { bg: 'bg-yellow-50', text: 'text-yellow-800', ring: 'ring-yellow-500' },
     { bg: 'bg-blue-50', text: 'text-blue-800', ring: 'ring-blue-500' },
 ];
-
 
 type HistoryEntry = {
     lead_id: string;
@@ -49,8 +52,8 @@ type Assign = {
         source: string;
         projectSource: string;
         status: string;
-        upload_type: string,
-        upload_by: string,
+        upload_type: string;
+        upload_by: string;
         comments: string;
         location: string;
         alternate_phone: string;
@@ -85,7 +88,8 @@ type Stats = Record<
     | 'overdue'
     | 'callBack'
     | 'followUp'
-    | 'reassigned',
+    | 'reassigned'
+    | 'leadToday',
     number
 >;
 
@@ -106,6 +110,7 @@ const initialStats: Stats = {
     callBack: 0,
     followUp: 0,
     reassigned: 0,
+    leadToday: 0,
 };
 
 export default function Overview() {
@@ -119,6 +124,11 @@ export default function Overview() {
         async (filter: string = '', uploadTypeParam: string = uploadType) => {
             try {
                 let url = SHOW_ALL_ASSIGNS_API;
+
+                const today = new Date();
+                const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+                const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+                const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
                 const filters: Record<string, string> = {
                     assignCount: GET_FILTERED_DATA,
@@ -134,11 +144,11 @@ export default function Overview() {
                     callBack: `${GET_FILTERED_DATA}?lead_status=Call Back`,
                     followUp: `${GET_FILTERED_DATA}?lead_status=Under Follow Up`,
                     reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
+                    leadToday: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}`,
                 };
 
                 url = filters[filter] || SHOW_ALL_ASSIGNS_API;
 
-                // ✅ add upload_type on top
                 if (uploadTypeParam !== 'all') {
                     const connector = url.includes('?') ? '&' : '?';
                     url = `${url}${connector}upload_type=${uploadTypeParam}`;
@@ -153,12 +163,10 @@ export default function Overview() {
                 setAssigns([]);
             }
         },
-
         [uploadType]
     );
 
-
-    // ✅ 1. Wrap fetchStats in useCallback
+    /* --------------------------- 📊 Fetch Stats Data --------------------------- */
     const fetchStats = useCallback(
         async (uploadTypeParam: string = uploadType) => {
             try {
@@ -169,8 +177,14 @@ export default function Overview() {
                 if (res.data.success)
                     setStats((prev) => ({ ...prev, ...res.data.counts }));
 
+                const today = new Date();
+                const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+                const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+                const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
                 const queries = [
                     { key: 'assignCount', url: `${GET_FILTERED_DATA}` },
+                    { key: 'leadToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}` },
                     { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
                     { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
                     { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed` },
@@ -183,7 +197,6 @@ export default function Overview() {
                     { key: 'warmLeads', url: `${GET_FILTERED_DATA}?lead_type=Warm` },
                     { key: 'retryLeads', url: `${GET_FILTERED_DATA}?lead_type=Retry` },
                     { key: 'junkLeads', url: `${GET_FILTERED_DATA}?lead_type=Junk` },
-
                 ];
 
                 await Promise.all(
@@ -202,30 +215,30 @@ export default function Overview() {
                 console.error('Error fetching stats:', error);
             }
         },
-        [uploadType] // ✅ dependencies
+        [uploadType]
     );
 
-
+    /* --------------------------- ⚙️ Auto Fetch --------------------------- */
     useEffect(() => {
-        fetchStats(uploadType); // ✅ Re-runs whenever uploadType changes
+        fetchStats(uploadType);
         fetchAssigns('totalCount', uploadType);
     }, [fetchAssigns, fetchStats, uploadType]);
 
-    /* ------------------ Lead Status Sections ---------------- */
+    /* --------------------------- 🧩 Card Sections --------------------------- */
     const sections = [
         [
             { label: 'Total Leads', key: 'totalCount' },
-            { label: 'Lead Today', key: 'leadCount' },
+            { label: 'Leads Today', key: 'leadToday' },
             { label: 'New Leads', key: 'assignCount' },
             { label: 'Call Pending', key: 'callPending' },
             { label: 'Site Visit Fixed', key: 'siteVisitFixed' },
         ],
         [
-            { label: 'Cold ', key: 'coldLeads' },
-            { label: 'Hot ', key: 'hotLeads' },
-            { label: 'Warm ', key: 'warmLeads' },
-            { label: 'Junk ', key: 'junkLeads' },
-            { label: 'Retry ', key: 'retryLeads' },
+            { label: 'Cold', key: 'coldLeads' },
+            { label: 'Hot', key: 'hotLeads' },
+            { label: 'Warm', key: 'warmLeads' },
+            { label: 'Junk', key: 'junkLeads' },
+            { label: 'Retry', key: 'retryLeads' },
         ],
         [
             { label: 'Booked', key: 'booked' },
@@ -235,6 +248,7 @@ export default function Overview() {
             { label: 'Reassign Leads', key: 'reassigned' },
         ],
     ];
+
     let colorIndex = 0;
 
     return (
@@ -242,27 +256,31 @@ export default function Overview() {
             <h1 className="text-2xl text-gray-900 font-black mb-8 border-b-2 border-indigo-200 pb-2">
                 Overview
             </h1>
-            <div className="flex items-center space-x-3  rounded-lg mb-4">
 
+            {/* ------------------- 🔘 Upload Type Buttons ------------------- */}
+            <div className="flex items-center space-x-3 rounded-lg mb-4">
                 <div className="flex bg-white shadow-2xl rounded-full p-1">
                     {['all', 'single', 'Bulk'].map((type) => (
                         <button
                             key={type}
                             onClick={() => {
                                 setUploadType(type);
-                                fetchAssigns(selectedFilter, type); // Pass it here
+                                fetchAssigns(selectedFilter, type);
                                 fetchStats(type);
                             }}
-                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType == type
-                                ? "bg-blue-700 text-white shadow-md"
-                                : "text-gray-600 hover:text-gray-800"
+                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === type
+                                    ? 'bg-blue-700 text-white shadow-md'
+                                    : 'text-gray-600 hover:text-gray-800'
                                 }`}
                         >
-                            {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
+                            {type === 'all'
+                                ? 'All'
+                                : type.charAt(0).toUpperCase() + type.slice(1)}
                         </button>
                     ))}
                 </div>
             </div>
+
             {/* ------------------------- 📦 Lead Status Cards ------------------------ */}
             {sections.map((group, i) => (
                 <section
@@ -270,20 +288,24 @@ export default function Overview() {
                     className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4 min-w-0"
                 >
                     {group.map((item) => {
-                        const { bg, text, ring } = COLOR_PALETTE[colorIndex++ % COLOR_PALETTE.length];
-                        const isDisabled = item.key === 'leadCount';
+                        const { bg, text, ring } =
+                            COLOR_PALETTE[colorIndex++ % COLOR_PALETTE.length];
                         const isSelected = selectedFilter === item.key;
 
                         return (
                             <div
                                 key={item.key}
-                                onClick={() => !isDisabled && fetchAssigns(item.key)}
-                                className={`${bg} ${text} rounded-xl p-4 h-28 shadow-xl transition-all duration-300 
-                  ${isDisabled ? 'cursor-not-allowed opacity-70' : `cursor-pointer hover:scale-[1.02] hover:shadow-2xl`}
+                                onClick={() => fetchAssigns(item.key)}
+                                className={`${bg} ${text} rounded-xl p-4 h-28 shadow-xl transition-all duration-300 cursor-pointer
+                  hover:scale-[1.02] hover:shadow-2xl
                   ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`}
                             >
-                                <div className="text-sm font-semibold text-gray-700">{item.label}</div>
-                                <div className="text-lg font-extrabold mt-1">{stats[item.key as keyof Stats]}</div>
+                                <div className="text-sm font-semibold text-gray-700">
+                                    {item.label}
+                                </div>
+                                <div className="text-lg font-extrabold mt-1">
+                                    {stats[item.key as keyof Stats]}
+                                </div>
                             </div>
                         );
                     })}
@@ -295,7 +317,9 @@ export default function Overview() {
                 <div className="flex-1 bg-white rounded-xl shadow-2xl p-6 flex items-center gap-6 border-l-8 border-red-500 hover:shadow-red-200 transition-all">
                     <div className="flex-1">
                         <ScheduleTracker />
-                        <p className="text-lg text-red-500">Action required immediately</p>
+                        <p className="text-lg text-red-500">
+                            Action required immediately
+                        </p>
                     </div>
 
                     <a href="/admin/Dashboard/overdue" aria-label="View overdue tasks">
