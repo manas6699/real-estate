@@ -256,7 +256,7 @@ export default function OldLeadsTablePage() {
             .filter((key) => {
                 const lower = key.toLowerCase();
                 if (lower === "password") return false;
-                if(lower === "matchid1" || lower === "matchid2") return false;
+                if (lower === "matchid1" || lower === "matchid2") return false;
                 if (lower === "_id" || lower.endsWith("id")) return false;
                 return true;
             })
@@ -311,7 +311,7 @@ export default function OldLeadsTablePage() {
             <main className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
                 <Sidebar />
                 <div className="flex-1 min-h-screen w-full bg-gradient-to-b from-slate-50 to-white overflow-x-hidden lg:ml-64 p-6">
-            <Navbar />
+                    <Navbar />
                     <div className="min-h-screen w-full bg-gradient-to-b from-slate-50 to-white p-4 sm:p-6">
                         {/* Header */}
                         <div className="mb-4">
@@ -451,6 +451,142 @@ export default function OldLeadsTablePage() {
                                             <option value="Laguna bay">Laguna bay</option>
                                             <option value="Utpalaa">Utpalaa</option>
                                             <option value="Eden Meghbalika">Eden Meghbalika</option>
+                                            <option value="ELEMENTS">ELEMENTS</option>
+                                            <option value="MORYA">MORYA</option>
+                                            <option value="EMAMI AASTHA">EMAMI AASTHA</option>
+                                            <option value="THE 102">THE 102</option>
+                                            <option value="MANI VISTA">MANI VISTA</option>
+                                            <option value="AVANA">AVANA</option>
+                                            <option value="ORCHAD GODREJ SEVEN">ORCHAD GODREJ SEVEN</option>
+                                            <option value="EMAMI AASTHA">EMAMI AASTHA</option>
+                                            <option value="URBANA 2">URBANA 2</option>
+                                            <option value="SUGAM PRAKRITI">SUGAM PRAKRITI</option>
+                                            <option value="SANCTUARY">SANCTUARY</option>
+                                            <option value="AVANA">AVANA</option>
+                                            <option value="NATURA">NATURA</option>
+                                            <option value="THE LEVELZ">THE LEVELZ</option>
+                                            <option value="DTC SOUTHERN HEIGHT">DTC SOUTHERN HEIGHT</option>
+                                            <option value="SIGNATURE">SIGNATURE</option>
+                                            <option value="THE LEVELZ">THE LEVELZ</option>
+                                            <option value="NAVYOM">NAVYOM</option>
+                                            <option value="RISHI PRANAYA">RISHI PRANAYA</option>
+                                            <option value="SOUTH CITY RETREAT">SOUTH CITY RETREAT</option>
+                                            <option value="AVIDIPTA 2">AVIDIPTA 2</option>
+                                            <option value="OTHERS">OTHERS</option>
+                                            <option value="LAGUNA BAY">LAGUNA BAY</option>
+                                            <option value="ORCHAD GODREJ SEVEN">ORCHAD GODREJ SEVEN</option>
+                                            <option value="DTC SOUTHERN HEIGHTS">DTC SOUTHERN HEIGHTS</option>
+                                            <option value="SOLARIS">SOLARIS</option>
+                                            <option value="SOLARIS">SOLARIS</option>
+                                            <option value="BOTANICA">BOTANICA</option>
+                                            <option value="ATRI AQUA">ATRI AQUA</option>
+                                            <option value="SOUTHERN VISTA">SOUTHERN VISTA</option>
+                                            <option value="ORCHARD AVAASA">ORCHARD AVAASA</option>
+                                            <option value="UTALIKA">UTALIKA</option>
+                                            <option value="SOUTHWINDS">SOUTHWINDS</option>
+                                            <option value="URBANA 2">URBANA 2</option>
+                                            <option value="ATRI GREEN VALLYEY">ATRI GREEN VALLYEY</option>
+                                            <option value="MERLIN SKYGAZE">MERLIN SKYGAZE</option>
+                                            <option value="SUNRISE AURA">SUNRISE AURA</option>
+                                            <option value="ALTAMOUNT">ALTAMOUNT</option>
+                                            <option value="URBAN SABUJAYAN">URBAN SABUJAYAN</option>
+                                            <option value="RAJWADA ALTITUDE">RAJWADA ALTITUDE</option>
+                                            <option value="ATRI RAYS">ATRI RAYS</option>
+                                            <option value="MORYA">MORYA</option>
+                                            <option value="RAJWADA ROYAL GARDEN">RAJWADA ROYAL GARDEN</option>
+                                            <option value="ALTAMOUNT">ALTAMOUNT</option>
+                                            <option value="BOTANICA">BOTANICA</option>
+                                            <option value="OZONE">OZONE</option>
+                                            <option value="EDEN LAKEVILLA">EDEN LAKEVILLA</option>
+                                            <option value="SIDDHA GALAXIA">SIDDHA GALAXIA</option>
+                                            <option value="ANANTMANI">ANANTMANI</option>
+                                            <option value="MEGH MANI">MEGH MANI</option>
+                                            <option value="DIAMOND CITY SOUTH">DIAMOND CITY SOUTH</option>
+                                            <option value="SANCTUARY">SANCTUARY</option>
+                                            <option value="NAVYOM">NAVYOM</option>
+                                            <option value="MANI VISTA">MANI VISTA</option>
+                                            <option value="Spring Villa">Spring Villa</option>
+                                            <option value="ESSENSE">ESSENSE</option>
+                                            <option value="SOLUS">SOLUS</option>
+                                            <option value="SUGAM HABITAT">SUGAM HABITAT</option>
+                                            <option value="URBANA">URBANA</option>
+                                            <option value="SIDDHA SUBURBIA">SIDDHA SUBURBIA</option>
+                                            <option value="THE ROYAL GANGES">THE ROYAL GANGES</option>
+                                            <option value="Newtown Ville">Newtown Ville</option>
+                                            <option value="Rosetta">Rosetta</option>
+                                            <option value="DTC RAJARHAT">DTC RAJARHAT</option>
+                                            <option value="Standalone">Standalone</option>
+                                            <option value="HAPPY VILLA">HAPPY VILLA</option>
+                                            <option value="Vanya Awas">Vanya Awas</option>
+                                            <option value="JOYVILLE">JOYVILLE</option>
+                                            <option value="URBAN GREEN PHASE 2">URBAN GREEN PHASE 2</option>
+                                            <option value="UNIMARK SPRINGFIELD">UNIMARK SPRINGFIELD</option>
+                                            <option value="Natural Aqua Wave">Natural Aqua Wave</option>
+                                            <option value="SOUTH CITY RETREAT">SOUTH CITY RETREAT</option>
+                                            <option value="VINAYAK VISTA">VINAYAK VISTA</option>
+                                            <option value="PS Jiva Homes">PS Jiva Homes</option>
+                                            <option value="Sunshine Enclave">Sunshine Enclave</option>
+                                            <option value="Green view residency">Green view residency</option>
+                                            <option value="Classic Apartment">Classic Apartment</option>
+                                            <option value="Siddha Eden LakeVille">Siddha Eden LakeVille</option>
+                                            <option value="Aagaman">Aagaman</option>
+                                            <option value="MERLIN AVANA">MERLIN AVANA</option>
+                                            <option value="DTC Sojon">DTC Sojon</option>
+                                            <option value="Realmark Seasonss">Realmark Seasonss</option>
+                                            <option value="SOUTH CITY">SOUTH CITY</option>
+                                            <option value="URBAN VISTA">URBAN VISTA</option>
+                                            <option value="RISHI PRANAYA">RISHI PRANAYA</option>
+                                            <option value="Natural City laketown">Natural City laketown</option>
+                                            <option value="Angelica">Angelica</option>
+                                            <option value="Siddha Happyville">Siddha Happyville</option>
+                                            <option value="Bunglow Bari">Bunglow Bari</option>
+                                            <option value="Sunrise Meadows">Sunrise Meadows</option>
+                                            <option value="Ideal Aqua View">Ideal Aqua View</option>
+                                            <option value="PANCHASHEEL VATIKA">PANCHASHEEL VATIKA</option>
+                                            <option value="Calcutta Greens">Calcutta Greens</option>
+                                            <option value="GLS Ruposi Bangla">GLS Ruposi Bangla</option>
+                                            <option value="Merlin Rise">Merlin Rise</option>
+                                            <option value="Merlin X">Merlin X</option>
+                                            <option value="Standalone building">Standalone building</option>
+                                            <option value="Hazelburg">Hazelburg</option>
+                                            <option value="Natural Quest">Natural Quest</option>
+                                            <option value="Jiva Homes">Jiva Homes</option>
+                                            <option value="AVIDIPTA 1">AVIDIPTA 1</option>
+                                            <option value="Mani Casa">Mani Casa</option>
+                                            <option value="PURTI AROMA">PURTI AROMA</option>
+                                            <option value="ONE RAJARHAT">ONE RAJARHAT</option>
+                                            <option value="PS ONE10">PS ONE10</option>
+                                            <option value="Merlin Lakescape">Merlin Lakescape</option>
+                                            <option value="Sanjeeva Shree">Sanjeeva Shree</option>
+                                            <option value="Purti Hastings">Purti Hastings</option>
+                                            <option value="Southern Woods">Southern Woods</option>
+                                            <option value="Prarthana">Prarthana</option>
+                                            <option value="Siddha Serena">Siddha Serena</option>
+                                            <option value="SIDDHA GALAXIA 2">SIDDHA GALAXIA 2</option>
+                                            <option value="Urban Vista">Urban Vista</option>
+                                            <option value="Gems Bougainvillea">Gems Bougainvillea</option>
+                                            <option value="Jeevika">Jeevika</option>
+                                            <option value="Swan Court">Swan Court</option>
+                                            <option value="PLOT">PLOT</option>
+                                            <option value="Unimark Lakewood">Unimark Lakewood</option>
+                                            <option value="KRISHNA APARTMENT">KRISHNA APARTMENT</option>
+                                            <option value="Behala Independence Hours">Behala Independence Hours</option>
+                                            <option value="AURUS 2">AURUS 2</option>
+                                            <option value="FORUM BUNGALOW">FORUM BUNGALOW</option>
+                                            <option value="Tata 88 East">Tata 88 East</option>
+                                            <option value="Alankar Apartment">Alankar Apartment</option>
+                                            <option value="ideal exotica">ideal exotica</option>
+                                            <option value="Bash Bhawan">Bash Bhawan</option>
+                                            <option value="Emami Aamod">Emami Aamod</option>
+                                            <option value="Highland Park">Highland Park</option>
+                                            <option value="Optima">Optima</option>
+                                            <option value="Sarat Bose Rd Standalone">Sarat Bose Rd Standalone</option>
+                                            <option value="Merlin Twin Tower">Merlin Twin Tower</option>
+                                            <option value="ATRI SURYA TORON">ATRI SURYA TORON</option>
+                                            <option value="SPANDAN">SPANDAN</option>
+                                            <option value="ACTIVE ACRES">ACTIVE ACRES</option>
+                                            <option value="Prudencial residency">Prudencial residency</option>
+                                            <option value="GODREJ BLUE">GODREJ BLUE</option>
                                         </select>
                                     </div>
 
@@ -730,7 +866,7 @@ export default function OldLeadsTablePage() {
                                 )}
                             </div>
 
-                           
+
                             {/* Footer with Close Button */}
                             <div className="p-4 border-t flex justify-end">
                                 <button
