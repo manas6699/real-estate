@@ -1,8 +1,8 @@
 // components/Sidebar.tsx
 'use client';
 
+import Link from 'next/link'; 
 import React, { useState } from 'react';
-import Link from 'next/link'; // Use Link for Next.js navigation
 import { usePathname } from 'next/navigation';
 import {
     Home, Users, ArrowDownLeft, BadgeAlert, MonitorCog, BadgeCheck, ArrowBigUpDash, X, Menu, LineChart, Clock
@@ -31,15 +31,15 @@ export default function Sidebar() {
     };
 
     // Base styling for all links
-    const baseLinkClasses = "flex items-center space-x-3 p-3 rounded-xl font-semibold text-gray-600 transition-colors duration-150 hover:bg-gray-200 hover:text-gray-900";
+    const baseLinkClasses = "flex items-center space-x-3 p-3 rounded-xl font-semibold text-gray-600 transition-colors duration-150 hover:bg-yellow-100 hover:text-gray-900";
     // Active styling for the current link
-    const activeLinkClasses = "text-blue-700 shadow border-l-4 border-r-4 border-gray-400";
+    const activeLinkClasses = "text-gray-700 bg-yellow-200 shadow border-l-4 border-r-4 border-orange-400";
 
     return (
         <>
             {/* Mobile toggle button (Hamburger/X) */}
             <button
-                className="lg:hidden fixed top-4 right-4 z-[60] p-2 text-gray-800 bg-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
+                className="lg:hidden fixed bottom-4 right-4 z-[60] p-2 text-gray-800 bg-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
                 onClick={toggleSidebar}
                 aria-label="Toggle Menu"
             >
@@ -62,7 +62,7 @@ export default function Sidebar() {
                 <div className="p-6 h-full flex flex-col">
 
                     {/* Header/Logo */}
-                    <div className="text-xl font-extrabold text-blue-600 mb-8">
+                    <div className="text-xl font-extrabold text-slate-500 mb-8">
                         <span className="text-gray-900 text-4xl">C</span> RM
                     </div>
 
@@ -82,7 +82,7 @@ export default function Sidebar() {
                                     <Icon
                                         size={27}
                                         viewBox='true'
-                                        className="bg-gradient-to-bl from-slate-500 to-zinc-900 p-1 shadow-2xl rounded-full text-white"
+                                        className="bg-gradient-to-bl from-orange-600 to-amber-300 p-1 shadow-2xl rounded-full text-white"
                                     />
                                     <span>
                                         {item.label}

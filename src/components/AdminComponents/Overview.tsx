@@ -89,7 +89,8 @@ type Stats = Record<
     | 'callBack'
     | 'followUp'
     | 'reassigned'
-    | 'leadToday',
+    | 'leadToday'
+    | 'callToday',
     number
 >;
 
@@ -111,6 +112,7 @@ const initialStats: Stats = {
     followUp: 0,
     reassigned: 0,
     leadToday: 0,
+    callToday : 0
 };
 
 export default function Overview() {
@@ -145,6 +147,7 @@ export default function Overview() {
                     followUp: `${GET_FILTERED_DATA}?lead_status=Under Follow Up`,
                     reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
                     leadToday: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}`,
+                    callToday: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}`,
                 };
 
                 url = filters[filter] || SHOW_ALL_ASSIGNS_API;
@@ -185,6 +188,7 @@ export default function Overview() {
                 const queries = [
                     { key: 'assignCount', url: `${GET_FILTERED_DATA}` },
                     { key: 'leadToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}` },
+                    { key: 'callToday', url: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}` },
                     { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
                     { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
                     { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed` },
@@ -227,10 +231,10 @@ export default function Overview() {
     /* --------------------------- 🧩 Card Sections --------------------------- */
     const sections = [
         [
-            { label: 'Total Leads', key: 'totalCount' },
-            { label: 'Leads Today', key: 'leadToday' },
-            { label: 'New Leads', key: 'assignCount' },
+            { label: 'Total Leads', key: 'assignCount' },
+            { label: 'Today Leads', key: 'leadToday' },
             { label: 'Call Pending', key: 'callPending' },
+            { label: 'Today Calls', key: 'callToday' },
             { label: 'Site Visit Fixed', key: 'siteVisitFixed' },
         ],
         [
@@ -269,8 +273,8 @@ export default function Overview() {
                                 fetchStats(type);
                             }}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === type
-                                    ? 'bg-blue-700 text-white shadow-md'
-                                    : 'text-gray-600 hover:text-gray-800'
+                                ? 'bg-orange-500 text-white shadow-md'
+                                : 'text-gray-600 hover:text-gray-800'
                                 }`}
                         >
                             {type === 'all'
