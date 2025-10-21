@@ -82,9 +82,11 @@ export default function Sidebar() {
                                     <Icon
                                         size={27}
                                         viewBox='true'
-                                        className="bg-gradient-to-bl from-slate-900 to-zinc-200 p-1 shadow-2xl rounded-full text-white"
+                                        className="bg-gradient-to-bl from-slate-500 to-zinc-900 p-1 shadow-2xl rounded-full text-white"
                                     />
-                                    <span>{item.label}</span>
+                                    <span>
+                                        {item.label}
+                                    </span>
                                 </Link>
                             );
                         })}
