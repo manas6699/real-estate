@@ -99,8 +99,8 @@ const initialStats: Stats = {
     hotLeads: 0,
     coldLeads: 0,
     warmLeads: 0,
-    junkLeads:0,
-    retryLeads:0,
+    junkLeads: 0,
+    retryLeads: 0,
     booked: 0,
     overdue: 0,
     callBack: 0,
@@ -113,7 +113,6 @@ export default function Overview() {
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
     const [uploadType, setUploadType] = useState<string>('all');
-
 
     /* --------------------------- 🔍 Fetch Assigns Data -------------------------- */
     const fetchAssigns = useCallback(
@@ -216,7 +215,7 @@ export default function Overview() {
     const sections = [
         [
             { label: 'Total Leads', key: 'totalCount' },
-            { label: 'Old Leads', key: 'leadCount' },
+            { label: 'Lead Today', key: 'leadCount' },
             { label: 'New Leads', key: 'assignCount' },
             { label: 'Call Pending', key: 'callPending' },
             { label: 'Site Visit Fixed', key: 'siteVisitFixed' },
