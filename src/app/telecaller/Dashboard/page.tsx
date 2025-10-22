@@ -414,7 +414,6 @@ const TelecallerDashboardPage = () => {
             <section className='lg:ml-64 p-6'>
                 <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
                 <div className="flex items-center space-x-3  rounded-lg mb-4">
-
                     <div className="flex bg-gray-100 rounded-full p-1">
                         <button
                             type="button"

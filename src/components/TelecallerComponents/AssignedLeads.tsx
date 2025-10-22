@@ -104,7 +104,9 @@ export default function AssignedLeads({ data }: Props) {
             </div>
 
             {/* Cards */}
-            {[...table.getRowModel().rows].map((row) => {
+            {[...table.getRowModel().rows]
+                .sort((a, b) => new Date(b.original.updatedAt).getTime() - new Date(a.original.updatedAt).getTime())
+                .map((row) => {
                 const lead = row.original.lead_details;
                 const assign = row.original;
                 // const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
