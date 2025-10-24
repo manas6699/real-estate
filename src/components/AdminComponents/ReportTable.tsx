@@ -1,5 +1,6 @@
 'use client';
-
+import * as XLSX from "xlsx";
+// import { saveAs } from "file-saver";
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
     getCoreRowModel,
@@ -436,8 +437,44 @@ export default function ReportTable({ data }: Props) {
     };
 
     const handleExportToExcel = () => {
-        alert('Exporting data to Excel... (Placeholder function)');
-        console.log('Exporting data:', table.getFilteredRowModel().rows.map(row => row.original));
+        // 1. Get VISIBLE columns
+        const visibleColumns = table.getAllColumns().filter(col => col.getIsVisible());
+
+        // 2. Map column headers for the spreadsheet header row
+        const header = visibleColumns.map(col => col.columnDef.header as string);
+
+        // 3. Map filtered rows to data array
+        const dataForExport = table.getFilteredRowModel().rows.map(row => {
+            return visibleColumns.map(column => {
+                if (column.id === 'createdAt') {
+                    // Custom formatting for the 'createdAt' date column
+                    const dateValue = row.getValue(column.id) as string;
+                    if (!dateValue) return '';
+                    const date = new Date(dateValue);
+                    return `${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} ${date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+                }
+
+                if (column.id === 'disposition') {
+                    // Custom logic for the 'disposition' column
+                    const lead = row.original.lead_details;
+                    const assign = row.original;
+                    return lead.lead_status || assign.status;
+                }
+
+                // Fallback for simple values
+                return row.getValue(column.id) ?? '';
+            });
+        });
+
+        // 4. Create the SheetJS (xlsx) workbook and sheet
+        const wsData = [header, ...dataForExport];
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Report Data');
+
+        // 5. Download the file
+        XLSX.writeFile(wb, 'Lead_Report.xlsx');
+
     };
 
     return (
