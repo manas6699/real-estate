@@ -107,192 +107,192 @@ export default function AssignedLeads({ data }: Props) {
             {[...table.getRowModel().rows]
                 .sort((a, b) => new Date(b.original.updatedAt).getTime() - new Date(a.original.updatedAt).getTime())
                 .map((row) => {
-                const lead = row.original.lead_details;
-                const assign = row.original;
-                // const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
-                const isLatest = (assign.status === 'assigned');
+                    const lead = row.original.lead_details;
+                    const assign = row.original;
+                    // const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
+                    const isLatest = (assign.status === 'assigned');
 
-                return (
-                    <div
-                        key={row.id}
-                        className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-                    >
-                        {/* NEW Badge with better positioning */}
-                        {isLatest && (
-                            <div className="absolute -top-0 -left-2 z-50">
-                                <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 animate-pulse">
-                                    <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
-                                    TAKE ACTION
-                                </span>
-                            </div>
-                        )}
-
-                        {/* Background subtle pattern for latest lead */}
-                        {isLatest && (
-                            <div className="absolute inset-0 bg-gradient-to-br from-green-50/30 to-emerald-50/20 pointer-events-none"></div>
-                        )}
-
-                        {/* Main Content Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 relative z-10 mt-2">
-
-                            {/* Column 1: Date & Project */}
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-blue-50 rounded-lg">
-                                        <CalendarDays className="w-4 h-4 text-blue-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date & Time</p>
-                                        <p className="text-sm font-medium text-gray-900">
-                                            {new Date(assign.updatedAt).toLocaleDateString('en-GB', {
-                                                day: '2-digit',
-                                                month: 'short',
-                                                year: 'numeric',
-                                            })}
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            {new Date(assign.createdAt).toLocaleTimeString('en-GB', {
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                                hour12: false
-                                            })}
-                                        </p>
-                                    </div>
+                    return (
+                        <div
+                            key={row.id}
+                            className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
+                        >
+                            {/* NEW Badge with better positioning */}
+                            {isLatest && (
+                                <div className="absolute -top-0 -left-2 z-50">
+                                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 animate-pulse">
+                                        <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
+                                        TAKE ACTION
+                                    </span>
                                 </div>
+                            )}
 
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-purple-50 rounded-lg">
-                                        <Building className="w-4 h-4 text-purple-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Project</p>
-                                        <p className="text-sm font-medium text-gray-900">{lead.source}</p>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* Background subtle pattern for latest lead */}
+                            {isLatest && (
+                                <div className="absolute inset-0 bg-gradient-to-br from-green-50/30 to-emerald-50/20 pointer-events-none"></div>
+                            )}
 
-                            {/* Column 2: Customer Info */}
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-green-50 rounded-lg">
-                                        <User className="w-4 h-4 text-green-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Customer</p>
-                                        <p className="text-sm font-medium text-gray-900">{lead.name}</p>
-                                    </div>
-                                </div>
+                            {/* Main Content Grid */}
+                            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 relative z-10 mt-2">
 
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-orange-50 rounded-lg">
-                                        <Phone className="w-4 h-4 text-orange-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</p>
-                                        <a
-                                            href={`tel:${lead.phone}`}
-                                            className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
-                                        >
-                                            {lead.phone}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Column 3: Contact & Details */}
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-red-50 rounded-lg">
-                                        <Mail className="w-4 h-4 text-red-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</p>
-                                        <a
-                                            href={`mailto:${lead.email}`}
-                                            className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors break-all"
-                                        >
-                                            {lead.email}
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-indigo-50 rounded-lg">
-                                        <Upload className="w-4 h-4 text-indigo-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Upload Type</p>
-                                        <p className="text-sm font-medium text-gray-900">
-                                            {lead.upload_type === 'single' ? (
-                                                <span className="text-green-600">In House</span>
-                                            ) : (
-                                                <span className="text-blue-600">Data Sheet</span>
-                                            )}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Column 4: Status & Disposition */}
-                            <div className="space-y-4">
-                                {assign.lead_details.lead_status && assign.lead_details.lead_status.trim() !== "" && (
+                                {/* Column 1: Date & Project */}
+                                <div className="space-y-4">
                                     <div className="flex items-start gap-3">
-                                        <div className="p-2 bg-yellow-50 rounded-lg">
-                                            <MessageSquare className="w-4 h-4 text-yellow-600" />
+                                        <div className="p-2 bg-blue-50 rounded-lg">
+                                            <CalendarDays className="w-4 h-4 text-blue-600" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disposition</p>
-                                            <p className="text-sm font-medium text-gray-900 line-clamp-2">
-                                                {assign.lead_details.lead_status}
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date & Time</p>
+                                            <p className="text-sm font-medium text-gray-900">
+                                                {new Date(assign.updatedAt).toLocaleDateString('en-GB', {
+                                                    day: '2-digit',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })}
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                {new Date(assign.createdAt).toLocaleTimeString('en-GB', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: false
+                                                })}
                                             </p>
                                         </div>
                                     </div>
-                                )}
 
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-gray-100 rounded-lg">
-                                        <Activity className="w-4 h-4 text-gray-600" />
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-purple-50 rounded-lg">
+                                            <Building className="w-4 h-4 text-purple-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Project</p>
+                                            <p className="text-sm font-medium text-gray-900">{lead.source}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${assign.status === 'assigned' ? 'bg-blue-100 text-blue-800' :
-                                            assign.status === 'processed' ? 'bg-green-100 text-green-800' :
-                                                assign.status === 'transferred' ? 'bg-orange-100 text-orange-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                            }`}>
-                                            {assign.status.charAt(0).toUpperCase() + assign.status.slice(1)}
-                                        </span>
+                                </div>
+
+                                {/* Column 2: Customer Info */}
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-green-50 rounded-lg">
+                                            <User className="w-4 h-4 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Customer</p>
+                                            <p className="text-sm font-medium text-gray-900">{lead.name}</p>
+                                        </div>
                                     </div>
+
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-orange-50 rounded-lg">
+                                            <Phone className="w-4 h-4 text-orange-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</p>
+                                            <a
+                                                href={`tel:${lead.phone}`}
+                                                className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                                            >
+                                                {lead.phone}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Column 3: Contact & Details */}
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-red-50 rounded-lg">
+                                            <Mail className="w-4 h-4 text-red-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</p>
+                                            <a
+                                                href={`mailto:${lead.email}`}
+                                                className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors break-all"
+                                            >
+                                                {lead.email}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-indigo-50 rounded-lg">
+                                            <Upload className="w-4 h-4 text-indigo-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Upload Type</p>
+                                            <p className="text-sm font-medium text-gray-900">
+                                                {lead.upload_type === 'single' ? (
+                                                    <span className="text-green-600">In House</span>
+                                                ) : (
+                                                    <span className="text-blue-600">Data Sheet</span>
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Column 4: Status & Disposition */}
+                                <div className="space-y-4">
+                                    {assign.lead_details.lead_status && assign.lead_details.lead_status.trim() !== "" && (
+                                        <div className="flex items-start gap-3">
+                                            <div className="p-2 bg-yellow-50 rounded-lg">
+                                                <MessageSquare className="w-4 h-4 text-yellow-600" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disposition</p>
+                                                <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                                                    {assign.lead_details.lead_status}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-gray-100 rounded-lg">
+                                            <Activity className="w-4 h-4 text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${assign.status === 'assigned' ? 'bg-blue-100 text-blue-800' :
+                                                assign.status === 'processed' ? 'bg-green-100 text-green-800' :
+                                                    assign.status === 'transferred' ? 'bg-orange-100 text-orange-800' :
+                                                        'bg-gray-100 text-gray-800'
+                                                }`}>
+                                                {assign.status.charAt(0).toUpperCase() + assign.status.slice(1)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Column 5: Actions */}
+                                <div className="flex flex-col gap-3 justify-center">
+                                    <button
+                                        onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
+                                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                    >
+                                        <Edit3 className="w-4 h-4" />
+                                        Fill Details
+                                    </button>
+
+                                    <button
+                                        onClick={() => fetchLeadHistory(assign._id)}
+                                        className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 hover:border-gray-400 bg-white text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-gray-50 hover:shadow-md"
+                                    >
+                                        <History className="w-4 h-4" />
+                                        View History
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* Column 5: Actions */}
-                            <div className="flex flex-col gap-3 justify-center">
-                                <button
-                                    onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
-                                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                                >
-                                    <Edit3 className="w-4 h-4" />
-                                    Fill Details
-                                </button>
-
-                                <button
-                                    onClick={() => fetchLeadHistory(assign._id)}
-                                    className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 hover:border-gray-400 bg-white text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-gray-50 hover:shadow-md"
-                                >
-                                    <History className="w-4 h-4" />
-                                    View History
-                                </button>
-                            </div>
+                            {/* Bottom border accent for latest lead */}
+                            {isLatest && (
+                                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-600"></div>
+                            )}
                         </div>
-
-                        {/* Bottom border accent for latest lead */}
-                        {isLatest && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-600"></div>
-                        )}
-                    </div>
-                );
-            })}
+                    );
+                })}
 
 
             {showHistory && (
