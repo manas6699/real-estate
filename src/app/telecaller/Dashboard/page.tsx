@@ -198,7 +198,7 @@ const TelecallerDashboardPage = () => {
         // ✅ Request browser notification permission if needed
         if (Notification.permission === 'default' || Notification.permission === 'denied') {
             Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
+                if (permission === 'granted') { 
                     console.log('✅ Notification permission granted.');
                 } else {
                     console.log('❌ Notification permission denied.');
@@ -419,7 +419,7 @@ const TelecallerDashboardPage = () => {
                             type="button"
                             onClick={() => setUploadType("")}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === ""
-                                ? "bg-blue-500 text-white shadow-md"
+                                ? "bg-pink-500 text-white shadow-md"
                                 : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >
@@ -429,7 +429,7 @@ const TelecallerDashboardPage = () => {
                             type="button"
                             onClick={() => setUploadType("Bulk")}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "Bulk"
-                                ? "bg-blue-500 text-white shadow-md"
+                                ? "bg-pink-500 text-white shadow-md"
                                 : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >
@@ -439,7 +439,7 @@ const TelecallerDashboardPage = () => {
                             type="button"
                             onClick={() => setUploadType("single")}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "single"
-                                ? "bg-blue-500 text-white shadow-md"
+                                ? "bg-pink-500 text-white shadow-md"
                                 : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >

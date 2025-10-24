@@ -128,8 +128,10 @@ export default function Overview() {
                 let url = SHOW_ALL_ASSIGNS_API;
 
                 const today = new Date();
-                const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-                const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+                const startOfDay = new Date(today.setHours(23, 59, 59, 999));
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const endOfDay = new Date(tomorrow.setHours(23, 59, 59, 999));
                 const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
                 const filters: Record<string, string> = {
@@ -181,8 +183,10 @@ export default function Overview() {
                     setStats((prev) => ({ ...prev, ...res.data.counts }));
 
                 const today = new Date();
-                const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-                const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+                const startOfDay = new Date(today.setHours(23, 59, 59, 999));
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const endOfDay = new Date(tomorrow.setHours(23, 59, 59, 999));
                 const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
                 const queries = [
