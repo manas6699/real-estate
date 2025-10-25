@@ -13,11 +13,11 @@ import {
     POST_A_PROJECT,
     GET_LEAD_DETAILS
 } from "@/config/api";
-import leadStatuses from "@/options/Leadstatus"; 
+import leadStatuses from "@/options/Leadstatus";
 import preferredConfigs from "@/options/PreferedConfig";
 import BudgetInput from "@/components/TelecallerComponents/BudgetInput";
-import {whoami} from '@/utils/whoami';
-import {Dispositions} from "@/app/data/dispositions";
+import { whoami } from '@/utils/whoami';
+import { Dispositions } from "@/app/data/dispositions";
 
 type leadIdType = { leadId: string };
 type Telecaller = {
@@ -32,7 +32,7 @@ type Project = {
     projectName: string;
 };
 
-const transferStatus = ["Agent Switch", "Cold", "Warm" , "Refer" , "Hot"];
+const transferStatus = ["Agent Switch", "Cold", "Warm", "Refer", "Hot"];
 
 const furnishedOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
 const propertyStatusOptions = ["Under Construction", "Ready to Move"];
@@ -61,7 +61,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [addingProject, setAddingProject] = useState(false);
     // Add this with other state hooks
     const [lead_type, setLeadType] = useState("");
-    const [error , setError] = useState("");
+    const [error, setError] = useState("");
 
 
     useEffect(() => {
@@ -196,7 +196,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 console.error("Error parsing token from localStorage", err);
             }
         }
-        if(schedule_date && !schedule_time){
+        if (schedule_date && !schedule_time) {
             setError("If Schedule Date is selected, Schedule Time is mandatory.");
             setLoading(false)
             return;
@@ -515,7 +515,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </label>
                         <input
                             type="time"
-                            
+
                             value={schedule_time}
                             onChange={(e) => setScheduleTime(e.target.value)}
                             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none ${schedule_date && !schedule_time ? "border-red-500" : ""

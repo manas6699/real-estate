@@ -24,7 +24,7 @@ export const Dispositions: { [key: string]: string } = {
 
   // Warm
   "Site Visit Fixed": "Warm",
-  "Visited Follow-up": "Warm",
+  "Visited Followup": "Warm",
   "Site Visit Rescheduled": "Warm",
   "Site Visit Cancelled": "Warm",
 
