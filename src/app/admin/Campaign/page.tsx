@@ -1,16 +1,15 @@
 "use client";
 
-import Navbar from '@/components/AdminComponents/Navbar'
-import Sidebar from '@/components/AdminComponents/Sidebar'
-
 import axios from 'axios';
+import Select from 'react-select';
+import Loader from '@/components/loader';
+import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
-import Loader from '@/components/loader';
+import Navbar from '@/components/AdminComponents/Navbar'
+import Sidebar from '@/components/AdminComponents/Sidebar'
 import { CREATE_CAMPAIGN, GET_ALL_TELECALLERS_API } from '@/config/api';
-import React, { useEffect, useState } from 'react';
 
-import Select from 'react-select';
 
 type CampaignFormData = {
   name: string;
@@ -33,8 +32,6 @@ const CampaignPage = () => {
     telecallerIds: [],
     auto_assign: false,
   });
-
-
 
   const [telecallers, setTelecallers] = useState<Telecaller[]>([]);
   const [loading, setLoading] = useState(false);
@@ -86,8 +83,8 @@ const CampaignPage = () => {
       const payload = {
         name: formData.name,
         source: formData.source,
-        telecallerIds: formData.telecallerIds,
         auto_assign: formData.auto_assign,
+        telecallerIds: formData.telecallerIds,
       };
 
       await axios.post(CREATE_CAMPAIGN, payload);
@@ -115,7 +112,6 @@ const CampaignPage = () => {
         <Sidebar />
         <div className="p-6 text-xl font-semibold mb-4 flex-1 lg:ml-64">
           <div className="mb-2">
-
             <Navbar />
           </div>
           <h1 className='text-2xl font-bold  mb-6'>
@@ -127,7 +123,7 @@ const CampaignPage = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Campaign Name"
+              placeholder="Enter Campaign Name"
               required
               className="border px-3 py-2 rounded w-full text-sm"
             />
@@ -137,7 +133,7 @@ const CampaignPage = () => {
               name="source"
               value={formData.source}
               onChange={handleChange}
-              placeholder="Source"
+              placeholder="Enter Project Name"
               required
               className="border px-3 py-2 rounded w-full text-sm"
             />

@@ -258,7 +258,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             return;
         }
 
-        const history = `This Lead has been reassigned to ${telecaller.name} by ${whoami()} with remarks : ${remarks}`
+        const history = `This Lead has been reassigned to ${telecaller.name} by ${whoami()} with remarks : ${remarks} and with comments: ${comments}`
         const payload = {
             lead_id: leadId,
             assignee_id: telecaller.id,
@@ -274,6 +274,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 toast.success("Lead transferred successfully!");
                 setIsModalOpen(false);
                 setRemarks("");
+                setComments("");
             } else {
                 toast.error(res.data.message || "Failed to transfer lead");
             }
