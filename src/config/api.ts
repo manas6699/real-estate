@@ -6,6 +6,7 @@ export const API_BASE_URL = 'https://mmrrealty.co.in/api';
 
 
 export const LEADS_ENDPOINT = `${API_BASE_URL}/mmr/leads`;
+export const LEADS_ENDPOINT_Manual = `${API_BASE_URL}/mmr/leads/manual`;
 export const GET_ALL_LEADS = `${API_BASE_URL}/mmr/getallleads`; 
 
 export const GET_ALL_UNASSIGNED_LEADS = `${API_BASE_URL}/mmr/getallleads?status=not-assigned`

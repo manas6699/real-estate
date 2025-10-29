@@ -11,7 +11,7 @@ import Navbar from '@/components/AdminComponents/Navbar'
 import Sidebar from '@/components/SupervisorComponents/Sidebar'
 import AddProject from '@/components/AdminComponents/AddProject';
 import AddLocation from '@/components/AdminComponents/AddLocation';
-import { GET_ALL_PROJECTS, GET_ALL_SOURCES, LEADS_ENDPOINT, POST_A_SOURCE } from '@/config/api';
+import { GET_ALL_PROJECTS, GET_ALL_SOURCES, LEADS_ENDPOINT_Manual, POST_A_SOURCE } from '@/config/api';
 
 type BrochureFormData = {
     name: string;
@@ -130,7 +130,7 @@ const InsertLeadPage = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            await axios.post(LEADS_ENDPOINT, formData);
+            await axios.post(LEADS_ENDPOINT_Manual, formData);
             toast.success('Lead posted successfully');
             setFormData({ name: '', email: '', phone: '', source: "", projectSource: "", upload_by: "" , upload_type: ""});
             setShowOtherInput(false);
