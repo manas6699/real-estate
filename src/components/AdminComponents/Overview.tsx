@@ -10,6 +10,7 @@ import {
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 import { ExternalLink } from 'lucide-react';
 import AssignCardTable from './ModifiedAssignedTable';
+import DayEndReport from '@/components/AdminComponents/DayEndReport';
 
 const COLOR_PALETTE = [
     { bg: 'bg-rose-50', text: 'text-rose-800', ring: 'ring-rose-500' },
@@ -24,6 +25,7 @@ const COLOR_PALETTE = [
     { bg: 'bg-orange-50', text: 'text-orange-800', ring: 'ring-orange-500' },
     { bg: 'bg-sky-50', text: 'text-sky-800', ring: 'ring-sky-500' },
     { bg: 'bg-purple-50', text: 'text-purple-800', ring: 'ring-purple-500' },
+    { bg: 'bg-pink-50', text: 'text-pink-800', ring: 'ring-pink-500' },
     { bg: 'bg-pink-50', text: 'text-pink-800', ring: 'ring-pink-500' },
     { bg: 'bg-yellow-50', text: 'text-yellow-800', ring: 'ring-yellow-500' },
     { bg: 'bg-blue-50', text: 'text-blue-800', ring: 'ring-blue-500' },
@@ -89,6 +91,7 @@ type Stats = Record<
     | 'callBack'
     | 'followUp'
     | 'reassigned'
+    | 'meta'
     | 'leadToday'
     | 'callToday',
     number
@@ -111,8 +114,9 @@ const initialStats: Stats = {
     callBack: 0,
     followUp: 0,
     reassigned: 0,
+    meta:0,
     leadToday: 0,
-    callToday : 0
+    callToday: 0
 };
 
 export default function Overview() {
@@ -148,6 +152,7 @@ export default function Overview() {
                     callBack: `${GET_FILTERED_DATA}?lead_status=Call Back`,
                     followUp: `${GET_FILTERED_DATA}?lead_status=Under Follow Up`,
                     reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
+                    meta: `${GET_FILTERED_DATA}?projectSource=Meta-Mmr`,
                     leadToday: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}`,
                     callToday: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}`,
                 };
@@ -201,6 +206,7 @@ export default function Overview() {
                     { key: 'booked', url: `${GET_FILTERED_DATA}?lead_status=Booked` },
                     { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Under Follow Up` },
                     { key: 'hotLeads', url: `${GET_FILTERED_DATA}?lead_type=Hot` },
+                    { key: 'meta', url: `${GET_FILTERED_DATA}?projectSource=Meta-Mmr` },
                     { key: 'coldLeads', url: `${GET_FILTERED_DATA}?lead_type=Cold` },
                     { key: 'warmLeads', url: `${GET_FILTERED_DATA}?lead_type=Warm` },
                     { key: 'retryLeads', url: `${GET_FILTERED_DATA}?lead_type=Retry` },
@@ -239,21 +245,28 @@ export default function Overview() {
             { label: 'Today Leads', key: 'leadToday' },
             { label: 'Call Pending', key: 'callPending' },
             { label: 'Today Calls', key: 'callToday' },
-            { label: 'Site Visit Fixed', key: 'siteVisitFixed' },
+            { label: 'Site Visit Fixed', key: 'siteVisitFixed' }
         ],
         [
             { label: 'Cold', key: 'coldLeads' },
             { label: 'Hot', key: 'hotLeads' },
             { label: 'Warm', key: 'warmLeads' },
             { label: 'Junk', key: 'junkLeads' },
-            { label: 'Retry', key: 'retryLeads' },
+            { label: 'Retry', key: 'retryLeads' }
         ],
         [
             { label: 'Booked', key: 'booked' },
             { label: 'Site Visit Done', key: 'siteVisitDone' },
             { label: 'Call Back', key: 'callBack' },
             { label: 'Follow Up', key: 'followUp' },
-            { label: 'Reassign Leads', key: 'reassigned' },
+            { label: 'Reassign Leads', key: 'reassigned' }
+        ],
+        [
+            { label: ' Meta', key: 'meta' },
+            { label: ' Magickbricks', key: 'c' },
+            { label: ' Housing', key: 'k' },
+            { label: ' 99 Acers', key: 'x' },
+            { label: ' Others', key: 'y' }
         ],
     ];
 
@@ -261,9 +274,8 @@ export default function Overview() {
 
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-inter overflow-x-hidden">
-            <h1 className="text-2xl text-gray-900 font-black mb-8 border-b-2 border-indigo-200 pb-2">
-                Overview
-            </h1>
+         
+            <DayEndReport />
 
             {/* ------------------- 🔘 Upload Type Buttons ------------------- */}
             <div className="flex items-center space-x-3 rounded-lg mb-4">
