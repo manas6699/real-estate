@@ -100,7 +100,7 @@ const TelecallerDashboardPage = () => {
 
         // Create socket only here when token is ready
         const newSocket = io(WEB_SOCKET_URL, {
-            transports: ["websocket"],
+            // transports: ["websocket"],
             auth: { token: storedToken }
         });
 
