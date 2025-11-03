@@ -9,7 +9,8 @@ import {
     X,
     ArrowDownLeft,
     ArrowBigUpDash,
-    BadgeAlert
+    BadgeAlert,
+    Gauge
 } from 'lucide-react';
 
 import { usePathname } from 'next/navigation';
@@ -73,6 +74,11 @@ export default function TelecallerSidebar() {
                             }`} >
                             <ClipboardList className="w-5 h-5" />
                             <span className="text-base font-medium">View Report</span>
+                        </a>
+                        <a href="/supervisor/Performance" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/supervisor/Performance' ? 'text-orange-500 font-extrabold' : ''
+                            }`} >
+                            <Gauge className="w-5 h-5" />
+                            <span className="text-base font-medium">Performance</span>
                         </a>
                         {/* <a href="/telecaller/OldReport" className={`flex items-center space-x-2 text-lg font-medium ${pathname === '/telecaller/OldReport' ? 'text-orange-500 font-extrabold' : ''
                             }`} >

@@ -175,7 +175,7 @@ cursor: pointer;
     );
 }
 
-// --------------------------------------------------------------------------------
+
 
 // Custom filter function for date range
 const dateRangeFilter: FilterFn<AssignType> = (row, columnId, filterValue) => {
