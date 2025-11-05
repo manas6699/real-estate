@@ -2,6 +2,7 @@
     _id: string;
     lead_id: string;
     assignee_id: string;
+    dumb_id: string;
     assignee_name: string;
     status: string;
     assign_mode: string;

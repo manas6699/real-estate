@@ -27,6 +27,7 @@ type Assign = {
     assignee_id: string;
     assignee_name: string;
     status: string;
+    dumb_id: string,
     remarks: string;
     history: string[];
     lead_details: {
@@ -57,6 +58,7 @@ const TelecallerDashboardPage = () => {
     const [location, setLocation] = useState("");
     const [locations, setLocations] = useState<Location[]>([]);
     const [phone, setPhone] = useState("");
+    const [idx , setidx] = useState("");
     const [name, setName] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -308,6 +310,7 @@ const TelecallerDashboardPage = () => {
             }
 
             if (phone) params.phone = phone;
+            if(idx) params.dumb_id = idx;
             if (location) params.location = location;
             if (name) params.name = name;
             if (startDate) params.startDate = startDate;
@@ -332,16 +335,6 @@ const TelecallerDashboardPage = () => {
     };
 
     const resetFilters = () => {
-        setLeadStatus("");
-        setPhone("");
-        setLocation("");
-        setName("");
-        setStartDate("");
-        setEndDate("");
-        setProjectName("");
-        setConfiguration("");
-        setUploadType("");
-        // No need to manually call fetchFiltered here, the useEffect below handles it
         window.location.reload()
     };
 
@@ -349,7 +342,7 @@ const TelecallerDashboardPage = () => {
     useEffect(() => {
         fetchFiltered();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTile, leadStatus, phone, name, startDate, location, endDate, projectName, configuration]);
+    }, [activeTile, leadStatus, idx, phone, name, startDate, location, endDate, projectName, configuration]);
 
     useEffect(() => {
         // Only fetch the count when uploadType changes
@@ -363,6 +356,7 @@ const TelecallerDashboardPage = () => {
         activeTile,
         leadStatus,
         phone,
+        idx,
         location,
         name,
         startDate,
@@ -456,9 +450,17 @@ const TelecallerDashboardPage = () => {
 
                 {/* Filters */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
+                    <input
+                        type="text"
+                        placeholder="id"
+                        value={idx}
+                        onChange={(e) => setidx(e.target.value)}
+                        className="border p-2 rounded text-xs"
+                    />
+                   
                     <select
                         value={leadStatus}
-                        onChange={(e) => setLeadStatus(e.target.value)}
+                        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLeadStatus(e.target.value)}
                         className="border rounded p-2 text-xs"
                     >
                         <option value="">Disposition</option>

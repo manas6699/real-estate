@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import axios from "axios";
 import { GET_LEAD_HISTORY } from '@/config/api';
-import { Activity, Building, CalendarDays, Edit3, History, Mail, MessageSquare, Phone, Upload, User } from 'lucide-react';
+import { Activity, Building, CalendarDays, Check, Copy, Edit3, History, Mail, MessageSquare, Phone, Upload, User } from 'lucide-react';
 
 
 // types
@@ -30,6 +30,7 @@ type Assign = {
     assignee_name: string;
     status: string;
     remarks: string;
+    dumb_id: string,
     history: string[];
     lead_details: {
         name: string;
@@ -55,15 +56,13 @@ export default function AssignedLeads({ data }: Props) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [history, setHistory] = useState<any[]>([]);
     const [showHistory, setShowHistory] = useState(false);
+    const [copiedId, setCopiedId] = useState<string | null>(null);
     const router = useRouter();
 
     // Update fetchLeadHistory to accept a leadId
     const fetchLeadHistory = async (leadId: string) => {
         try {
-            const res = await axios.get(GET_LEAD_HISTORY(leadId), {
-                params: { t: Date.now() }, // cache-buster
-                headers: { 'Cache-Control': 'no-cache' },
-            });
+            const res = await axios.get(GET_LEAD_HISTORY(leadId))
 
             // prefer `res.data.data` if present; else fallback to `res.data`
             const payload = res?.data?.data ?? res?.data ?? [];
@@ -75,6 +74,25 @@ export default function AssignedLeads({ data }: Props) {
             console.error('Failed to fetch history:', err);
             setHistory([]);
             setShowHistory(true); // still open modal to show message
+        }
+    };
+
+    const handleCopyId = async (id: string) => {
+        try {
+            await navigator.clipboard.writeText(id);
+            setCopiedId(id);
+            setTimeout(() => setCopiedId(null), 2000); // Reset after 2 seconds
+        } catch (err) {
+            console.error('Failed to copy ID:', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = id;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            setCopiedId(id);
+            setTimeout(() => setCopiedId(null), 2000);
         }
     };
 
@@ -133,7 +151,28 @@ export default function AssignedLeads({ data }: Props) {
                             )}
 
                             {/* Main Content Grid */}
-                            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 relative z-10 mt-2">
+                            <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 relative z-10 mt-2">
+                                <div className="flex items-start gap-3">
+                                    <button
+                                        onClick={() => handleCopyId(assign.dumb_id)}
+                                        className="p-2 cursor-pointer bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors duration-200 group relative"
+                                        title="Copy ID"
+                                    >
+                                        {copiedId === assign.dumb_id ? (
+                                            <Check className="w-4 h-4 text-green-600" />
+                                        ) : (
+                                            <Copy className="w-4 h-4 text-purple-600" />
+                                        )}
+                                        {/* Tooltip */}
+                                        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                                            Copy ID
+                                        </div>
+                                    </button>
+                                    <div>
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">ID</p>
+                                        <p className="text-sm font-medium text-gray-900">{assign.dumb_id}</p>
+                                    </div>
+                                </div>
 
                                 {/* Column 1: Date & Project */}
                                 <div className="space-y-4">

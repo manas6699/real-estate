@@ -8,10 +8,12 @@ import {
     SHOW_ALL_ASSIGNS_API,
 } from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Loader2 } from 'lucide-react'; // Import Loader2 for a spinning icon
 import AssignCardTable from './ModifiedAssignedTable';
 import DayEndReport from '@/components/AdminComponents/DayEndReport';
+import CreativeLoader from './CreativeLoader';
 
+// ... (COLOR_PALETTE, Type Definitions - Stats, Assign, HistoryEntry - are the same)
 const COLOR_PALETTE = [
     { bg: 'bg-rose-50', text: 'text-rose-800', ring: 'ring-rose-500' },
     { bg: 'bg-amber-50', text: 'text-amber-800', ring: 'ring-amber-500' },
@@ -114,7 +116,7 @@ const initialStats: Stats = {
     callBack: 0,
     followUp: 0,
     reassigned: 0,
-    meta:0,
+    meta: 0,
     leadToday: 0,
     callToday: 0
 };
@@ -124,10 +126,16 @@ export default function Overview() {
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
     const [uploadType, setUploadType] = useState<string>('all');
+    // ✨ New state for loading
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
 
     /* --------------------------- 🔍 Fetch Assigns Data -------------------------- */
     const fetchAssigns = useCallback(
         async (filter: string = '', uploadTypeParam: string = uploadType) => {
+            // Set loading to true at the start of fetch
+            if (!filter) setIsLoading(true); // Only set loading for the main initial fetch
+
             try {
                 let url = SHOW_ALL_ASSIGNS_API;
 
@@ -171,6 +179,9 @@ export default function Overview() {
             } catch (err) {
                 console.error('Error fetching assigns:', err);
                 setAssigns([]);
+            } finally {
+                // Set loading to false after fetch (success or error)
+                if (!filter) setIsLoading(false);
             }
         },
         [uploadType]
@@ -179,6 +190,9 @@ export default function Overview() {
     /* --------------------------- 📊 Fetch Stats Data --------------------------- */
     const fetchStats = useCallback(
         async (uploadTypeParam: string = uploadType) => {
+            // Set loading to true at the start of fetch
+            setIsLoading(true);
+
             try {
                 const uploadQuery =
                     uploadTypeParam !== 'all' ? `?upload_type=${uploadTypeParam}` : '';
@@ -227,6 +241,9 @@ export default function Overview() {
                 );
             } catch (error) {
                 console.error('Error fetching stats:', error);
+            } finally {
+                // Set loading to false after fetch (success or error)
+                setIsLoading(false);
             }
         },
         [uploadType]
@@ -234,11 +251,23 @@ export default function Overview() {
 
     /* --------------------------- ⚙️ Auto Fetch --------------------------- */
     useEffect(() => {
-        fetchStats(uploadType);
-        fetchAssigns('totalCount', uploadType);
+        // Since both functions set loading, we can wrap them to manage the state flow cleanly,
+        // or ensure fetchStats sets it to true and the last function to complete sets it to false.
+        // For simplicity and safety, we'll let fetchStats manage the initial overall loading state.
+        const fetchData = async () => {
+            // fetchStats will set loading to true
+            await fetchStats(uploadType);
+            await fetchAssigns('totalCount', uploadType);
+            // fetchStats will set loading to false after all concurrent fetches complete
+        }
+
+        fetchData();
+        // The individual card click `fetchAssigns(item.key)` will manage its own loading implicitly
+        // by making the update quick and only affecting the table, or by running fetchStats too.
+        // I will add a local loading state for table updates as well for better UX.
     }, [fetchAssigns, fetchStats, uploadType]);
 
-    /* --------------------------- 🧩 Card Sections --------------------------- */
+    // ... (Card Sections - sections is the same)
     const sections = [
         [
             { label: 'Total Leads', key: 'assignCount' },
@@ -272,9 +301,41 @@ export default function Overview() {
 
     let colorIndex = 0;
 
+    // 
+    // Separate loading state for just the table when a card is clicked
+    const [isTableLoading, setIsTableLoading] = useState(false);
+
+    const handleCardClick = async (key: string) => {
+        // Check if the key corresponds to a real filter that changes the table data
+        const realFilters = [
+            'assignCount', 'leadToday', 'callPending', 'callToday', 'siteVisitFixed',
+            'coldLeads', 'hotLeads', 'warmLeads', 'junkLeads', 'retryLeads',
+            'booked', 'siteVisitDone', 'callBack', 'followUp', 'reassigned', 'meta'
+        ];
+
+        if (realFilters.includes(key)) {
+            setIsTableLoading(true);
+            try {
+                await fetchAssigns(key);
+            } finally {
+                setIsTableLoading(false);
+            }
+        } else {
+            // For placeholder cards without an actual filter API, just update the selectedFilter state for styling
+            setSelectedFilter(key);
+        }
+    };
+
+
+    if (isLoading) {
+        return (
+          <CreativeLoader/>
+        );
+    }
+
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-inter overflow-x-hidden">
-         
+
             <DayEndReport />
 
             {/* ------------------- 🔘 Upload Type Buttons ------------------- */}
@@ -285,8 +346,7 @@ export default function Overview() {
                             key={type}
                             onClick={() => {
                                 setUploadType(type);
-                                fetchAssigns(selectedFilter, type);
-                                fetchStats(type);
+                                // The useEffect will handle the full fetch chain: fetchStats then fetchAssigns
                             }}
                             className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === type
                                 ? 'bg-orange-500 text-white shadow-md'
@@ -315,7 +375,7 @@ export default function Overview() {
                         return (
                             <div
                                 key={item.key}
-                                onClick={() => fetchAssigns(item.key)}
+                                onClick={() => handleCardClick(item.key)}
                                 className={`${bg} ${text} rounded-xl p-4 h-28 shadow-xl transition-all duration-300 cursor-pointer
                   hover:scale-[1.02] hover:shadow-2xl
                   ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`}
@@ -324,7 +384,7 @@ export default function Overview() {
                                     {item.label}
                                 </div>
                                 <div className="text-lg font-extrabold mt-1">
-                                    {stats[item.key as keyof Stats]}
+                                    {stats[item.key as keyof Stats] || 0} {/* Ensure a fallback to 0 */}
                                 </div>
                             </div>
                         );
@@ -350,8 +410,16 @@ export default function Overview() {
                 </div>
             </section>
 
+            {/* ----------------------------- 📋 Assign Table ----------------------------- */}
             <div className="w-full overflow-x-auto">
-                <AssignCardTable data={assigns} />
+                {isTableLoading ? (
+                    <div className="flex items-center justify-center p-12 bg-white rounded-xl shadow-lg">
+                        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                        <p className="ml-3 font-medium text-gray-600">Loading Assigned Leads...</p>
+                    </div>
+                ) : (
+                    <AssignCardTable data={assigns} />
+                )}
             </div>
         </div>
     );
