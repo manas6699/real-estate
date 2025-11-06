@@ -250,6 +250,12 @@ export default function ReportTable({ data }: Props) {
                 enableColumnFilter: true
             },
             {
+                id: 'dumb_id', 
+                accessorKey: 'dumb_id',
+                header: 'Id',
+                enableColumnFilter: true,
+            },
+            {
                 id: 'email', // Explicit ID for Email
                 accessorKey: 'lead_details.email',
                 header: 'Email',
@@ -554,6 +560,7 @@ export default function ReportTable({ data }: Props) {
                                             'phone',           // Phone
                                             'email',           // Email
                                             'alternate_phone', // Alternate Phone
+                                            'dumb_id', // dumb_id new addition  
                                         ];
                                         const isTextFilter = TEXT_FILTER_COLUMNS.includes(header.column.id);
 
