@@ -25,6 +25,7 @@ type LeadHistoryRow = {
     assign_mode: string;
     status: string;
     remarks?: string;
+    dumb_id :string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     history: Array<string | Record<string, any>>;
     lead_details: {
@@ -113,6 +114,8 @@ export default function HistoryTable() {
     // Helper function to get cell value based on column ID
     const getCellValue = (item: LeadHistoryRow, columnId: string) => {
         switch (columnId) {
+            case "id":
+                return item?.dumb_id;
             case "name":
                 return item.lead_details?.name;
             case "email":
@@ -179,6 +182,14 @@ export default function HistoryTable() {
                         </span>
                     );
                 },
+            },
+            {
+                accessorKey: "dumb_id",
+                id: "id",
+                header: "ID",
+                cell: (info) => info.getValue() || "—",
+                enableSorting: true,
+                enableColumnFilter: true,
             },
             {
                 accessorKey: "lead_details.name",

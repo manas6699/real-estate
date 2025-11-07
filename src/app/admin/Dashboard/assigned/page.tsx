@@ -24,6 +24,7 @@ type Assign = {
     assignee_name: string;
     status: string;
     remarks: string;
+    dumb_id: string;
     history: HistoryEntry[];
     lead_details: {
         name: string;

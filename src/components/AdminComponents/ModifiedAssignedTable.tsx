@@ -26,6 +26,7 @@ type Assign = {
     assignee_name: string;
     status: string;
     remarks: string;
+    dumb_id: string;
     history: (HistoryEntry | string)[];
     lead_details: {
         name: string;
@@ -67,6 +68,7 @@ export default function AssignCardTable({ data }: Props) {
         startDate: '',
         endDate: '',
         user: '',
+        id: '', // This is the ID filter state
         disposition: '',
         leadSource: '',
         projectName: '',
@@ -94,6 +96,8 @@ export default function AssignCardTable({ data }: Props) {
         // Reset page index to 0 when filters or data change
         setPagination(prev => ({ ...prev, pageIndex: 0 }));
 
+        const filterIdValue = filters.id.toLowerCase().trim();
+
         const filtered = data.filter(item => {
             const lead = item.lead_details;
             const itemUpdatedAt = new Date(item.updatedAt);
@@ -105,7 +109,14 @@ export default function AssignCardTable({ data }: Props) {
                 !filters.endDate ||
                 itemUpdatedAt <= new Date(filters.endDate + 'T23:59:59'); // Include the full end day
 
-            // 2. Dropdown Filters
+            // 2. ID Filter (New Logic)
+            const matchId = !filterIdValue || (
+                item._id.toLowerCase().includes(filterIdValue) || // Search main assignment ID
+                item.lead_id.toLowerCase().includes(filterIdValue) || // Search lead_id
+                item.dumb_id.toLowerCase().includes(filterIdValue) // Search dumb_id
+            );
+
+            // 3. Dropdown Filters
             const matchUser = !filters.user || item.assignee_name === filters.user;
             const matchDisposition = !filters.disposition || item.status === filters.disposition;
             const matchLeadSource = !filters.leadSource || lead.projectSource === filters.leadSource;
@@ -119,6 +130,7 @@ export default function AssignCardTable({ data }: Props) {
             return (
                 afterStart &&
                 beforeEnd &&
+                matchId && // Include the new ID filter
                 matchUser &&
                 matchDisposition &&
                 matchLeadSource &&
@@ -129,7 +141,7 @@ export default function AssignCardTable({ data }: Props) {
             );
         });
 
-        // 💡 CRITICAL CHANGE: Sort the data by 'updatedAt' in descending order (newest first)
+        // CRITICAL CHANGE: Sort the data by 'updatedAt' in descending order (newest first)
         return filtered.sort((a, b) => {
             const dateA = new Date(a.updatedAt).getTime();
             const dateB = new Date(b.updatedAt).getTime();
@@ -197,6 +209,7 @@ export default function AssignCardTable({ data }: Props) {
             startDate: '',
             endDate: '',
             user: '',
+            id: '',
             disposition: '',
             leadSource: '',
             projectName: '',
@@ -204,7 +217,7 @@ export default function AssignCardTable({ data }: Props) {
             location: '',
             preferredConfiguration: '',
         });
-        window.location.reload();
+        // Removed window.location.reload() - this typically should not be needed for just clearing filters in a React app.
         setPagination({ pageIndex: 0, pageSize: 10 });
     };
 
@@ -232,6 +245,15 @@ export default function AssignCardTable({ data }: Props) {
                         type="date"
                         value={filters.endDate}
                         onChange={e => setFilters({ ...filters, endDate: e.target.value })}
+                        className="border px-2 py-1 rounded w-full"
+                    />
+                </div>
+                <div>
+                    <label className="block text-gray-600 mb-1">ID (Search)</label>
+                    <input
+                        type="text" // Changed type to text for searching
+                        value={filters.id}
+                        onChange={e => setFilters({ ...filters, id: e.target.value })}
                         className="border px-2 py-1 rounded w-full"
                     />
                 </div>
@@ -264,17 +286,17 @@ export default function AssignCardTable({ data }: Props) {
                 ))}
 
                 {/* Clear Button */}
-                <div className="flex items-end justify-end">
+                <div className="flex">
                     <button
                         onClick={handleClearFilters}
-                        className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded w-full sm:w-auto"
+                        className="bg-red-500 cursor-pointer px-3 text-white py-1 rounded w-full sm:w-auto self-end"
                     >
                         Clear Filters
                     </button>
                 </div>
             </div>
 
-            {/* Table Section */}
+            {/* Table Section (Rest of the code is unchanged) */}
             <div className="overflow-x-auto border rounded-md bg-white">
                 <table className="min-w-full text-sm">
                     <thead className="bg-gray-100 text-left text-xs font-medium text-gray-600 uppercase">
@@ -293,122 +315,123 @@ export default function AssignCardTable({ data }: Props) {
                     <tbody>
                         {/* {table.getRowModel().rows.map(row => { */}
                         {table.getRowModel().rows.map((row) => {
-                                const assign = row.original;
-                                const lead = assign.lead_details;
-                                const isExpanded = expandedRow === assign._id;
+                            const assign = row.original;
+                            const lead = assign.lead_details;
+                            const isExpanded = expandedRow === assign._id;
 
-                                return (
-                                    <React.Fragment key={row.id}>
-                                        <tr className="border-b hover:bg-yellow-50">
-                                            <td className="px-4 py-2">
-                                                <button
-                                                    onClick={() => toggleExpand(assign._id)}
-                                                    className="text-blue-600 text-xs border px-2 py-1 rounded bg-gray-50 hover:bg-gray-100"
-                                                >
-                                                    {isExpanded ? '➖' : '➕'}
-                                                </button>
+                            return (
+                                <React.Fragment key={row.id}>
+                                    <tr className="border-b hover:bg-yellow-50">
+                                        <td className="px-4 py-2">
+                                            <button
+                                                onClick={() => toggleExpand(assign._id)}
+                                                className="text-blue-600 text-xs border px-2 py-1 rounded bg-gray-50 hover:bg-gray-100"
+                                            >
+                                                {isExpanded ? '➖' : '➕'}
+                                            </button>
+                                        </td>
+                                        {row.getVisibleCells().map(cell => (
+                                            <td key={cell.id} className="px-4 py-2 truncate max-w-[150px]">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </td>
-                                            {row.getVisibleCells().map(cell => (
-                                                <td key={cell.id} className="px-4 py-2 truncate max-w-[150px]">
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </td>
-                                            ))}
-                                            <td className="px-4 py-2">
-                                                <button
-                                                    className="px-2 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600"
-                                                    onClick={() => openModal(assign.lead_id)}
-                                                >
-                                                    Reassign
-                                                </button>
+                                        ))}
+                                        <td className="px-4 py-2">
+                                            <button
+                                                className="px-2 py-1 text-xs bg-orange-500 cursor-pointer text-white rounded hover:bg-orange-600"
+                                                onClick={() => openModal(assign.lead_id)}
+                                            >
+                                                Reassign
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    {isExpanded && (
+                                        <tr className="bg-gray-50">
+                                            <td colSpan={columns.length + 2} className="p-4">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-xs text-gray-700 break-words">
+                                                    <div><strong>ID:</strong> {assign.dumb_id || '—'}</div>
+                                                    <div><strong>Disposition:</strong> {lead.lead_status || '—'}</div>
+                                                    <div><strong>Lead Type:</strong> {lead.lead_type || '—'}</div>
+                                                    <div><strong>Client Budget:</strong> {lead.client_budget || '—'}</div>
+                                                    <div><strong>Location:</strong> {lead.location || '—'}</div>
+                                                    <div><strong>Preferred Config:</strong> {lead.preferred_configuration || '—'}</div>
+                                                    <div><strong>Remarks:</strong> {lead.comments || '—'}</div>
+                                                    <div><strong>Client Email:</strong> {lead.email || '—'}</div>
+                                                    <div><strong>Assigned By:</strong> {lead.upload_by || '—'}</div>
+                                                    <div><strong>Upload Type:</strong> {lead.upload_type || '—'}</div>
+                                                </div>
+                                                {Array.isArray(assign.history) && assign.history.length > 0 && (
+                                                    <div className="mt-6 text-sm text-gray-800 border-t pt-4">
+                                                        <strong className="block mb-4 text-base font-semibold text-gray-900">
+                                                            Activity History (Newest First)
+                                                        </strong>
+
+                                                        {/* Timeline Container */}
+                                                        <div className="relative border-l border-gray-200 space-y-4 ml-2 pl-4">
+
+                                                            {/* KEEPING .reverse() to show newest at the top */}
+                                                            {[...assign.history].reverse().map((item, index) => (
+                                                                <div key={index} className="relative">
+
+                                                                    {/* Timeline Dot/Marker */}
+                                                                    <div className={`
+                                                                        absolute w-3 h-3 rounded-full mt-4 -left-[22.5px] border border-white
+                                                                        ${typeof item === 'string' ? 'bg-orange-400' : 'bg-indigo-500'}
+                                                                    `}></div>
+
+                                                                    {typeof item === 'string' ? (
+                                                                        /* String Entry (e.g., Bulk Assignment) - styled to look like an important event */
+                                                                        <div className="p-3 bg-orange-50 rounded-lg shadow-sm border border-orange-200">
+                                                                            <p className="font-medium text-orange-800">
+                                                                                {item}
+                                                                            </p>
+                                                                        </div>
+                                                                    ) : (
+                                                                        /* Object Entry (e.g., Status Update) */
+                                                                        <div className="p-4 bg-white rounded-lg shadow-md border border-gray-100">
+
+                                                                            {/* Header: Status & Updated At */}
+                                                                            <div className="flex justify-between items-start mb-2">
+                                                                                <span className={`
+                                                                                    font-bold text-base 
+                                                                                    ${item.status === 'Booked' ? 'text-green-600' : 'text-indigo-600'}
+                                                                                `}>
+                                                                                    {item.status || 'Status Updated'}
+                                                                                </span>
+                                                                                <span className="text-xs text-gray-500">
+                                                                                    {item.updatedAt
+                                                                                        ? new Date(item.updatedAt).toLocaleString()
+                                                                                        : '—'}
+                                                                                </span>
+                                                                            </div>
+
+                                                                            {/* Assignee */}
+                                                                            <div className="text-xs text-gray-600 mb-1">
+                                                                                <span className="font-medium">Assignee:</span> {item.assignee_name || '—'}
+                                                                            </div>
+
+                                                                            {/* Remarks */}
+                                                                            {item.remarks && (
+                                                                                <div className="mt-2 p-2 bg-indigo-50 rounded-md border border-indigo-100">
+                                                                                    <strong className="block text-xs text-indigo-700">Remarks:</strong>
+                                                                                    <p className="text-xs text-indigo-800">{item.remarks}</p>
+                                                                                </div>
+                                                                            )}
+
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
-
-                                        {isExpanded && (
-                                            <tr className="bg-gray-50">
-                                                <td colSpan={columns.length + 2} className="p-4">
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-xs text-gray-700 break-words">
-                                                        <div><strong>Disposition:</strong> {lead.lead_status || '—'}</div>
-                                                        <div><strong>Lead Type:</strong> {lead.lead_type || '—'}</div>
-                                                        <div><strong>Client Budget:</strong> {lead.client_budget || '—'}</div>
-                                                        <div><strong>Location:</strong> {lead.location || '—'}</div>
-                                                        <div><strong>Preferred Config:</strong> {lead.preferred_configuration || '—'}</div>
-                                                        <div><strong>Remarks:</strong> {lead.comments || '—'}</div>
-                                                        <div><strong>Client Email:</strong> {lead.email || '—'}</div>
-                                                        <div><strong>Assigned By:</strong> {lead.upload_by || '—'}</div>
-                                                        <div><strong>Upload Type:</strong> {lead.upload_type || '—'}</div>
-                                                    </div>
-                                                    {Array.isArray(assign.history) && assign.history.length > 0 && (
-                                                        <div className="mt-6 text-sm text-gray-800 border-t pt-4">
-                                                            <strong className="block mb-4 text-base font-semibold text-gray-900">
-                                                                Activity History (Newest First)
-                                                            </strong>
-
-                                                            {/* Timeline Container */}
-                                                            <div className="relative border-l border-gray-200 space-y-4 ml-2 pl-4">
-
-                                                                {/* KEEPING .reverse() to show newest at the top */}
-                                                                {[...assign.history].reverse().map((item, index) => (
-                                                                    <div key={index} className="relative">
-
-                                                                        {/* Timeline Dot/Marker */}
-                                                                        <div className={`
-                        absolute w-3 h-3 rounded-full mt-4 -left-[22.5px] border border-white
-                        ${typeof item === 'string' ? 'bg-orange-400' : 'bg-indigo-500'}
-                    `}></div>
-
-                                                                        {typeof item === 'string' ? (
-                                                                            /* String Entry (e.g., Bulk Assignment) - styled to look like an important event */
-                                                                            <div className="p-3 bg-orange-50 rounded-lg shadow-sm border border-orange-200">
-                                                                                <p className="font-medium text-orange-800">
-                                                                                    {item}
-                                                                                </p>
-                                                                            </div>
-                                                                        ) : (
-                                                                            /* Object Entry (e.g., Status Update) */
-                                                                            <div className="p-4 bg-white rounded-lg shadow-md border border-gray-100">
-
-                                                                                {/* Header: Status & Updated At */}
-                                                                                <div className="flex justify-between items-start mb-2">
-                                                                                    <span className={`
-                                    font-bold text-base 
-                                    ${item.status === 'Booked' ? 'text-green-600' : 'text-indigo-600'}
-                                `}>
-                                                                                        {item.status || 'Status Updated'}
-                                                                                    </span>
-                                                                                    <span className="text-xs text-gray-500">
-                                                                                        {item.updatedAt
-                                                                                            ? new Date(item.updatedAt).toLocaleString()
-                                                                                            : '—'}
-                                                                                    </span>
-                                                                                </div>
-
-                                                                                {/* Assignee */}
-                                                                                <div className="text-xs text-gray-600 mb-1">
-                                                                                    <span className="font-medium">Assignee:</span> {item.assignee_name || '—'}
-                                                                                </div>
-
-                                                                                {/* Remarks */}
-                                                                                {item.remarks && (
-                                                                                    <div className="mt-2 p-2 bg-indigo-50 rounded-md border border-indigo-100">
-                                                                                        <strong className="block text-xs text-indigo-700">Remarks:</strong>
-                                                                                        <p className="text-xs text-indigo-800">{item.remarks}</p>
-                                                                                    </div>
-                                                                                )}
-
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                ))}
-
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </React.Fragment>
-                                );
-                            })}
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
                     </tbody>
                 </table>
 
