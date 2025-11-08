@@ -12,6 +12,7 @@
         'Site Visit Rescheduled',
         'Already Booked',
         'Booked',
+        'Prospect',
         'Call Back',
         'Fraud',
         'Agent Switch',

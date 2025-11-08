@@ -5,15 +5,16 @@ export const Dispositions: { [key: string]: string } = {
   "Duplicate": "Junk",
   "Fraud": "Junk",
   "Already Booked": "Junk",
-  "Network Error": "Junk",
   "Not Valid": "Junk",
   "Location Issue": "Junk",
   "Budget Issue": "Junk",
 
   // Retry
   "Redirection to voice-mail": "Retry",
+   "Network Error": "Retry",
   "Not responding": "Retry",
   "Busy": "Retry",
+  "Prospect": "Retry",
   "Switch Off": "Retry",
 
   // Cold
@@ -24,12 +25,12 @@ export const Dispositions: { [key: string]: string } = {
 
   // Warm
   "Site Visit Fixed": "Warm",
-  "Visited Followup": "Warm",
   "Site Visit Rescheduled": "Warm",
   "Site Visit Cancelled": "Warm",
 
   // Hot
   "Site Visit Done": "Hot",
+  "Visited Followup": "Hot",
   "Booked": "Hot",
   "Sold": "Hot",
 };
