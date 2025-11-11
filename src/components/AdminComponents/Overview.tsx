@@ -279,8 +279,8 @@ export default function Overview() {
         ],
         [
             { label: 'Cold', key: 'coldLeads' },
-            { label: 'Hot', key: 'hotLeads' },
             { label: 'Warm', key: 'warmLeads' },
+            { label: 'Hot', key: 'hotLeads' },
             { label: 'Junk', key: 'junkLeads' },
             { label: 'Retry', key: 'retryLeads' }
         ],
