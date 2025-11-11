@@ -217,8 +217,7 @@ export default function AssignCardTable({ data }: Props) {
             location: '',
             preferredConfiguration: '',
         });
-        // Removed window.location.reload() - this typically should not be needed for just clearing filters in a React app.
-        setPagination({ pageIndex: 0, pageSize: 10 });
+        window.location.reload()
     };
 
     return (
