@@ -82,13 +82,13 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen justify-center items-center bg-gray-50">
-            <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-                <h2 className="text-2xl font-semibold mb-4 text-center">Please Login</h2>
+        <div className="flex min-h-screen justify-center items-center bg-gray-950">
+            <form onSubmit={handleLogin} className="bg-white p-16 rounded-md shadow-md w-full max-w-sm">
+                <h2 className="text-xl font-semibold mb-4"> Log-In</h2>
                 {error && <p className="text-red-500 text-sm mb-2 text-center">{error}</p>}
 
                 <div className="mb-3">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="phone" className="block text-xs font-medium text-gray-700 mb-1">
                         Phone Number
                     </label>
                     <input
@@ -97,7 +97,7 @@ export default function LoginPage() {
                         placeholder="Enter your phone number"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full p-2 border rounded focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                        className="w-full p-2 border rounded focus:ring-2"
                         required
                         pattern="[0-9]{10,15}"
                         title="Please enter a valid phone number"
@@ -105,7 +105,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-1">
                         Password
                     </label>
                     <div className="relative">
@@ -115,12 +115,12 @@ export default function LoginPage() {
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                            className="w-full p-2 border rounded focus:ring-2"
                             required
                         />
                         <button
                             type="button"
-                            className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+                            className="absolute right-2 top-3 text-xs text-gray-500 hover:text-gray-700"
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? 'Hide' : 'Show'}
@@ -130,7 +130,7 @@ export default function LoginPage() {
 
                 <button
                     type="submit"
-                    className="w-full bg-pink-600 text-white py-2 rounded hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-black text-white py-2 mt-4 cursor-pointer rounded hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={loading}
                 >
                     {loading ? (

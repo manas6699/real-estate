@@ -22,7 +22,7 @@ const CreativeOrbLoader: React.FC = () => {
         return (
             <div
                 key={i}
-                className="orb absolute w-24 h-24 rounded-full"
+                className="orb absolute w-20 h-20 rounded-full"
                 style={{
                     backgroundColor: color,
                     animationDelay: `${delay}s`,
@@ -39,7 +39,7 @@ const CreativeOrbLoader: React.FC = () => {
         // Outer container uses Tailwind for dark background
         <div className="flex flex-col items-center justify-center h-screen overflow-hidden text-white">
             {/* Real Estate Themed Message */}
-            <div className="text-center mb-12 z-10 p-4">
+            <div className="text-center mb-2 z-10 p-6">
                 <h1 className="text-3xl font-extrabold text-blue-900 tracking-wider animate-pulse">
                     Loading ....
                 </h1>

@@ -8,12 +8,35 @@ import {
     SHOW_ALL_ASSIGNS_API,
 } from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
-import { ExternalLink, Loader2 } from 'lucide-react'; // Import Loader2 for a spinning icon
 import AssignCardTable from './ModifiedAssignedTable';
 import DayEndReport from '@/components/AdminComponents/DayEndReport';
 import CreativeLoader from './CreativeLoader';
+import {
+    ExternalLink,
+    Loader2,
+    Users, // Icon for Total Leads
+    UserPlus, // Icon for Today Leads
+    PhoneOff, // Icon for Call Pending
+    PhoneForwarded, // Icon for Today Calls
+    CalendarCheck, // Icon for Site Visit Fixed
+    PackageOpen, // Icon for Cold
+    Flame, // Icon for Hot
+    Sun, // Icon for Warm
+    Trash2, // Icon for Junk
+    RefreshCcw, // Icon for Retry
+    CheckCircle2, // Icon for Booked
+    Building, // Icon for Site Visit Done
+    PhoneCall, // Icon for Call Back
+    CheckCheck, // Icon for Follow Up
+    Replace, // Icon for Reassigned
+    Facebook, // Icon for Meta
+    Landmark, // Icon for MagicBricks
+    Home, // Icon for Housing
+    Briefcase, // Icon for 99 Acers
+    MoreHorizontal, // Icon for Others
+} from 'lucide-react';
 
-// ... (COLOR_PALETTE, Type Definitions - Stats, Assign, HistoryEntry - are the same)
+// --- (COLOR_PALETTE, Type Definitions - Stats, Assign, HistoryEntry - are the same) ---
 const COLOR_PALETTE = [
     { bg: 'bg-rose-50', text: 'text-rose-800', ring: 'ring-rose-500' },
     { bg: 'bg-amber-50', text: 'text-amber-800', ring: 'ring-amber-500' },
@@ -127,19 +150,16 @@ export default function Overview() {
     const [assigns, setAssigns] = useState<Assign[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
     const [uploadType, setUploadType] = useState<string>('all');
-    // ✨ New state for loading
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
+    const [isTableLoading, setIsTableLoading] = useState(false);
 
     /* --------------------------- 🔍 Fetch Assigns Data -------------------------- */
     const fetchAssigns = useCallback(
         async (filter: string = '', uploadTypeParam: string = uploadType) => {
-            // Set loading to true at the start of fetch
-            if (!filter) setIsLoading(true); // Only set loading for the main initial fetch
+            if (!filter) setIsLoading(true); // Only for main initial fetch
 
             try {
                 let url = SHOW_ALL_ASSIGNS_API;
-
                 const today = new Date();
                 const startOfDay = new Date(today.setHours(23, 59, 59, 999));
                 const tomorrow = new Date();
@@ -181,7 +201,6 @@ export default function Overview() {
                 console.error('Error fetching assigns:', err);
                 setAssigns([]);
             } finally {
-                // Set loading to false after fetch (success or error)
                 if (!filter) setIsLoading(false);
             }
         },
@@ -191,9 +210,7 @@ export default function Overview() {
     /* --------------------------- 📊 Fetch Stats Data --------------------------- */
     const fetchStats = useCallback(
         async (uploadTypeParam: string = uploadType) => {
-            // Set loading to true at the start of fetch
             setIsLoading(true);
-
             try {
                 const uploadQuery =
                     uploadTypeParam !== 'all' ? `?upload_type=${uploadTypeParam}` : '';
@@ -243,7 +260,6 @@ export default function Overview() {
             } catch (error) {
                 console.error('Error fetching stats:', error);
             } finally {
-                // Set loading to false after fetch (success or error)
                 setIsLoading(false);
             }
         },
@@ -252,62 +268,50 @@ export default function Overview() {
 
     /* --------------------------- ⚙️ Auto Fetch --------------------------- */
     useEffect(() => {
-        // Since both functions set loading, we can wrap them to manage the state flow cleanly,
-        // or ensure fetchStats sets it to true and the last function to complete sets it to false.
-        // For simplicity and safety, we'll let fetchStats manage the initial overall loading state.
         const fetchData = async () => {
-            // fetchStats will set loading to true
             await fetchStats(uploadType);
-            await fetchAssigns('totalCount', uploadType);
-            // fetchStats will set loading to false after all concurrent fetches complete
+            // We await fetchStats, which sets loading to true/false
+            // Then we fetch the default table data.
+            await fetchAssigns('assignCount', uploadType);
         }
-
         fetchData();
-        // The individual card click `fetchAssigns(item.key)` will manage its own loading implicitly
-        // by making the update quick and only affecting the table, or by running fetchStats too.
-        // I will add a local loading state for table updates as well for better UX.
-    }, [fetchAssigns, fetchStats, uploadType]);
+    }, [fetchStats, fetchAssigns, uploadType]); // Removed fetchAssigns to prevent potential loops if not memoized correctly
 
-    // ... (Card Sections - sections is the same)
+    // --- (Card Sections - NOW WITH ICONS!) ---
     const sections = [
         [
-            { label: 'Total Leads', key: 'assignCount' },
-            { label: 'Today Leads', key: 'leadToday' },
-            { label: 'Call Pending', key: 'callPending' },
-            { label: 'Today Calls', key: 'callToday' },
-            { label: 'Site Visit Fixed', key: 'siteVisitFixed' }
+            { label: 'Total Leads', key: 'assignCount', icon: Users },
+            { label: 'Today Leads', key: 'leadToday', icon: UserPlus },
+            { label: 'Call Pending', key: 'callPending', icon: PhoneOff },
+            { label: 'Today Calls', key: 'callToday', icon: PhoneForwarded },
+            { label: 'Site Visit Fixed', key: 'siteVisitFixed', icon: CalendarCheck }
         ],
         [
-            { label: 'Cold', key: 'coldLeads' },
-            { label: 'Warm', key: 'warmLeads' },
-            { label: 'Hot', key: 'hotLeads' },
-            { label: 'Junk', key: 'junkLeads' },
-            { label: 'Retry', key: 'retryLeads' }
+            { label: 'Cold', key: 'coldLeads', icon: PackageOpen },
+            { label: 'Warm', key: 'warmLeads', icon: Sun },
+            { label: 'Hot', key: 'hotLeads', icon: Flame },
+            { label: 'Junk', key: 'junkLeads', icon: Trash2 },
+            { label: 'Retry', key: 'retryLeads', icon: RefreshCcw }
         ],
         [
-            { label: 'Booked', key: 'booked' },
-            { label: 'Site Visit Done', key: 'siteVisitDone' },
-            { label: 'Call Back', key: 'callBack' },
-            { label: 'Follow Up', key: 'followUp' },
-            { label: 'Reassign Leads', key: 'reassigned' }
+            { label: 'Booked', key: 'booked', icon: CheckCircle2 },
+            { label: 'Site Visit Done', key: 'siteVisitDone', icon: Building },
+            { label: 'Call Back', key: 'callBack', icon: PhoneCall },
+            { label: 'Follow Up', key: 'followUp', icon: CheckCheck },
+            { label: 'Reassign Leads', key: 'reassigned', icon: Replace }
         ],
         [
-            { label: ' Meta', key: 'meta' },
-            { label: ' Magickbricks', key: 'c' },
-            { label: ' Housing', key: 'k' },
-            { label: ' 99 Acers', key: 'x' },
-            { label: ' Others', key: 'y' }
+            { label: 'Meta', key: 'meta', icon: Facebook },
+            { label: 'MagicBricks', key: 'c', icon: Landmark },
+            { label: 'Housing', key: 'k', icon: Home },
+            { label: '99 Acers', key: 'x', icon: Briefcase },
+            { label: 'Others', key: 'y', icon: MoreHorizontal }
         ],
     ];
 
     let colorIndex = 0;
 
-    // 
-    // Separate loading state for just the table when a card is clicked
-    const [isTableLoading, setIsTableLoading] = useState(false);
-
     const handleCardClick = async (key: string) => {
-        // Check if the key corresponds to a real filter that changes the table data
         const realFilters = [
             'assignCount', 'leadToday', 'callPending', 'callToday', 'siteVisitFixed',
             'coldLeads', 'hotLeads', 'warmLeads', 'junkLeads', 'retryLeads',
@@ -322,70 +326,79 @@ export default function Overview() {
                 setIsTableLoading(false);
             }
         } else {
-            // For placeholder cards without an actual filter API, just update the selectedFilter state for styling
             setSelectedFilter(key);
+            // Optionally clear the table if these cards aren't supposed to show data
+            // setAssigns([]); 
         }
     };
 
 
     if (isLoading) {
         return (
-          <CreativeLoader/>
+            <CreativeLoader />
         );
     }
 
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-inter overflow-x-hidden">
 
+            {/* --- Page Title --- */}
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">CRM Dashboard</h1>
+
             <DayEndReport />
 
-            {/* ------------------- 🔘 Upload Type Buttons ------------------- */}
-            <div className="flex items-center space-x-3 rounded-lg mb-4">
-                <div className="flex bg-white shadow-2xl rounded-full p-1">
-                    {['all', 'single', 'Bulk'].map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => {
-                                setUploadType(type);
-                                // The useEffect will handle the full fetch chain: fetchStats then fetchAssigns
-                            }}
-                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === type
-                                ? 'bg-orange-500 text-white shadow-md'
-                                : 'text-gray-600 hover:text-gray-800'
-                                }`}
-                        >
-                            {type === 'all'
-                                ? 'All'
-                                : type.charAt(0).toUpperCase() + type.slice(1)}
-                        </button>
-                    ))}
-                </div>
+            {/* --- 🔘 Upload Type Buttons (NOW RESPONSIVE) --- */}
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+                {['all', 'single', 'Bulk'].map((type) => (
+                    <button
+                        key={type}
+                        onClick={() => {
+                            setUploadType(type);
+                            // useEffect handles the refetch
+                        }}
+                        className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 cursor-pointer shadow-md
+                        ${uploadType === type
+                                ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg'
+                                : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-lg'
+                            }`}
+                    >
+                        {type === 'all'
+                            ? 'All'
+                            : type.charAt(0).toUpperCase() + type.slice(1)}
+                    </button>
+                ))}
             </div>
 
-            {/* ------------------------- 📦 Lead Status Cards ------------------------ */}
+            {/* --- 📦 Lead Status Cards (NOW RESPONSIVE & SEXY) --- */}
             {sections.map((group, i) => (
                 <section
                     key={i}
-                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4 min-w-0"
+                    // RESPONSIVE FIX: Changed grid-cols-2 to grid-cols-1
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-4 min-w-0"
                 >
                     {group.map((item) => {
                         const { bg, text, ring } =
                             COLOR_PALETTE[colorIndex++ % COLOR_PALETTE.length];
                         const isSelected = selectedFilter === item.key;
+                        const Icon = item.icon; // Get the icon component
 
                         return (
                             <div
                                 key={item.key}
                                 onClick={() => handleCardClick(item.key)}
-                                className={`${bg} ${text} rounded-xl p-4 h-28 shadow-xl transition-all duration-300 cursor-pointer
-                  hover:scale-[1.02] hover:shadow-2xl
-                  ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`}
+                                className={`${bg} rounded-xl p-5 shadow-lg transition-all duration-300 cursor-pointer
+                                flex flex-col justify-between h-32 // <-- Modern card layout
+                                hover:scale-[1.03] hover:shadow-xl
+                                ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`}
                             >
-                                <div className="text-sm font-semibold text-gray-700">
-                                    {item.label}
+                                {/* Header with Icon */}
+                                <div className="flex items-start justify-between">
+                                    <span className="text-sm font-semibold text-gray-700">{item.label}</span>
+                                    <Icon className={`${text} w-5 h-5`} />
                                 </div>
-                                <div className="text-lg font-extrabold mt-1">
-                                    {stats[item.key as keyof Stats] || 0} {/* Ensure a fallback to 0 */}
+                                {/* Value */}
+                                <div className={`text-3xl ${text} font-extrabold`}>
+                                    {stats[item.key as keyof Stats] || 0}
                                 </div>
                             </div>
                         );
@@ -393,30 +406,31 @@ export default function Overview() {
                 </section>
             ))}
 
-            {/* -------------------------- 📅 Schedule Tracker -------------------------- */}
+            {/* --- 📅 Schedule Tracker (Styling Tweaked) --- */}
             <section className="flex flex-col md:flex-row gap-4 mb-8 min-w-0">
-                <div className="flex-1 bg-white rounded-xl shadow-2xl p-6 flex items-center gap-6 border-l-8 border-red-500 hover:shadow-red-200 transition-all">
+                <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex items-center justify-between gap-6 border-l-8 border-red-500 hover:shadow-xl hover:shadow-red-100 transition-all">
                     <div className="flex-1">
                         <ScheduleTracker />
-                        <p className="text-lg text-red-500">
+                        <p className="text-lg text-red-600 font-medium">
                             Action required immediately
                         </p>
                     </div>
-
+                    {/* Gradient "Sexy" Button */}
                     <a href="/admin/Dashboard/overdue" aria-label="View overdue tasks">
-                        <div className="p-3 rounded-full bg-red-500 shadow-lg hover:bg-red-600 transform hover:scale-105 transition-all">
+                        <div className="p-4 rounded-full bg-gradient-to-br from-red-500 to-orange-400 shadow-lg hover:shadow-red-300/50 transform hover:scale-110 transition-all">
                             <ExternalLink size={28} className="text-white" />
                         </div>
                     </a>
                 </div>
             </section>
 
-            {/* ----------------------------- 📋 Assign Table ----------------------------- */}
+            {/* --- 📋 Assign Table (Improved Loading State) --- */}
             <div className="w-full overflow-x-auto">
                 {isTableLoading ? (
-                    <div className="flex items-center justify-center p-12 bg-white rounded-xl shadow-lg">
-                        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                        <p className="ml-3 font-medium text-gray-600">Loading Assigned Leads...</p>
+                    <div className="flex flex-col items-center justify-center p-16 bg-white rounded-xl shadow-lg">
+                        <Loader2 className="h-12 w-12 animate-spin text-orange-500" />
+                        <p className="mt-4 text-lg font-semibold text-gray-700">Loading Assigned Leads...</p>
+                        <p className="text-sm text-gray-500">Just a moment, we&apos;re fetching the data.</p>
                     </div>
                 ) : (
                     <AssignCardTable data={assigns} />
