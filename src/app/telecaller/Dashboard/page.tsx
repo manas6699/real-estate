@@ -17,11 +17,14 @@ import {
     GET_ALL_PROJECTS,
     WEB_SOCKET_URL
 } from '@/config/api';
+// ✨ Using your specified loader path
+import Loader from '@/components/AdminComponents/CreativeLoader';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
 
 type Assign = {
+    // ... (your Assign type definition remains unchanged)
     _id: string;
     lead_id: string;
     assignee_id: string;
@@ -49,16 +52,14 @@ type Assign = {
 const TelecallerDashboardPage = () => {
     type Notification = { title: string; message: string };
 
-    // New state for the total *unfiltered* new leads count
+    // ... (most state variables remain unchanged)
     const [totalNewLeadsCount, setTotalNewLeadsCount] = useState(0);
-    // This state holds the *filtered* list for the AssignedLeads component
     const [assigns, setAssigns] = useState<Assign[]>([]);
-
     const [leadStatus, setLeadStatus] = useState("");
     const [location, setLocation] = useState("");
     const [locations, setLocations] = useState<Location[]>([]);
     const [phone, setPhone] = useState("");
-    const [idx , setidx] = useState("");
+    const [idx, setidx] = useState("");
     const [name, setName] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -67,6 +68,8 @@ const TelecallerDashboardPage = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [activeTile, setActiveTile] = useState("");
     const [uploadType, setUploadType] = useState("");
+
+    // ... (notification, socket, user, token states remain unchanged)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -77,8 +80,14 @@ const TelecallerDashboardPage = () => {
     const [userId, setUserId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
 
+    // ✨ CHANGED: Added separate loading state for the overview
+    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isTableLoading, setIsTableLoading] = useState(false);
+    const [isOverviewLoading, setIsOverviewLoading] = useState(false); // ✨ ADDED
+
     /* token validation logic */
     function isTokenValid(token: string) {
+        // ... (function unchanged)
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const decoded: any = jwtDecode(token);
@@ -91,8 +100,9 @@ const TelecallerDashboardPage = () => {
 
     /* socket logic */
     useEffect(() => {
+        // ... (effect unchanged)
         const storedToken = localStorage.getItem('token');
-        const storedUserId = localStorage.getItem('userId'); // optional, example
+        const storedUserId = localStorage.getItem('userId');
         if (!storedToken || !isTokenValid(storedToken)) {
             window.location.href = "/login";
             return;
@@ -100,12 +110,9 @@ const TelecallerDashboardPage = () => {
         setToken(storedToken);
         setUserId(storedUserId);
 
-        // Create socket only here when token is ready
         const newSocket = io(WEB_SOCKET_URL, {
-            // transports: ["websocket"],
             auth: { token: storedToken }
         });
-
         setSocket(newSocket);
 
         return () => {
@@ -115,6 +122,7 @@ const TelecallerDashboardPage = () => {
 
     /* stored user logic */
     useEffect(() => {
+        // ... (effect unchanged)
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             const parsedUser = JSON.parse(storedUser);
@@ -124,6 +132,7 @@ const TelecallerDashboardPage = () => {
 
     // ✅ Fetch Locations & Projects
     useEffect(() => {
+        // ... (effect unchanged)
         const fetchLocations = async () => {
             try {
                 const res = await axios.get(GET_ALL_LOCATIONS);
@@ -148,6 +157,7 @@ const TelecallerDashboardPage = () => {
 
     // Function to fetch all leads (unfiltered) and set the total count
     const fetchAllLeadsForCount = useCallback(async (currentUploadType: string) => {
+        // ... (function unchanged)
         const storedUser = localStorage.getItem('user');
         if (!storedUser) return 0;
 
@@ -161,8 +171,6 @@ const TelecallerDashboardPage = () => {
         try {
             const res = await axios.get(GET_LEAD_BY_ID(id), { params });
             if (res.data && res.data.success) {
-                // Assuming 'new leads' are ALL leads assigned to the telecaller,
-                // the total count is simply the total number of records returned.
                 setTotalNewLeadsCount(res.data.data.length);
             }
         } catch (err) {
@@ -173,7 +181,7 @@ const TelecallerDashboardPage = () => {
 
     // ✅ Initial Fetch Assigns (Now sets the total count and the initial assigns list)
     useEffect(() => {
-        // This effect will run ONCE on mount to get the initial list and count.
+        // ... (effect unchanged)
         const storedUser = localStorage.getItem('user');
         if (!storedUser) return;
 
@@ -181,26 +189,30 @@ const TelecallerDashboardPage = () => {
         const id = user._id;
 
         const initialFetch = async () => {
-            await fetchAllLeadsForCount(uploadType); // Get the total count right away
             try {
+                await fetchAllLeadsForCount("");
                 const res = await axios.get(GET_LEAD_BY_ID(id));
                 if (res.data && res.data.success) {
                     setAssigns([...res.data.data].reverse());
                 }
             } catch (err) {
                 console.error("Error fetching initial assigns:", err);
+                toast.error("Failed to load initial data.");
+            } finally {
+                setIsPageLoading(false);
             }
         }
         initialFetch();
-    }, [fetchAllLeadsForCount, uploadType]); // Dependency on useCallback
+    }, [fetchAllLeadsForCount]);
 
     // socket logic part 2
     useEffect(() => {
+        // ... (effect unchanged, handles socket.io listeners)
         if (!socket || !userId || !token) return;
-        // ✅ Request browser notification permission if needed
+
         if (Notification.permission === 'default' || Notification.permission === 'denied') {
             Notification.requestPermission().then(permission => {
-                if (permission === 'granted') { 
+                if (permission === 'granted') {
                     console.log('✅ Notification permission granted.');
                 } else {
                     console.log('❌ Notification permission denied.');
@@ -208,26 +220,19 @@ const TelecallerDashboardPage = () => {
             });
         }
 
-        // ✅ Emit join-room once userId is available
         if (userId) {
             socket.emit('join-room', userId);
             console.log('📡 Emitted join-room with:', userId);
         }
 
-        // ✅ Handle incoming notification
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        socket.on('lead-assigned', (data: any) => {
+     
+        socket.on('lead-assigned', (data: Notification) => {
             console.log('📥 Lead assigned:', data);
-
-            // 🔔 Native Browser Notification
             if (Notification.permission === 'granted') {
                 new Notification(data.title, {
                     body: data.message,
                 });
             }
-
-            // 🔥 React Toastify Notification
             toast.info(
                 <div>
                     <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
@@ -235,26 +240,18 @@ const TelecallerDashboardPage = () => {
                         toast.dismiss()
                         window.location.reload();
                     }}>Reload</button>
-
                 </div>
             );
-
-            // ✅ Update state (optional)
             setNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        socket.on('lead-auto-assigned', (data: any) => {
+        socket.on('lead-auto-assigned', (data: Notification) => {
             console.log('📥 Lead auto assigned:', data)
-
-            // 🔔 Native Browser Notification
             if (Notification.permission === 'granted') {
                 new Notification(data.title, {
                     body: data.message,
                 });
             }
-
-            // 🔥 React Toastify Notification
             toast.info(
                 <div>
                     <strong>{data.title}</strong>: {data.message} . Please refresh to view the latest leads.
@@ -264,13 +261,9 @@ const TelecallerDashboardPage = () => {
                     }}>Reload</button>
                 </div>
             );
-
-            // ✅ Update state (optional)
             setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
-        }
-        );
+        });
 
-        // ✅ Optional: Cleanup on unmount
         return () => {
             socket.off('lead-assigned');
             socket.off('lead-auto-assigned');
@@ -279,11 +272,10 @@ const TelecallerDashboardPage = () => {
 
 
     const buildCallPendingFilter = (activeTile: string) => {
-        // If 'callPending' tile is active, filter by top-level 'status: assigned'
+        // ... (function unchanged)
         if (activeTile === 'callPending') {
             return { status: 'assigned' };
         }
-
         if (activeTile === 'scheduleCall') {
             return { status: 'processed' };
         }
@@ -292,25 +284,25 @@ const TelecallerDashboardPage = () => {
 
     // ✅ Fetch Filtered Data
     const fetchFiltered = async () => {
+        setIsTableLoading(true); // ✨ This function now *only* manages the table loader
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const params: any = {};
-
+            // ... (rest of filter param logic is unchanged)
             const primaryFilter = buildCallPendingFilter(activeTile);
             Object.assign(params, primaryFilter);
             const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall';
             const isLeadTypeFilter = ['hot', 'cold', 'warm', 'retry', 'junk'].includes(activeTile);
             if (!isTopLevelStatusFilter && leadStatus) {
                 if (isLeadTypeFilter) {
-                    params.lead_type = leadStatus; // leadStatus holds the value (e.g., "Hot")
+                    params.lead_type = leadStatus;
                 } else {
-                    // Otherwise, apply the filter to the lead_status field.
                     params.lead_status = leadStatus;
                 }
             }
 
             if (phone) params.phone = phone;
-            if(idx) params.dumb_id = idx;
+            if (idx) params.dumb_id = idx;
             if (location) params.location = location;
             if (name) params.name = name;
             if (startDate) params.startDate = startDate;
@@ -331,6 +323,9 @@ const TelecallerDashboardPage = () => {
             }
         } catch (err) {
             console.error("❌ Error fetching filtered assigns:", err);
+            toast.error("Could not apply filters.");
+        } finally {
+            setIsTableLoading(false); // ✨ Stop table loading
         }
     };
 
@@ -338,17 +333,32 @@ const TelecallerDashboardPage = () => {
         window.location.reload()
     };
 
-    // This effect runs whenever a filter state changes and updates the 'assigns' list
+    // ✨ CHANGED: This effect now *only* fetches data for the OVERVIEW
+    // when uploadType changes.
     useEffect(() => {
-        fetchFiltered();
+        if (isPageLoading) return; // Don't run on initial load
+
+        const runOverviewFetch = async () => {
+            setIsOverviewLoading(true); // ✨ Start overview loader
+            try {
+                await fetchAllLeadsForCount(uploadType);
+            } catch (err) {
+                console.error("Error fetching lead count:", err);
+                toast.error("Could not update lead count.");
+            } finally {
+                setIsOverviewLoading(false); // ✨ Stop overview loader
+            }
+        };
+        runOverviewFetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTile, leadStatus, idx, phone, name, startDate, location, endDate, projectName, configuration]);
+    }, [uploadType, isPageLoading]); // Only depends on uploadType
 
+    // ✨ CHANGED: This effect now *only* fetches data for the TABLE
+    // when any filter changes.
     useEffect(() => {
-        // Only fetch the count when uploadType changes
-        fetchAllLeadsForCount(uploadType);
+        if (isPageLoading) return; // Don't run on initial load
 
-        // Also run the main filter logic to update the table data
+        // fetchFiltered() handles its own isTableLoading state
         fetchFiltered();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -363,11 +373,13 @@ const TelecallerDashboardPage = () => {
         endDate,
         projectName,
         configuration,
-        uploadType
+        uploadType, // Table *also* refetches when uploadType changes
+        isPageLoading
     ]);
 
     const tileToStatusMap: Record<string, string> = {
-        new: "", // empty status filter will show all leads (i.e., new leads)
+        // ... (map unchanged)
+        new: "",
         SiteVisitFixed: "Site Visit Fixed",
         SiteVisitDone: "Site Visit Done",
         followUp: "Under Follow Up",
@@ -383,16 +395,13 @@ const TelecallerDashboardPage = () => {
     };
 
     const handleTileClick = (tile: string) => {
-        // toggle if clicked same tile again
+        // ... (function unchanged)
         if (activeTile === tile) {
             setActiveTile("");
             resetFilters();
             return;
         }
-
         setActiveTile(tile);
-
-        // Update leadStatus filter based on tile
         const status = tileToStatusMap[tile];
         if (status !== undefined) {
             setLeadStatus(status);
@@ -406,153 +415,161 @@ const TelecallerDashboardPage = () => {
                 <Navbar />
             </div>
             <section className='lg:ml-64 p-6'>
-                <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
-                <div className="flex items-center space-x-3  rounded-lg mb-4">
-                    <div className="flex bg-gray-100 rounded-full p-1">
-                        <button
-                            type="button"
-                            onClick={() => setUploadType("")}
-                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === ""
-                                ? "bg-pink-500 text-white shadow-md"
-                                : "text-gray-600 hover:text-gray-800"
-                                }`}
-                        >
-                            All
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setUploadType("Bulk")}
-                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "Bulk"
-                                ? "bg-pink-500 text-white shadow-md"
-                                : "text-gray-600 hover:text-gray-800"
-                                }`}
-                        >
-                            Data-Sheet
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setUploadType("single")}
-                            className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "single"
-                                ? "bg-pink-500 text-white shadow-md"
-                                : "text-gray-600 hover:text-gray-800"
-                                }`}
-                        >
-                            In House
-                        </button>
-                    </div>
-                </div>
-                <TelecallerOverView
-                    newLeadCount={totalNewLeadsCount}
-                    onTileClick={handleTileClick}
-                    activeTile={activeTile}
-                    uploadType={uploadType}
-                />
+                {isPageLoading ? (
+                    <Loader />
+                ) : (
+                    <>
+                        <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
+                        <div className="flex items-center space-x-3  rounded-lg mb-4">
+                            <div className="flex bg-gray-100 rounded-full p-1">
+                                {/* ... (All, Data-Sheet, In House buttons are unchanged) ... */}
+                                <button
+                                    type="button"
+                                    onClick={() => setUploadType("")}
+                                    className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === ""
+                                        ? "bg-pink-500 text-white shadow-md"
+                                        : "text-gray-600 hover:text-gray-800"
+                                        }`}
+                                >
+                                    All
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setUploadType("Bulk")}
+                                    className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "Bulk"
+                                        ? "bg-pink-500 text-white shadow-md"
+                                        : "text-gray-600 hover:text-gray-800"
+                                        }`}
+                                >
+                                    Data-Sheet
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setUploadType("single")}
+                                    className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "single"
+                                        ? "bg-pink-500 text-white shadow-md"
+                                        : "text-gray-600 hover:text-gray-800"
+                                        }`}
+                                >
+                                    In House
+                                </button>
+                            </div>
+                        </div>
 
-                {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
-                    <input
-                        type="text"
-                        placeholder="id"
-                        value={idx}
-                        onChange={(e) => setidx(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    />
-                   
-                    <select
-                        value={leadStatus}
-                        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLeadStatus(e.target.value)}
-                        className="border rounded p-2 text-xs"
-                    >
-                        <option value="">Disposition</option>
-                        {leadStatuses.map((status) => (
-                            <option key={status} value={status}>{status}</option>
-                        ))}
-                    </select>
-                    {/* ... (Other filter inputs) ... */}
-                    <select
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    >
-                        <option value="">Location</option>
-                        {locations.map((loc) => (
-                            <option key={loc._id} value={loc.locationName}>{loc.locationName}</option>
-                        ))}
-                    </select>
+                        {/* ✨ CHANGED: Added loader for the overview section */}
+                        {isOverviewLoading ? (
+                            <div className="py-10"> {/* Added padding for visual spacing */}
+                                <Loader />
+                            </div>
+                        ) : (
+                            <TelecallerOverView
+                                newLeadCount={totalNewLeadsCount}
+                                onTileClick={handleTileClick}
+                                activeTile={activeTile}
+                                uploadType={uploadType}
+                            />
+                        )}
 
-                    <input
-                        type="text"
-                        placeholder="Phone"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    />
+                        {/* Filters */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
+                            {/* ... (all your filter inputs remain unchanged) ... */}
+                            <input
+                                type="text"
+                                placeholder="id"
+                                value={idx}
+                                onChange={(e) => setidx(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            />
 
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    />
+                            <select
+                                value={leadStatus}
+                                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLeadStatus(e.target.value)}
+                                className="border rounded p-2 text-xs"
+                            >
+                                <option value="">Disposition</option>
+                                {leadStatuses.map((status) => (
+                                    <option key={status} value={status}>{status}</option>
+                                ))}
+                            </select>
+                            <select
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            >
+                                <option value="">Location</option>
+                                {locations.map((loc) => (
+                                    <option key={loc._id} value={loc.locationName}>{loc.locationName}</option>
+                                ))}
+                            </select>
 
+                            <input
+                                type="text"
+                                placeholder="Phone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            />
 
-                    <select
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    >
-                        <option value="">Project</option>
-                        {projects.map((proj) => (
-                            <option key={proj._id} value={proj.projectName}>{proj.projectName}</option>
-                        ))}
-                    </select>
-                    {/* <select
-                        value={uploadType}
-                        onChange={(e) => setUploadType(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    >
-                        <option value="">Type</option>
-                        <option value="Bulk">Data-Sheet</option>
-                        <option value="single">In House</option>
-                    </select> */}
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            />
 
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    />
+                            <select
+                                value={projectName}
+                                onChange={(e) => setProjectName(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            >
+                                <option value="">Project</option>
+                                {projects.map((proj) => (
+                                    <option key={proj._id} value={proj.projectName}>{proj.projectName}</option>
+                                ))}
+                            </select>
 
-                    <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    />
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            />
 
-                    <select
-                        value={configuration}
-                        onChange={(e) => setConfiguration(e.target.value)}
-                        className="border p-2 rounded text-xs"
-                    >
-                        <option value="">Configuration</option>
-                        {preferredConfigs.map((config) => (
-                            <option key={config} value={config}>{config}</option>
-                        ))}
-                    </select>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            />
 
+                            <select
+                                value={configuration}
+                                onChange={(e) => setConfiguration(e.target.value)}
+                                className="border p-2 rounded text-xs"
+                            >
+                                <option value="">Configuration</option>
+                                {preferredConfigs.map((config) => (
+                                    <option key={config} value={config}>{config}</option>
+                                ))}
+                            </select>
 
-                    <button
-                        onClick={resetFilters}
-                        className='bg-red-500 text-white text-xs px-4 py-2 rounded cursor-pointer'
-                    >
-                        Reset Filter
-                    </button>
-                </div>
+                            <button
+                                onClick={resetFilters}
+                                className='bg-red-500 text-white text-xs px-4 py-2 rounded cursor-pointer'
+                            >
+                                Reset Filter
+                            </button>
+                        </div>
 
-                {/* Assigned Leads Table: uses the currently filtered 'assigns' list */}
-                <AssignedLeads data={assigns} />
+                        {/* Assigned Leads Table Loader (Unchanged) */}
+                        {isTableLoading ? (
+                            <Loader />
+                        ) : (
+                            <AssignedLeads data={assigns} />
+                        )}
+                    </>
+                )}
                 <ToastContainer position="top-right" autoClose={3000} />
             </section>
         </>
