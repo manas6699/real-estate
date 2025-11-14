@@ -3,7 +3,7 @@
 // export const API_BASE_URL = 'http://localhost:8000/api';
 
 export const API_BASE_URL = 'https://mmrrealty.co.in/api';
-
+ 
 
 export const LEADS_ENDPOINT = `${API_BASE_URL}/mmr/leads`;
 export const LEADS_ENDPOINT_Manual = `${API_BASE_URL}/mmr/leads/manual`;
@@ -88,3 +88,6 @@ export const BULK_UPLOAD_API = `${API_BASE_URL}/upload/bulk`
 
 // for bulk upload and assign 
 export const BULK_UPLOAD_AND_ASSIGN = `${API_BASE_URL}/upload/bulk-upload-assign`
+
+// for added comments in admin and supervisor
+export const COMMENTS = (id: string) => `${API_BASE_URL}/comment/${id}`
