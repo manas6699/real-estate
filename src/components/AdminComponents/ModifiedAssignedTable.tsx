@@ -21,6 +21,8 @@ import {
     Search,
     SearchX,
 } from 'lucide-react';
+import CommentBox from './CommentBox';
+import { ToastContainer } from 'react-toastify';
 
 interface Props {
     data: Assign[];
@@ -318,9 +320,13 @@ export default function AssignCardTable({ data }: Props) {
 
                                                 {Array.isArray(assign.history) && assign.history.length > 0 && (
                                                     <div className="mt-6 text-sm text-gray-800 border-t border-gray-200 pt-6">
-                                                        <strong className="block mb-6 text-lg font-semibold text-gray-900">
+                                                        <CommentBox assignid={assign._id} />
+                                                        <ToastContainer position="top-right" autoClose={3000} />
+                                                        <strong className="block mb-1 text-lg font-semibold text-gray-900">
                                                             Activity History (Newest First)
                                                         </strong>
+                                                                
+                                                            
                                                         <div className="relative border-l-2 border-gray-200 space-y-6 ml-2 pl-6">
                                                             {[...assign.history].reverse().map((item, index) => (
                                                                 <div key={index} className="relative">
