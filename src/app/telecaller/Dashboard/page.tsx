@@ -75,6 +75,9 @@ const TelecallerDashboardPage = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [autoassignedNotifications, setAutoAssignedNotifications] = useState<Notification[]>([]);
+    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const[commentNot , setCommentNot] = useState<Notification[]>([])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [socket, setSocket] = useState<any>(null);
     const [userId, setUserId] = useState<string | null>(null);
@@ -264,9 +267,26 @@ const TelecallerDashboardPage = () => {
             setAutoAssignedNotifications((prev) => [...prev, { title: data.title, message: data.message }]);
         });
 
+        socket.on('comment', (data: Notification) => {
+            console.log('📥 New comment received:', data);
+            if (Notification.permission === 'granted') {
+                new Notification(data.title, {
+                    body: data.message,
+                });
+            }
+            toast.info(
+                <div>
+                    <strong>{data.message}</strong>
+                   
+                </div>
+            );
+            setCommentNot((prev) => [...prev, { title: data.title, message: data.message }]);
+        });
+
         return () => {
             socket.off('lead-assigned');
             socket.off('lead-auto-assigned');
+            socket.off('comment');
         };
     }, [userId, token, socket]);
 

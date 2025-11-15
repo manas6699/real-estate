@@ -320,7 +320,7 @@ export default function AssignCardTable({ data }: Props) {
 
                                                 {Array.isArray(assign.history) && assign.history.length > 0 && (
                                                     <div className="mt-6 text-sm text-gray-800 border-t border-gray-200 pt-6">
-                                                        <CommentBox assignid={assign._id} />
+                                                        <CommentBox assignid={assign._id} assignee_id={assign.assignee_id} />
                                                         <ToastContainer position="top-right" autoClose={3000} />
                                                         <strong className="block mb-1 text-lg font-semibold text-gray-900">
                                                             Activity History (Newest First)

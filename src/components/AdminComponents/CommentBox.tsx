@@ -10,10 +10,11 @@ import { toast } from 'react-toastify'
 import { COMMENTS } from '@/config/api'
 
 interface assigntype {
-    assignid : string
+    assignid : string,
+    assignee_id: string
 }
 
-const CommentBox = ({ assignid }: assigntype) => {
+const CommentBox = ({ assignid, assignee_id }: assigntype) => {
     const [comment , setComment] = useState("");
     const [loading , setLoading] = useState(false);
 
@@ -38,7 +39,8 @@ const CommentBox = ({ assignid }: assigntype) => {
             const newHistoryEntry =  `${Who} Commented : ${comment}`
 
             const payload = {
-                newHistoryEntry: newHistoryEntry
+                newHistoryEntry: newHistoryEntry,
+                assignee_id: assignee_id
             }
             await axios.patch(COMMENTS(assignid) , payload)
             toast.success("Comment Posted!");
