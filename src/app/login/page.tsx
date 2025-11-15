@@ -82,7 +82,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen justify-center items-center bg-gray-950">
+        <div className="flex min-h-screen justify-center items-center bg-gray-200">
             <form onSubmit={handleLogin} className="bg-white p-16 rounded-md shadow-md w-full max-w-sm">
                 <h2 className="text-xl font-semibold mb-4"> Log-In</h2>
                 {error && <p className="text-red-500 text-sm mb-2 text-center">{error}</p>}
