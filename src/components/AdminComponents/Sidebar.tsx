@@ -14,6 +14,7 @@ import {
 const navItems = [
     { href: '/admin/Dashboard', icon: Home, label: 'Dashboard', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
     { href: '/admin/InsertLead', icon: ArrowDownLeft, label: 'Insert Data', iconBg: 'bg-green-100', iconColor: 'text-green-600' },
+    { href: '/admin/InsertLead/Inventory', icon: ArrowDownLeft, label: 'Inventory', iconBg: 'bg-amber-100', iconColor: 'text-green-600' },
     { href: '/admin/BulkUpload', icon: ArrowBigUpDash, label: 'Bulk Upload', iconBg: 'bg-teal-100', iconColor: 'text-teal-600' },
     { href: '/admin/Campaign', icon: MonitorCog, label: 'Campaigns', iconBg: 'bg-purple-100', iconColor: 'text-purple-600' },
     { href: '/admin/ManageUser', icon: Users, label: 'Manage User', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600' },
