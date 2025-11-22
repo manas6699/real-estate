@@ -1,7 +1,7 @@
 // components/PropertyTable.tsx
 'use client';
-
-import React, { useState, useEffect, useMemo , useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     useReactTable,
     getCoreRowModel,
@@ -17,6 +17,7 @@ import {
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { ADD_INVENTORY_API } from '@/config/api';
+import { Edit } from 'lucide-react';
 
 // Types based on your backend response
 interface OwnerDetails {
@@ -88,6 +89,7 @@ interface ApiResponse {
     };
 }
 
+
 // Custom filter function that doesn't require match-sorter-utils
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const containsFilter: FilterFn<any> = (row, columnId, filterValue) => {
@@ -102,6 +104,7 @@ const containsFilter: FilterFn<any> = (row, columnId, filterValue) => {
 };
 
 const PropertyTable: React.FC = () => {
+    const router = useRouter();
     const [properties, setProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -130,7 +133,7 @@ const PropertyTable: React.FC = () => {
             } else {
                 throw new Error(response.data.message);
             }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Error fetching properties:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch properties';
@@ -145,6 +148,14 @@ const PropertyTable: React.FC = () => {
         fetchProperties();
     }, [fetchProperties]);
 
+    const handleEdit = useCallback(
+
+        (property: Property) => {
+            // handle edit redirect 
+            router.push(`${property._id}`)
+        },[router]
+    )
+    
     // Define columns
     const columns = useMemo<ColumnDef<Property>[]>(
         () => [
@@ -165,8 +176,8 @@ const PropertyTable: React.FC = () => {
                 cell: info => (
                     <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${info.getValue() === 'rent'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-green-100 text-green-800'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-green-100 text-green-800'
                             }`}
                     >
                         {info.getValue() === 'rent' ? 'For Rent' : 'For Sale'}
@@ -247,10 +258,10 @@ const PropertyTable: React.FC = () => {
                 cell: info => (
                     <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${info.getValue() === 'active'
-                                ? 'bg-green-100 text-green-800'
-                                : info.getValue() === 'sold'
-                                    ? 'bg-gray-100 text-gray-800'
-                                    : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800'
+                            : info.getValue() === 'sold'
+                                ? 'bg-gray-100 text-gray-800'
+                                : 'bg-red-100 text-red-800'
                             }`}
                     >
                         {info.getValue() as string}
@@ -265,33 +276,23 @@ const PropertyTable: React.FC = () => {
                 filterFn: containsFilter,
             },
             {
-                id: 'actions',
-                header: 'Actions',
+                id: 'Edit',
+                header: 'Edit',
                 cell: ({ row }) => (
                     <div className="flex space-x-2">
-                        <button
-                            onClick={() => handleView(row.original)}
-                            className="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                        >
-                            View
-                        </button>
+
                         <button
                             onClick={() => handleEdit(row.original)}
-                            className="text-green-600 hover:text-green-900 text-sm font-medium"
+                            className="text-white p-1 hover:bg-yellow-500 bg-yellow-400 rounded cursor-pointer text-sm font-medium"
                         >
-                            Edit
+                            <Edit size={15}/>
                         </button>
-                        <button
-                            onClick={() => handleDelete(row.original)}
-                            className="text-red-600 hover:text-red-900 text-sm font-medium"
-                        >
-                            Delete
-                        </button>
+
                     </div>
                 ),
             },
         ],
-        []
+        [handleEdit]
     );
 
     // Initialize table
@@ -315,24 +316,7 @@ const PropertyTable: React.FC = () => {
         globalFilterFn: containsFilter,
     });
 
-    // Action handlers
-    const handleView = (property: Property) => {
-        toast.info(`Viewing ${property.ownerDetails.ownerName}'s property`);
-        console.log('View property:', property);
-    };
 
-    const handleEdit = (property: Property) => {
-        toast.info(`Editing ${property.ownerDetails.ownerName}'s property`);
-        console.log('Edit property:', property);
-    };
-
-    const handleDelete = (property: Property) => {
-        if (confirm(`Are you sure you want to delete ${property.ownerDetails.ownerName}'s property?`)) {
-            toast.success(`Property deleted successfully`);
-            // Implement actual delete API call here
-            console.log('Delete property:', property);
-        }
-    };
 
     const handleRefresh = () => {
         fetchProperties();

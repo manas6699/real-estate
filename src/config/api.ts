@@ -93,4 +93,5 @@ export const BULK_UPLOAD_AND_ASSIGN = `${API_BASE_URL}/upload/bulk-upload-assign
 export const COMMENTS = (id: string) => `${API_BASE_URL}/comment/${id}`
 
 // for adding inventory
-export const ADD_INVENTORY_API = `${API_BASE_URL}/inventory`
+export const ADD_INVENTORY_API = `${API_BASE_URL}/inventory` 
+export const GET_INVENTORY_API = (id : string) => `${API_BASE_URL}/inventory/${id}`

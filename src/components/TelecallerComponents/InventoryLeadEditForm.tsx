@@ -2,7 +2,7 @@
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import {
     Building2,
@@ -11,9 +11,7 @@ import {
     MapPin,
     Sparkles,
 } from 'lucide-react';
-import { ADD_INVENTORY_API } from '@/config/api';
-
-// --- TYPE DEFINITIONS ---
+import { ADD_INVENTORY_API, GET_INVENTORY_API } from '@/config/api';
 
 interface Amenities {
     clubhouse: boolean;
@@ -65,6 +63,13 @@ interface ApiResponse {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any;
     errors?: string[];
+}
+
+// Props Type
+interface PropertyFormProps {
+    mode?: 'add' | 'edit';
+    initialData?: PropertyFormData;
+    propertyId?: string;
 }
 
 // --- HELPER COMPONENTS ---
@@ -138,71 +143,170 @@ const RadioOption: React.FC<{ id: string; name: string; value: string; checked: 
         </div>
     );
 
+// Initial form state
+const initialFormData: PropertyFormData = {
+    ownerName: "",
+    ownerPhone: "",
+    ownerAltPhone: "",
+    ownerEmail: "",
+    ownerType: "owner",
+    ownerNotes: "",
+    listingType: 'rent',
+    propertyType: 'complex',
+    complexName: '',
+    location: '',
+    configuration: '2 BHK',
+    superBuiltUpArea: '',
+    carpetArea: '',
+    bedrooms: '2',
+    bathrooms: '2',
+    balconies: '1',
+    totalFloors: '',
+    propertyOnFloor: '',
+    furnishing: 'unfurnished',
+    vastuCompliant: false,
+    liftAvailable: false,
+    parking: 'none',
+    view: '',
+    price: '',
+    rent: '',
+    securityDeposit: '',
+    maintenanceIncluded: false,
+    nearbyLandmarks: '',
+    amenities: {
+        clubhouse: false,
+        swimmingPool: false,
+        gym: false,
+        communityHall: false,
+        badmintonCourt: false,
+        cafeteria: false,
+        gasPipeline: false,
+    },
+};
+
+// Transform backend data to frontend form data
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const transformBackendToFormData = (backendData: any): PropertyFormData => {
+    return {
+        ownerName: backendData.ownerDetails?.ownerName || "",
+        ownerPhone: backendData.ownerDetails?.ownerPhone || "",
+        ownerAltPhone: backendData.ownerDetails?.ownerAltPhone || "",
+        ownerEmail: backendData.ownerDetails?.ownerEmail || "",
+        ownerType: backendData.ownerDetails?.ownerType || "owner",
+        ownerNotes: backendData.ownerDetails?.ownerNotes || "",
+
+        listingType: backendData.listingType || 'rent',
+        propertyType: backendData.propertyType || 'complex',
+        complexName: backendData.complexName || '',
+        location: backendData.location || '',
+        configuration: backendData.configuration || '2 BHK',
+        superBuiltUpArea: backendData.superBuiltUpArea?.toString() || '',
+        carpetArea: backendData.carpetArea?.toString() || '',
+        bedrooms: backendData.bedrooms?.toString() || '2',
+        bathrooms: backendData.bathrooms?.toString() || '2',
+        balconies: backendData.balconies?.toString() || '1',
+        totalFloors: backendData.totalFloors?.toString() || '',
+        propertyOnFloor: backendData.propertyOnFloor?.toString() || '',
+        furnishing: backendData.furnishing || 'unfurnished',
+        vastuCompliant: backendData.vastuCompliant || false,
+        liftAvailable: backendData.liftAvailable || false,
+        parking: backendData.parking || 'none',
+        view: backendData.view || '',
+        price: backendData.price?.toString() || '',
+        rent: backendData.rent?.toString() || '',
+        securityDeposit: backendData.securityDeposit?.toString() || '',
+        maintenanceIncluded: backendData.maintenanceIncluded || false,
+        nearbyLandmarks: backendData.nearbyLandmarks || '',
+        amenities: {
+            clubhouse: backendData.amenities?.clubhouse || false,
+            swimmingPool: backendData.amenities?.swimmingPool || false,
+            gym: backendData.amenities?.gym || false,
+            communityHall: backendData.amenities?.communityHall || false,
+            badmintonCourt: backendData.amenities?.badmintonCourt || false,
+            cafeteria: backendData.amenities?.cafeteria || false,
+            gasPipeline: backendData.amenities?.gasPipeline || false,
+        },
+    };
+};
+
 // --- MAIN FORM COMPONENT ---
 
-const PropertyForm: React.FC = () => {
-    const [formData, setFormData] = useState<PropertyFormData>({
-        ownerName: "",
-        ownerPhone: "",
-        ownerAltPhone: "",
-        ownerEmail: "",
-        ownerType: "owner",
-        ownerNotes: "",
-        listingType: 'rent',
-        propertyType: 'complex',
-        complexName: '',
-        location: '',
-        configuration: '2 BHK',
-        superBuiltUpArea: '',
-        carpetArea: '',
-        bedrooms: '2',
-        bathrooms: '2',
-        balconies: '1',
-        totalFloors: '',
-        propertyOnFloor: '',
-        furnishing: 'unfurnished',
-        vastuCompliant: false,
-        liftAvailable: false,
-        parking: 'none',
-        view: '',
-        price: '',
-        rent: '',
-        securityDeposit: '',
-        maintenanceIncluded: false,
-        nearbyLandmarks: '',
-        amenities: {
-            clubhouse: false,
-            swimmingPool: false,
-            gym: false,
-            communityHall: false,
-            badmintonCourt: false,
-            cafeteria: false,
-            gasPipeline: false,
-        },
-    });
-
+const PropertyForm: React.FC<PropertyFormProps> = ({
+    mode = 'add',
+    initialData,
+    propertyId
+}) => {
+    const [formData, setFormData] = useState<PropertyFormData>(
+        initialData && mode === 'edit' ? initialData : initialFormData
+    );
     const [isLoading, setIsLoading] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
+
+    // Fetch property data when in edit mode
+    useEffect(() => {
+        // 1. If initialData is provided via props (e.g., from a server component), use it immediately.
+        if (initialData) {
+            setFormData(initialData);
+            setIsFetching(false); // Assume if data is passed, it's not fetching
+            return;
+        }
+
+        const fetchPropertyData = async () => {
+            // 2. Only proceed with fetching if explicitly in 'edit' mode and there's a propertyId
+            if (mode === 'edit' && propertyId) {
+                console.log(GET_INVENTORY_API)
+                try {
+                    setIsFetching(true);
+                    const response = await axios.get<ApiResponse>(
+                        GET_INVENTORY_API(propertyId)
+                    );
+
+                    if (response.data.success && response.data.data) {
+                        const transformedData = transformBackendToFormData(response.data.data);
+                        // Crucial: Update state with fetched data
+                        setFormData(transformedData);
+                    } else {
+                        throw new Error(response.data.message || 'Failed to fetch property data');
+                    }
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } catch (error: any) {
+                    console.error('Error fetching property data:', error);
+                    toast.error(error.message || 'Failed to load property data');
+                    // Ensure form fields are reset to initial defaults on failure in edit mode
+                    setFormData(initialFormData);
+                } finally {
+                    setIsFetching(false);
+                }
+            }
+        };
+
+        fetchPropertyData();
+    }, [mode, propertyId, initialData]);
 
     // --- EVENT HANDLERS ---
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value, type } = e.target;
-        if (type === 'checkbox') {
-            const checked = (e.target as HTMLInputElement).checked;
-            setFormData(prev => ({ ...prev, [name]: checked }));
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
-        }
-        
-    };
+    const handleChange = useCallback(
 
-    const handleAmenityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            amenities: { ...prev.amenities, [name]: checked },
-        }));
-    };
+        (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+            const { name, value, type } = e.target;
+            if (type === 'checkbox') {
+                const checked = (e.target as HTMLInputElement).checked;
+                setFormData(prev => ({ ...prev, [name]: checked }));
+            } else {
+                setFormData(prev => ({ ...prev, [name]: value }));
+            }
+        } , []
+    )
+
+    const handleAmenityChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, checked } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                amenities: { ...prev.amenities, [name]: checked },
+            }));
+        }, []
+    ) 
 
     // Transform frontend data to match backend structure
     const transformFormDataForBackend = (data: PropertyFormData) => {
@@ -249,68 +353,48 @@ const PropertyForm: React.FC = () => {
             // Transform data for backend
             const submitData = transformFormDataForBackend(formData);
 
-            console.log("Submitting data to backend:", submitData);
+            console.log(`${mode === 'edit' ? 'Updating' : 'Creating'} property:`, submitData);
 
-            const response = await axios.post<ApiResponse>(
-                ADD_INVENTORY_API,
-                submitData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    timeout: 10000, // 10 seconds timeout
-                }
-            );
-
-            if (response.data.success) {
-                toast.success('Property saved successfully! 🎉');
-                console.log('Property saved:', response.data.data);
-
-                // Reset form after successful submission
-                setFormData({
-                    ownerName: "",
-                    ownerPhone: "",
-                    ownerAltPhone: "",
-                    ownerEmail: "",
-                    ownerType: "owner",
-                    ownerNotes: "",
-                    listingType: 'rent',
-                    propertyType: 'complex',
-                    complexName: '',
-                    location: '',
-                    configuration: '2 BHK',
-                    superBuiltUpArea: '',
-                    carpetArea: '',
-                    bedrooms: '2',
-                    bathrooms: '2',
-                    balconies: '1',
-                    totalFloors: '',
-                    propertyOnFloor: '',
-                    furnishing: 'unfurnished',
-                    vastuCompliant: false,
-                    liftAvailable: false,
-                    parking: 'none',
-                    view: '',
-                    price: '',
-                    rent: '',
-                    securityDeposit: '',
-                    maintenanceIncluded: false,
-                    nearbyLandmarks: '',
-                    amenities: {
-                        clubhouse: false,
-                        swimmingPool: false,
-                        gym: false,
-                        communityHall: false,
-                        badmintonCourt: false,
-                        cafeteria: false,
-                        gasPipeline: false,
-                    },
-                });
+            let response;
+            if (mode === 'edit' && propertyId) {
+                // Update existing property
+                response = await axios.put<ApiResponse>(
+                    `${ADD_INVENTORY_API}/${propertyId}`,
+                    submitData,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        timeout: 10000,
+                    }
+                );
             } else {
-                throw new Error(response.data.message || 'Failed to save property');
+                // Create new property
+                response = await axios.post<ApiResponse>(
+                    ADD_INVENTORY_API,
+                    submitData,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        timeout: 10000,
+                    }
+                );
             }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if (response.data.success) {
+                toast.success(`Property ${mode === 'edit' ? 'updated' : 'saved'} successfully! 🎉`);
+                console.log(`Property ${mode === 'edit' ? 'updated' : 'saved'}:`, response.data.data);
+
+                // Reset form after successful submission only in add mode
+                if (mode === 'add') {
+                    setFormData(initialFormData);
+                }
+            } else {
+                throw new Error(response.data.message || `Failed to ${mode === 'edit' ? 'update' : 'save'} property`);
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Submission error:', error);
 
@@ -338,6 +422,18 @@ const PropertyForm: React.FC = () => {
         }
     };
 
+    // Show loading state while fetching data in edit mode
+    if (isFetching) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 sm:p-8 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading property data...</p>
+                </div>
+            </div>
+        );
+    }
+
     // --- RENDER ---
 
     return (
@@ -345,47 +441,53 @@ const PropertyForm: React.FC = () => {
             {/* Header */}
             <div className="max-w-4xl mx-auto mb-8 text-center">
                 <h1 className="text-3xl sm:text-4xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Property Listing Form
+                    {mode === 'edit' ? 'Edit Property' : 'Property Listing Form'}
                 </h1>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Fill in all the details about your property to create an attractive listing
+                    {mode === 'edit'
+                        ? 'Update your property details below'
+                        : 'Fill in all the details about your property to create an attractive listing'
+                    }
                 </p>
             </div>
 
 
             <form
+                key={propertyId || 'add-mode'}
                 onSubmit={handleSubmit}
                 className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
             >
-                {/* Progress Steps */}
-                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
-                    <div className="flex items-center justify-between text-white text-sm font-medium">
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center mr-3">
-                                <User2Icon className="w-4 h-4" />
+                {/* Progress Steps - Only show in add mode */}
+                {mode === 'add' && (
+                    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+                        <div className="flex items-center justify-between text-white text-sm font-medium">
+                            <div className="flex items-center">
+                                <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center mr-3">
+                                    <User2Icon className="w-4 h-4" />
+                                </div>
+                                <span>Owner Details</span>
                             </div>
-                            <span>Owner Details</span>
-                        </div>
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center mr-3">
-                                <Home className="w-4 h-4" />
+                            <div className="flex items-center">
+                                <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center mr-3">
+                                    <Home className="w-4 h-4" />
+                                </div>
+                                <span>Property Info</span>
                             </div>
-                            <span>Property Info</span>
-                        </div>
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center mr-3">
-                                <MapPin className="w-4 h-4" />
+                            <div className="flex items-center">
+                                <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center mr-3">
+                                    <MapPin className="w-4 h-4" />
+                                </div>
+                                <span>Location & Price</span>
                             </div>
-                            <span>Location & Price</span>
-                        </div>
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center">
-                                <Sparkles className="w-4 h-4" />
+                            <div className="flex items-center">
+                                <div className="w-8 h-8 rounded-full bg-yellow-400 bg-opacity-20 flex items-center justify-center">
+                                    <Sparkles className="w-4 h-4" />
+                                </div>
+                                <span className="ml-3">Amenities</span>
                             </div>
-                            <span className="ml-3">Amenities</span>
                         </div>
                     </div>
-                </div>
+                )}
 
                 <div className="p-6 sm:p-10 space-y-12">
                     {/* --- Section 1: Owner Details --- */}
@@ -577,7 +679,7 @@ const PropertyForm: React.FC = () => {
                             <div className="sm:col-span-6">
                                 <FormField label="Location / Address" htmlFor="location">
                                     <div className="relative">
-                                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                       
                                         <StyledInput
                                             id="location"
                                             name="location"
@@ -610,7 +712,7 @@ const PropertyForm: React.FC = () => {
                                 <div className="sm:col-span-3">
                                     <FormField label="Total Price" htmlFor="price">
                                         <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-1">
                                                 <span className="text-gray-500 sm:text-sm font-medium">₹</span>
                                             </div>
                                             <StyledInput
@@ -631,7 +733,7 @@ const PropertyForm: React.FC = () => {
                                     <div className="sm:col-span-3">
                                         <FormField label="Monthly Rent" htmlFor="rent">
                                             <div className="relative">
-                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <div className="pointer-events-none absolute inset-y-0 flex items-center pl-1">
                                                     <span className="text-gray-500 sm:text-sm font-medium">₹</span>
                                                 </div>
                                                 <StyledInput
@@ -650,7 +752,7 @@ const PropertyForm: React.FC = () => {
                                     <div className="sm:col-span-3">
                                         <FormField label="Security Deposit" htmlFor="securityDeposit">
                                             <div className="relative">
-                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-1">
                                                     <span className="text-gray-500 sm:text-sm font-medium">₹</span>
                                                 </div>
                                                 <StyledInput
@@ -957,17 +1059,16 @@ const PropertyForm: React.FC = () => {
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Saving...
+                                    {mode === 'edit' ? 'Updating...' : 'Saving...'}
                                 </div>
                             ) : (
-                                'Save Property'
+                                mode === 'edit' ? 'Update Property' : 'Save Property'
                             )}
                         </button>
                     </div>
                 </div>
             </form>
 
-            {/* Add this at the end of your main return, before the closing div */}
             <ToastContainer
                 position="top-right"
                 autoClose={5000}

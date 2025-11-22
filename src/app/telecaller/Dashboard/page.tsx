@@ -86,7 +86,7 @@ const TelecallerDashboardPage = () => {
     // ✨ CHANGED: Added separate loading state for the overview
     const [isPageLoading, setIsPageLoading] = useState(true);
     const [isTableLoading, setIsTableLoading] = useState(false);
-    const [isOverviewLoading, setIsOverviewLoading] = useState(false); // ✨ ADDED
+    const [isOverviewLoading, setIsOverviewLoading] = useState(false); 
 
     /* token validation logic */
     function isTokenValid(token: string) {
