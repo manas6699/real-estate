@@ -11,6 +11,7 @@ import { useState } from "react";
 import axios from "axios";
 import { GET_LEAD_HISTORY } from '@/config/api';
 import { Activity, Building, CalendarDays, Check, Copy, Edit3, History, Mail, MessageSquare, Phone, Upload, User } from 'lucide-react';
+import { WhatsMyRole } from '@/utils/WhatsMyRole';
 
 
 // types
@@ -76,6 +77,17 @@ export default function AssignedLeads({ data }: Props) {
             setShowHistory(true); // still open modal to show message
         }
     };
+
+    const FilldetailsHandler = (b : string) => {
+        const role = WhatsMyRole();
+        console.log(role)
+        if (role == 'inventory') {
+            router.push('/telecaller/inventory')
+        } else {
+            router.push((`/telecaller/change/${b}`))
+        }
+        
+    }
 
     const handleCopyId = async (id: string) => {
         try {
@@ -308,7 +320,8 @@ export default function AssignedLeads({ data }: Props) {
                                 {/* Column 5: Actions */}
                                 <div className="flex flex-col gap-3 justify-center">
                                     <button
-                                        onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
+                                        // onClick={() => router.push(`/telecaller/change/${assign.lead_id}`)}
+                                        onClick={() => FilldetailsHandler(assign.lead_id)}
                                         className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                                     >
                                         <Edit3 className="w-4 h-4" />
