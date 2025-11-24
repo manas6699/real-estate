@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {jwtDecode} from 'jwt-decode';
 
-type UserRole = 'admin' | 'telecaller' | 'salesperson' | 'supervisor';
+type UserRole = 'admin' | 'telecaller' | 'salesperson' | 'supervisor' | 'inventory';
 
 interface UseRoleRedirectProps {
   role: UserRole | null;
@@ -48,6 +48,9 @@ export default function useRoleRedirect({ role, token }: UseRoleRedirectProps) {
           break;
         case 'supervisor':
           router.push('/supervisor/Dashboard');
+          break;
+        case 'inventory':
+          router.push('/telecaller/inventory');
           break;
         default:
           router.push('/unauthorized');

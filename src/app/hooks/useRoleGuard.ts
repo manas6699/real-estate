@@ -7,7 +7,7 @@ interface User {
   _id: string;
   name: string;
   phone: string;
-  role: "admin" | "supervisor" | "telecaller";
+  role: "admin" | "supervisor" | "telecaller" | "inventory";
 }
 
 /**
@@ -15,7 +15,7 @@ interface User {
  */
 export function useRoleGuard() {
   const router = useRouter();
-  const pathname = usePathname(); // ✅ usePathname instead of router.pathname
+  const pathname = usePathname(); 
 
   useEffect(() => {
     if (typeof window === "undefined" || !pathname) return;
@@ -38,6 +38,7 @@ export function useRoleGuard() {
       admin: ["/supervisor", "/telecaller"],
       supervisor: ["/admin", "/telecaller"],
       telecaller: ["/admin", "/supervisor"],
+      inventory: ["/admin", "/supervisor"],
     };
 
     const disallowedPaths = restrictedRoutes[user.role];
