@@ -19,6 +19,7 @@ import {
 } from '@/config/api';
 // ✨ Using your specified loader path
 import Loader from '@/components/AdminComponents/CreativeLoader';
+import { WhatsMyRole } from '@/utils/WhatsMyRole';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
@@ -75,9 +76,9 @@ const TelecallerDashboardPage = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [autoassignedNotifications, setAutoAssignedNotifications] = useState<Notification[]>([]);
-    
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const[commentNot , setCommentNot] = useState<Notification[]>([])
+    const [commentNot, setCommentNot] = useState<Notification[]>([])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [socket, setSocket] = useState<any>(null);
     const [userId, setUserId] = useState<string | null>(null);
@@ -86,7 +87,7 @@ const TelecallerDashboardPage = () => {
     // ✨ CHANGED: Added separate loading state for the overview
     const [isPageLoading, setIsPageLoading] = useState(true);
     const [isTableLoading, setIsTableLoading] = useState(false);
-    const [isOverviewLoading, setIsOverviewLoading] = useState(false); 
+    const [isOverviewLoading, setIsOverviewLoading] = useState(false);
 
     /* token validation logic */
     function isTokenValid(token: string) {
@@ -228,7 +229,7 @@ const TelecallerDashboardPage = () => {
             console.log('📡 Emitted join-room with:', userId);
         }
 
-     
+
         socket.on('lead-assigned', (data: Notification) => {
             console.log('📥 Lead assigned:', data);
             if (Notification.permission === 'granted') {
@@ -277,7 +278,7 @@ const TelecallerDashboardPage = () => {
             toast.info(
                 <div>
                     <strong>{data.message}</strong>
-                   
+
                 </div>
             );
             setCommentNot((prev) => [...prev, { title: data.title, message: data.message }]);
@@ -482,16 +483,21 @@ const TelecallerDashboardPage = () => {
                                 <Loader />
                             </div>
                         ) : (
-                            <TelecallerOverView
-                                newLeadCount={totalNewLeadsCount}
-                                onTileClick={handleTileClick}
-                                activeTile={activeTile}
-                                uploadType={uploadType}
-                            />
+                            <>
+                                {WhatsMyRole() === "telecaller" ? <>
+                                    <TelecallerOverView
+                                        newLeadCount={totalNewLeadsCount}
+                                        onTileClick={handleTileClick}
+                                        activeTile={activeTile}
+                                        uploadType={uploadType}
+                                    />
+                                </> : <>Inventory</>}
+
+                            </>
                         )}
 
                         {/* Filters */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
+                        <div className="grid grid-cols-1 mt-2 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
                             {/* ... (all your filter inputs remain unchanged) ... */}
                             <input
                                 type="text"
