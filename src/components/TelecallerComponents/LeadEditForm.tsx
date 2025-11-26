@@ -61,6 +61,8 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [addingProject, setAddingProject] = useState(false);
     // Add this with other state hooks
     const [lead_type, setLeadType] = useState("");
+    const [sub_disposition, setSubDisposition] = useState("");
+    const [subDispositionOptions, setSubDispositionOptions] = useState<string[]>(leadStatuses);
     const [error, setError] = useState("");
 
 
@@ -90,6 +92,8 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                     setInterestedProject(lead.interested_project || "");
                     setLeadStatus(lead.lead_status || "");
                     setLeadType(lead.lead_type || "");
+                    const detectedSubDisposition = lead.subdisposition || lead.sub_disposition || "";
+                    setSubDisposition(detectedSubDisposition);
                     setLocation(lead.location || "");
                     setPreferredFloor(lead.preferred_floor || "");
                     setPreferredConfig(lead.preferred_configuration || "");
@@ -98,6 +102,11 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                     setComments(lead.comments || "");
                     setScheduleDate(lead.schedule_date || "");
                     setScheduleTime(lead.schedule_time || "");
+                    if (detectedSubDisposition) {
+                        setSubDispositionOptions((prev) =>
+                            prev.includes(detectedSubDisposition) ? prev : [...prev, detectedSubDisposition]
+                        );
+                    }
                 }
             } catch (err) {
                 console.error("Error fetching lead details:", err);
@@ -108,6 +117,13 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         fetchLeadDetails();
         fetchProjects();
     }, [leadId]);
+
+    useEffect(() => {
+        if (!sub_disposition) return;
+        setSubDispositionOptions((prev) =>
+            prev.includes(sub_disposition) ? prev : [...prev, sub_disposition]
+        );
+    }, [sub_disposition]);
 
 
     const fetchProjects = async () => {
@@ -218,6 +234,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             schedule_date,
             schedule_time,
             assignee_id,
+            subdisposition: sub_disposition,
         };
 
         try {
@@ -239,6 +256,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             setShowOtherProjectInput(false);
             setOtherProjectName("");
             setLeadType("");
+            setSubDisposition("");
         } catch (error) {
             console.error("Error updating lead:", error);
             toast.error("Error updating lead!");
@@ -474,7 +492,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                             <option value="" disabled>
                                 Select Disposition status
                             </option>
-                            {leadStatuses.map((status) => (
+                            {subDispositionOptions.map((status) => (
                                 <option key={status} value={status}>
                                     {status}
                                 </option>
@@ -494,6 +512,27 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         but since you use formData object in handleSubmit, the state is enough.
         You can remove the whole <select> element and just keep the visual <div>.
     */}
+                    </div>
+
+                    {/* Sub Disposition */}
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-600">
+                            Sub Disposition Status
+                        </label>
+                        <select
+                            value={sub_disposition}
+                            onChange={(e) => setSubDisposition(e.target.value)}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                        >
+                            <option value="" disabled>
+                                Select Sub Disposition
+                            </option>
+                            {leadStatuses.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* Schedule Date */}

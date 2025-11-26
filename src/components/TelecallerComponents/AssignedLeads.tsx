@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import axios from "axios";
 import { GET_LEAD_HISTORY } from '@/config/api';
-import { Activity, Building, CalendarDays, Check, Copy, Edit3, History, Mail, MessageSquare, Phone, Upload, User } from 'lucide-react';
+import { Activity, Building, CalendarDays, Check, Copy, Edit3, History, Mail, MessageSquare, Phone, Upload, User, Tag } from 'lucide-react';
 import { WhatsMyRole } from '@/utils/WhatsMyRole';
 
 
@@ -41,6 +41,8 @@ type Assign = {
         status: string;
         upload_type: string;
         lead_status: string;
+        subdisposition?: string;
+        sub_disposition?: string;
         createdAt: string;
         updatedAt: string;
     };
@@ -139,6 +141,7 @@ export default function AssignedLeads({ data }: Props) {
                 .map((row) => {
                     const lead = row.original.lead_details;
                     const assign = row.original;
+                    const subDisposition = assign.lead_details.subdisposition || assign.lead_details.sub_disposition || "";
                     // const isLatest = (assign._id === latestLeadId && assign.status === 'assigned');
                     const isLatest = (assign.status === 'assigned');
 
@@ -295,6 +298,20 @@ export default function AssignedLeads({ data }: Props) {
                                                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disposition</p>
                                                 <p className="text-sm font-medium text-gray-900 line-clamp-2">
                                                     {assign.lead_details.lead_status}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {subDisposition.trim() !== "" && (
+                                        <div className="flex items-start gap-3">
+                                            <div className="p-2 bg-teal-50 rounded-lg">
+                                                <Tag className="w-4 h-4 text-teal-600" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sub Disposition</p>
+                                                <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                                                    {subDisposition}
                                                 </p>
                                             </div>
                                         </div>
