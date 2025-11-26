@@ -219,6 +219,22 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         }
         setError("");
 
+        // Enhanced comments with schedule information
+        let enhancedComments = comments;
+        if (schedule_date && schedule_time) {
+            const scheduleDateTime = new Date(`${schedule_date}T${schedule_time}`);
+            const scheduleInfo = `📅 Call scheduled for ${scheduleDateTime.toLocaleString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            })}`;
+            enhancedComments = comments ? `${comments}\n\n${scheduleInfo}` : scheduleInfo;
+        }
+
         const formData = {
             alternate_phone,
             client_budget,
@@ -230,7 +246,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             preferred_configuration,
             furnished_status,
             property_status,
-            comments,
+            comments: enhancedComments,
             schedule_date,
             schedule_time,
             assignee_id,
@@ -536,31 +552,76 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                     </div>
 
                     {/* Schedule Date */}
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-600">
-                            Schedule Call Date
+                    <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                        <label className="block mb-2 text-sm font-bold text-blue-800 flex items-center">
+                            📅 Schedule Call Date
+                            {schedule_date && (
+                                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                    Set
+                                </span>
+                            )}
                         </label>
                         <input
                             type="date"
                             value={schedule_date}
                             onChange={(e) => setScheduleDate(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                            min={new Date().toISOString().split('T')[0]} // Prevent past dates
+                            className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
                         />
+                        {schedule_date && (
+                            <p className="text-xs text-blue-600 mt-1">
+                                📌 Call scheduled for: {new Date(schedule_date).toLocaleDateString('en-GB', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </p>
+                        )}
                     </div>
 
                     {/* Schedule Time */}
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-600">
-                            Schedule Call Time
+                    <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                        <label className=" mb-2 text-sm font-bold text-blue-800 flex items-center">
+                            🕐 Schedule Call Time
+                            {schedule_time && (
+                                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                    Set
+                                </span>
+                            )}
                         </label>
                         <input
                             type="time"
-
                             value={schedule_time}
                             onChange={(e) => setScheduleTime(e.target.value)}
-                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none ${schedule_date && !schedule_time ? "border-red-500" : ""
+                            className={`w-full px-3 py-2 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white ${schedule_date && !schedule_time
+                                    ? "border-red-500 focus:border-red-500"
+                                    : "border-blue-300 focus:border-blue-500"
                                 }`}
                         />
+                        {schedule_time && (
+                            <p className="text-xs text-blue-600 mt-1">
+                                ⏰ Time set: {new Date(`2000-01-01T${schedule_time}`).toLocaleTimeString('en-GB', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                })}
+                            </p>
+                        )}
+                        {schedule_date && schedule_time && (
+                            <div className="mt-2 p-2 bg-green-100 border border-green-300 rounded">
+                                <p className="text-xs text-green-800 font-medium">
+                                    ✅ Complete schedule: {new Date(`${schedule_date}T${schedule_time}`).toLocaleString('en-GB', {
+                                        weekday: 'short',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    })}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {error && <p className="text-red-500 text-sm">{error}</p>}

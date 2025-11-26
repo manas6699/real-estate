@@ -6,7 +6,7 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import Navbar from '@/components/AdminComponents/Navbar';
 import Sidebar from '@/components/AdminComponents/Sidebar';
 import { GET_ALL_SCHEDULES, GET_MULTIPLE_ASSIGNS } from "@/config/api";
-import AssignCardTable from "@/components/AdminComponents/ModifiedAssignedTable";
+import OverdueTable from "@/components/AdminComponents/OverdueTable";
 
 type Schedule = {
     lead_id: string;
@@ -144,7 +144,7 @@ const OverdueLeadDetailsPage = () => {
                     {/* AssignedTable */}
                     {!loading && assigns.length > 0 && (
                         // <OverdueTable data={assigns} />
-                        <AssignCardTable data={assigns} />
+                        <OverdueTable data={assigns} />
                     )}
 
                     {!loading && assigns.length === 0 && (

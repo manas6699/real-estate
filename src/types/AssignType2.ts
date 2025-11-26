@@ -30,6 +30,8 @@ type Assign2 = {
         client_budget?: string;
         location?: string;
         preferred_configuration?: string;
+        subdisposition?: string;
+        sub_disposition?: string;
         createdAt: string;
         updatedAt: string;
     };

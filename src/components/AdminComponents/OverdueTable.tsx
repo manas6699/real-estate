@@ -23,16 +23,50 @@ import {
 } from 'lucide-react';
 import CommentBox from './CommentBox';
 import { ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
+import { GET_ALL_SCHEDULES } from '@/config/api';
+import axios from 'axios';
 
 interface Props {
     data: Assign[];
 }
 
-export default function AssignCardTable({ data }: Props) {
+interface Schedule {
+    _id: string;
+    lead_id: string;
+    assign_id: string;
+    title: string;
+    start: string;
+    end: string;
+    assignee_id: string;
+}
+
+export default function OverdueTable({ data }: Props) {
     // --- State and Business Logic (Unchanged) ---
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+    const [schedules, setSchedules] = useState<Schedule[]>([]);
+
+    // Fetch schedules for accurate delay calculation
+    useEffect(() => {
+        const fetchSchedules = async () => {
+            try {
+                const res = await axios.get(GET_ALL_SCHEDULES);
+                if (res.data.success) {
+                    setSchedules(res.data.data || []);
+                }
+            } catch (error) {
+                console.error('Error fetching schedules:', error);
+            }
+        };
+        fetchSchedules();
+    }, []);
+
+    // Helper function to find schedule for an assignment
+    const findScheduleForAssign = (assignId: string) => {
+        return schedules.find(schedule => schedule.assign_id === assignId);
+    };
 
     const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
         pageIndex: 0,
@@ -132,18 +166,175 @@ export default function AssignCardTable({ data }: Props) {
                 return <div className="min-w-[100px] whitespace-nowrap">{`${formattedDate} ${formattedTime}`}</div>;
             },
         },
+        {
+            header: 'Scheduled Date',
+            accessorFn: r => r,
+            id: 'scheduledDate',
+            cell: ({ getValue }) => {
+                const assign = getValue() as Assign;
+
+                // First try to find actual schedule data
+                const schedule = findScheduleForAssign(assign._id);
+                if (schedule && schedule.start) {
+                    const date = new Date(schedule.start);
+                    const formattedDate = date.toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                    });
+                    const formattedTime = date.toLocaleTimeString('en-GB', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+                    return (
+                        <div className="min-w-[120px] whitespace-nowrap">
+                            <div className="text-sm font-medium text-blue-600">{formattedDate}</div>
+                            <div className="text-xs text-blue-500">{formattedTime}</div>
+                            <div className="text-xs text-green-600 font-medium">📅 Active Schedule</div>
+                        </div>
+                    );
+                }
+
+                // Fallback to history-based schedule detection
+                let scheduledDate = null;
+                let scheduledTime = null;
+
+                if (Array.isArray(assign.history)) {
+                    for (let i = assign.history.length - 1; i >= 0; i--) {
+                        const entry = assign.history[i];
+                        if (typeof entry === 'object' && entry.remarks) {
+                            const scheduleMatch = entry.remarks.match(/schedule.*?(\d{4}-\d{2}-\d{2}).*?(\d{2}:\d{2})/i);
+                            if (scheduleMatch) {
+                                scheduledDate = scheduleMatch[1];
+                                scheduledTime = scheduleMatch[2];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (scheduledDate && scheduledTime) {
+                    const date = new Date(`${scheduledDate}T${scheduledTime}`);
+                    const formattedDate = date.toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                    });
+                    const formattedTime = date.toLocaleTimeString('en-GB', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+                    return (
+                        <div className="min-w-[120px] whitespace-nowrap">
+                            <div className="text-sm font-medium text-orange-600">{formattedDate}</div>
+                            <div className="text-xs text-orange-500">{formattedTime}</div>
+                            <div className="text-xs text-orange-600 font-medium">📝 From History</div>
+                        </div>
+                    );
+                }
+
+                return <div className="min-w-[120px] text-gray-400 text-sm">Not scheduled</div>;
+            },
+        },
+        {
+            header: 'Delay Duration',
+            accessorFn: r => r,
+            id: 'delayDuration',
+            cell: ({ getValue }) => {
+                const assign = getValue() as Assign;
+                let scheduledDateTime = null;
+                let scheduleSource = '';
+
+                // First try to find actual schedule data
+                const schedule = findScheduleForAssign(assign._id);
+                if (schedule && schedule.end) {
+                    scheduledDateTime = new Date(schedule.end);
+                    scheduleSource = 'active';
+                } else {
+                    // Fallback to history-based schedule detection
+                    if (Array.isArray(assign.history)) {
+                        for (let i = assign.history.length - 1; i >= 0; i--) {
+                            const entry = assign.history[i];
+                            if (typeof entry === 'object' && entry.remarks) {
+                                const scheduleMatch = entry.remarks.match(/schedule.*?(\d{4}-\d{2}-\d{2}).*?(\d{2}:\d{2})/i);
+                                if (scheduleMatch) {
+                                    scheduledDateTime = new Date(`${scheduleMatch[1]}T${scheduleMatch[2]}`);
+                                    scheduleSource = 'history';
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (scheduledDateTime) {
+                    const now = new Date();
+                    const diffMs = now.getTime() - scheduledDateTime.getTime();
+
+                    if (diffMs > 0) {
+                        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                        let delayText = '';
+                        if (days > 0) delayText += `${days}d `;
+                        if (hours > 0) delayText += `${hours}h `;
+                        if (minutes > 0 || delayText === '') delayText += `${minutes}m`;
+
+                        const bgColor = scheduleSource === 'active' ? 'bg-red-100' : 'bg-orange-100';
+                        const textColor = scheduleSource === 'active' ? 'text-red-800' : 'text-orange-800';
+
+                        return (
+                            <div className="min-w-[120px] whitespace-nowrap">
+                                <span className={`px-2 py-1 text-xs font-semibold ${bgColor} ${textColor} rounded-full block mb-1`}>
+                                    ⏰ {delayText.trim()}
+                                </span>
+                                <div className="text-xs text-gray-500">
+                                    {scheduleSource === 'active' ? '📅 Live Schedule' : '📝 From History'}
+                                </div>
+                            </div>
+                        );
+                    } else {
+                        const absMs = Math.abs(diffMs);
+                        const days = Math.floor(absMs / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((absMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((absMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                        let timeText = '';
+                        if (days > 0) timeText += `${days}d `;
+                        if (hours > 0) timeText += `${hours}h `;
+                        if (minutes > 0 || timeText === '') timeText += `${minutes}m`;
+
+                        return (
+                            <div className="min-w-[120px] whitespace-nowrap">
+                                <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full block mb-1">
+                                    ⏳ {timeText.trim()} remaining
+                                </span>
+                                <div className="text-xs text-gray-500">
+                                    {scheduleSource === 'active' ? '📅 Live Schedule' : '📝 From History'}
+                                </div>
+                            </div>
+                        );
+                    }
+                }
+
+                return (
+                    <div className="min-w-[120px] whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                            No schedule set
+                        </span>
+                    </div>
+                );
+            },
+        },
         { header: 'Customer', accessorFn: r => r.lead_details.name, id: 'customerName', cell: ({ getValue }) => <div className="truncate max-w-[120px] font-medium text-gray-800">{getValue() as string}</div> },
         // { header: 'Phone', accessorFn: r => r.lead_details.phone, id: 'phone', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
         // { header: 'Project', accessorFn: r => r.lead_details.source, id: 'projectName', cell: ({ getValue }) => <div className="truncate max-w-[120px]">{getValue() as string}</div> },
-        { header: 'Source', accessorFn: r => r.lead_details.projectSource, id: 'leadSource', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
+        // { header: 'Source', accessorFn: r => r.lead_details.projectSource, id: 'leadSource', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
         { header: 'Assignee', accessorFn: r => r.assignee_name, id: 'assignee', cell: ({ getValue }) => <div className="truncate max-w-[100px]">{getValue() as string}</div> },
-        {
-            header: 'Status', accessorFn: r => r.status, id: 'status', cell: ({ getValue }) => (
-                <span className="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full whitespace-nowrap">
-                    {getValue() as string}
-                </span>
-            )
-        },
+
     ];
 
     const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
@@ -305,8 +496,8 @@ export default function AssignCardTable({ data }: Props) {
                                                     <DetailItem label="ID" value={assign.dumb_id} />
                                                     <DetailItem label="Phone" value={lead.phone} />
                                                     <DetailItem label="Project" value={lead.source} />
+                                                    <DetailItem label="Source" value={lead.projectSource} />
                                                     <DetailItem label="Disposition" value={lead.lead_status} />
-                                                    <DetailItem label="Sub Disposition" value={lead.subdisposition || lead.sub_disposition} />
                                                     <DetailItem label="Lead Type" value={lead.lead_type} />
                                                     <DetailItem label="Client Budget" value={lead.client_budget} />
                                                     <DetailItem label="Location" value={lead.location} />

@@ -406,7 +406,7 @@ export default function Overview() {
                 </section>
             ))}
 
-            {/* --- 📅 Schedule Tracker (Styling Tweaked) --- */}
+            {/* --- 📅 Schedule Tracker --- */}
             <section className="flex flex-col md:flex-row gap-4 mb-8 min-w-0">
                 <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex items-center justify-between gap-6 border-l-8 border-red-500 hover:shadow-xl hover:shadow-red-100 transition-all">
                     <div className="flex-1">
@@ -415,7 +415,6 @@ export default function Overview() {
                             Action required immediately
                         </p>
                     </div>
-                    {/* Gradient "Sexy" Button */}
                     <a href="/admin/Dashboard/overdue" aria-label="View overdue tasks">
                         <div className="p-4 rounded-full bg-gradient-to-br from-red-500 to-orange-400 shadow-lg hover:shadow-red-300/50 transform hover:scale-110 transition-all">
                             <ExternalLink size={28} className="text-white" />
