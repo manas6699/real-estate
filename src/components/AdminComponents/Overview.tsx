@@ -119,6 +119,7 @@ type Stats = Record<
     | 'reassigned'
     | 'meta'
     | 'leadToday'
+    | 'unprocessedToday'
     | 'callToday',
     number
 >;
@@ -142,7 +143,8 @@ const initialStats: Stats = {
     reassigned: 0,
     meta: 0,
     leadToday: 0,
-    callToday: 0
+    callToday: 0,
+    unprocessedToday:0
 };
 
 export default function Overview() {
@@ -230,6 +232,9 @@ export default function Overview() {
                     { key: 'assignCount', url: `${GET_FILTERED_DATA}` },
                     { key: 'leadToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}` },
                     { key: 'callToday', url: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}` },
+                    {
+                        key: 'unprocessedToday', url: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}&status=assigned`
+                    },
                     { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
                     { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
                     { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed` },
@@ -381,7 +386,44 @@ export default function Overview() {
                             COLOR_PALETTE[colorIndex++ % COLOR_PALETTE.length];
                         const isSelected = selectedFilter === item.key;
                         const Icon = item.icon; // Get the icon component
-
+                        const cardClasses = `${bg} rounded-xl p-5 shadow-lg transition-all duration-300 cursor-pointer
+                        flex flex-col justify-between h-32 // <-- Modern card layout
+                        hover:scale-[1.03] hover:shadow-xl
+                        ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`;
+                        // --- Custom Rendering for Today Leads ---
+                        if (item.key === 'leadToday') {
+                            const totalToday = stats.leadToday || 0;
+                            const processed = stats.leadToday - (stats.unprocessedToday)  || 0;
+                            const unprocessed = stats.unprocessedToday || 0;
+                            return (
+                                <div
+                                    key={item.key}
+                                    onClick={() => handleCardClick(item.key)}
+                                    className={cardClasses}
+                                >
+                                    {/* Header with Icon */}
+                                    <div className="flex items-start justify-between">
+                                        <span className="text-sm font-semibold text-gray-700">{item.label} ({totalToday})</span>
+                                        <Icon className={`${text} w-5 h-5`} />
+                                    </div>
+                                    {/* Split Values */}
+                                    <div className="flex justify-between items-end gap-2 pt-2">
+                                        <div className="flex flex-col">
+                                            <span className={`text-2xl font-extrabold text-emerald-600`}>
+                                                {processed}
+                                            </span>
+                                            <span className="text-xs text-gray-500 font-medium">Processed</span>
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <span className={`text-2xl font-extrabold text-red-600`}>
+                                                {unprocessed}
+                                            </span>
+                                            <span className="text-xs text-gray-500 font-medium">Unprocessed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        }
                         return (
                             <div
                                 key={item.key}
