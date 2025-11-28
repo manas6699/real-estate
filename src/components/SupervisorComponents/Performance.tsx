@@ -17,7 +17,7 @@ interface LeadDetails {
     createdAt: string;
     updatedAt: string;
     lead_status?: string;
-    upload_type : string;
+    upload_type: string;
 }
 interface Assignment {
     lead_details: LeadDetails;
@@ -83,6 +83,7 @@ interface Filters {
     updatedStartDate: string;
     updatedEndDate: string;
     assignee_id: string;
+    selectedUsers: string[]; // New field for multiselect
     lead_status: string;
     lead_type: string;
     upload_type: string;
@@ -99,6 +100,16 @@ const AssignedLeadsTable: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [cardCounts, setCardCounts] = useState<{ [key: string]: number }>({});
     const [totalLeadsCount, setTotalLeadsCount] = useState<number>(0);
+    const [showGroupedPerformance, setShowGroupedPerformance] = useState<boolean>(false);
+    interface UserPerformance {
+        name: string;
+        totalLeads: number;
+        statusBreakdown: { [key: string]: number };
+        typeBreakdown: { [key: string]: number };
+        conversionRate: string | number;
+        averageResponseTime: number;
+    }
+    const [groupedPerformanceData, setGroupedPerformanceData] = useState<{ [key: string]: UserPerformance }>({});
     console.log(totalLeadsCount)
 
     const today = formatDate(new Date());
@@ -106,6 +117,7 @@ const AssignedLeadsTable: React.FC = () => {
         updatedStartDate: today,
         updatedEndDate: today,
         assignee_id: '',
+        selectedUsers: [], // Initialize empty array for multiselect
         lead_status: '', // Filter applied by Status Card click
         lead_type: '',   // Filter applied by Type Card click
         upload_type: '', // Filter applied by Upload Type Card click
@@ -142,6 +154,58 @@ const AssignedLeadsTable: React.FC = () => {
 
         setCardCounts(counts);
     }, []);
+
+    // --- Grouped Performance Calculation Logic ---
+    const calculateGroupedPerformance = useCallback((currentFullData: Assignment[], selectedUserIds: string[]) => {
+        if (selectedUserIds.length === 0) {
+            setGroupedPerformanceData({});
+            return;
+        }
+
+        const groupedData: { [key: string]: UserPerformance } = {};
+
+        selectedUserIds.forEach(userId => {
+            const userTelecaller = telecallers.find(tc => tc.id === userId);
+            const userName = userTelecaller?.name || `User ${userId}`;
+
+            const userLeads = currentFullData.filter(item => item.assignee_id === userId);
+
+            const userPerformance: UserPerformance = {
+                name: userName,
+                totalLeads: userLeads.length,
+                statusBreakdown: {},
+                typeBreakdown: {},
+                conversionRate: 0,
+                averageResponseTime: 0
+            };
+
+            // Calculate status breakdown
+            Object.entries(STATUS_CARDS).forEach(([label, statusValue]) => {
+                if (statusValue !== 'ALL') {
+                    userPerformance.statusBreakdown[label] = userLeads.filter(
+                        item => (item.lead_details.lead_status || '').toLowerCase() === statusValue.toLowerCase()
+                    ).length;
+                }
+            });
+
+            // Calculate type breakdown
+            Object.entries(TYPE_CARDS).forEach(([label, typeValue]) => {
+                userPerformance.typeBreakdown[label] = userLeads.filter(
+                    item => (item.lead_details.lead_type || '').toLowerCase() === typeValue.toLowerCase()
+                ).length;
+            });
+
+            // Calculate conversion rate (Booked + Sold / Total)
+            const booked = userPerformance.statusBreakdown['Booked'] || 0;
+            const sold = userPerformance.statusBreakdown['Sold'] || 0;
+            userPerformance.conversionRate = userLeads.length > 0 ?
+                parseFloat(((booked + sold) / userLeads.length * 100).toFixed(2)) : 0;
+
+            groupedData[userId] = userPerformance;
+        });
+
+        setGroupedPerformanceData(groupedData);
+    }, [telecallers]);
 
 
     // --- Fetch Telecallers (Dropdown Data) ---
@@ -180,7 +244,12 @@ const AssignedLeadsTable: React.FC = () => {
             setTotalLeadsCount(res.data.total || fetchedData.length);
             calculateCardCounts(fetchedData);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // Calculate grouped performance if users are selected
+            if (filters.selectedUsers.length > 0) {
+                calculateGroupedPerformance(fetchedData, filters.selectedUsers);
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             console.error("Error fetching assignments:", err);
             const message = err.response?.data?.message || err.message || 'Failed to fetch data';
@@ -193,11 +262,18 @@ const AssignedLeadsTable: React.FC = () => {
             setIsLoading(false);
         }
         // Only depend on the filters that define the FULL data pool (Date, Telecaller, Upload Type)
-    }, [filters.updatedStartDate, filters.updatedEndDate, filters.assignee_id, filters.upload_type, calculateCardCounts]);
+    }, [filters.updatedStartDate, filters.updatedEndDate, filters.assignee_id, filters.upload_type, filters.selectedUsers, calculateCardCounts, calculateGroupedPerformance]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    // Calculate grouped performance when selectedUsers changes
+    useEffect(() => {
+        if (fullData.length > 0) {
+            calculateGroupedPerformance(fullData, filters.selectedUsers);
+        }
+    }, [fullData, filters.selectedUsers, calculateGroupedPerformance]);
 
     // --- Local Filtering Logic (To update the Table/Export data) ---
     // This runs whenever fullData or a card filter changes.
@@ -244,6 +320,28 @@ const AssignedLeadsTable: React.FC = () => {
             lead_status: '',
             lead_type: '',
             upload_type: '',
+        }));
+    };
+
+    // Handler for multiselect users
+    const handleUserSelect = (userId: string) => {
+        setFilters(prev => {
+            const isSelected = prev.selectedUsers.includes(userId);
+            const newSelectedUsers = isSelected
+                ? prev.selectedUsers.filter(id => id !== userId)
+                : [...prev.selectedUsers, userId];
+
+            return {
+                ...prev,
+                selectedUsers: newSelectedUsers
+            };
+        });
+    };
+
+    const handleSelectAllUsers = () => {
+        setFilters(prev => ({
+            ...prev,
+            selectedUsers: prev.selectedUsers.length === telecallers.length ? [] : telecallers.map(tc => tc.id)
         }));
     };
 
@@ -305,8 +403,8 @@ const AssignedLeadsTable: React.FC = () => {
                 } else if (filterType === 'upload_type') {
                     // Upload type is a master filter, so we set it and clear the status/type filters
                     newFilters.upload_type = filterValue;
-                    newFilters.lead_type ='';
-                    newFilters.lead_status ='';
+                    newFilters.lead_type = '';
+                    newFilters.lead_status = '';
                 }
             }
             return newFilters;
@@ -324,7 +422,7 @@ const AssignedLeadsTable: React.FC = () => {
             'Visited Follow Up': 'Visited Follow Up',
             'Site Visit Rescheduled': 'Site Visit Rescheduled',
             'Site Visit Cancelled': 'Site Visit Cancelled',
-            'Sold':  'Sold',
+            'Sold': 'Sold',
             'Hot': 'Hot Leads',
             'Cold ': 'Cold Leads',
             "Warm": 'Warm Leads',
@@ -440,6 +538,20 @@ const AssignedLeadsTable: React.FC = () => {
                     </select>
                 </div>
 
+                {/* Performance View Toggle */}
+                <div className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700">View Mode</label>
+                    <button
+                        onClick={() => setShowGroupedPerformance(!showGroupedPerformance)}
+                        className={`p-2 rounded-md font-medium transition duration-300 ${showGroupedPerformance
+                            ? 'bg-purple-600 text-white hover:bg-purple-700'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                    >
+                        {showGroupedPerformance ? 'Show Leads View' : 'Show Performance View'}
+                    </button>
+                </div>
+
                 {/* Refresh/Export Buttons */}
                 <button
                     onClick={fetchData} // Re-fetch all data on click to ensure counts are current
@@ -448,7 +560,7 @@ const AssignedLeadsTable: React.FC = () => {
                 >
                     {isLoading ? 'Loading...' : 'Apply Filters'}
                 </button>
-                
+
                 <button
                     onClick={exportToExcel}
                     className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
@@ -463,7 +575,142 @@ const AssignedLeadsTable: React.FC = () => {
                 </button>
             </div>
 
+            {/* Multiselect Users for Grouped Performance */}
+            {showGroupedPerformance && (
+                <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800">Select Users for Performance Comparison</h3>
+                        <button
+                            onClick={handleSelectAllUsers}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                        >
+                            {filters.selectedUsers.length === telecallers.length ? 'Deselect All' : 'Select All'}
+                        </button>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                        {telecallers.map((telecaller) => (
+                            <label key={telecaller.id} className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={filters.selectedUsers.includes(telecaller.id)}
+                                    onChange={() => handleUserSelect(telecaller.id)}
+                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-gray-700">{telecaller.name}</span>
+                            </label>
+                        ))}
+                    </div>
+                    {filters.selectedUsers.length > 0 && (
+                        <div className="mt-3 text-sm text-gray-600">
+                            Selected: {filters.selectedUsers.length} user(s)
+                        </div>
+                    )}
+                </div>
+            )}
+
             <hr className="my-6" />
+
+            {/* Grouped Performance Visualization */}
+            {showGroupedPerformance && filters.selectedUsers.length > 0 && (
+                <div className="mb-8">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">Performance Comparison</h2>
+
+                    {/* Performance Overview Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                        {Object.entries(groupedPerformanceData).map(([userId, performance]) => (
+                            <div key={userId} className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-blue-500">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">{performance.name}</h3>
+
+                                {/* Key Metrics */}
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-blue-600">{performance.totalLeads}</div>
+                                        <div className="text-sm text-gray-600">Total Leads</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-green-600">{performance.conversionRate}%</div>
+                                        <div className="text-sm text-gray-600">Conversion Rate</div>
+                                    </div>
+                                </div>
+
+                                {/* Status Breakdown */}
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Status Breakdown</h4>
+                                    <div className="space-y-1">
+                                        {Object.entries(performance.statusBreakdown).map(([status, count]) => (
+                                            (count as number) > 0 && (
+                                                <div key={status} className="flex justify-between text-xs">
+                                                    <span className="text-gray-600">{status}:</span>
+                                                    <span className="font-medium">{count as number}</span>
+                                                </div>
+                                            )
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Type Breakdown */}
+                                <div>
+                                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Type Breakdown</h4>
+                                    <div className="space-y-1">
+                                        {Object.entries(performance.typeBreakdown).map(([type, count]) => (
+                                            (count as number) > 0 && (
+                                                <div key={type} className="flex justify-between text-xs">
+                                                    <span className="text-gray-600">{type}:</span>
+                                                    <span className="font-medium">{count as number}</span>
+                                                </div>
+                                            )
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Comparison Table */}
+                    <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Leads</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversion Rate</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booked</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sold</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Site Visits</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hot Leads</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {Object.entries(groupedPerformanceData).map(([userId, performance]) => (
+                                    <tr key={userId} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {performance.name}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {performance.totalLeads}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                                            {performance.conversionRate}%
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                                            {performance.statusBreakdown['Booked'] || 0}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
+                                            {performance.statusBreakdown['Sold'] || 0}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600">
+                                            {(performance.statusBreakdown['Site Visit Done'] || 0) + (performance.statusBreakdown['Site Visit Fixed'] || 0)}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">
+                                            {performance.typeBreakdown['Hot'] || 0}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
 
             {/* --- Status Cards (Filters) --- */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 gap-4 mb-6">
@@ -551,8 +798,8 @@ const AssignedLeadsTable: React.FC = () => {
 
             <hr className="my-6" />
             <button
-            onClick={ExportTableData}
-            className='bg-purple-700 px-4 py-2 border-l-8 border-yellow-500 shadow-amber-300 cursor-pointer hover:bg-amber-400 rounded mb-4 text-white font-extrabold'
+                onClick={ExportTableData}
+                className='bg-purple-700 px-4 py-2 border-l-8 border-yellow-500 shadow-amber-300 cursor-pointer hover:bg-amber-400 rounded mb-4 text-white font-extrabold'
             >
                 Export Table Data to exel
             </button>
