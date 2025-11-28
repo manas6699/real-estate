@@ -28,6 +28,7 @@
         property_status: string,
         createdAt: string;
         updatedAt: string;
+        subdisposition: string;
     };
     createdAt: string;
 };
