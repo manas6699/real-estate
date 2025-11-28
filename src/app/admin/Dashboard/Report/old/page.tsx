@@ -7,6 +7,7 @@ import { ASSIGN_OLD_LEADS_TO_TELECALLER, GET_ALL_TELECALLERS_API, GET_OLD_LEADS_
 import Navbar from "@/components/AdminComponents/Navbar";
 import Sidebar from "@/components/AdminComponents/Sidebar";
 import { LOCATIONS } from "@/options/Locations";
+import { whoami } from "@/utils/whoami";
 
 // ==========================
 // Types
@@ -166,7 +167,7 @@ export default function OldLeadsTablePage() {
 
     const handleAssign = async (assignee_id: string, assignee_name: string) => {
         if (!selectedLead?._id) return;
-
+        const me  =  whoami()
         try {
             const response = await fetch(ASSIGN_OLD_LEADS_TO_TELECALLER, {
                 method: "POST",
@@ -178,6 +179,7 @@ export default function OldLeadsTablePage() {
                     assignee_id,
                     assignee_name,
                     remarks,
+                    upload_by : me
                 }),
             });
 
