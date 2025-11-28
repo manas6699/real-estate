@@ -14,6 +14,7 @@ import { ASSIGN_OLD_LEADS_TO_TELECALLER, GET_ALL_TELECALLERS_API, GET_OLD_LEADS_
 import { formatDateToDDMMYYYY } from "@/utils/dateformat";
 import { LOCATIONS } from "@/options/Locations";
 import leadStatuses from "@/options/Leadstatus";
+import { whoami } from "@/utils/whoami";
 
 
 interface Telecaller {
@@ -207,7 +208,8 @@ const TelecallerPage = () => {
 
     const handleAssign = async (assignee_id: string, assignee_name: string) => {
         if (!selectedLead?._id) return;
-
+        const me = whoami();
+        console.log(me)
         try {
             const response = await fetch(ASSIGN_OLD_LEADS_TO_TELECALLER, {
                 method: "POST",
@@ -219,6 +221,7 @@ const TelecallerPage = () => {
                     assignee_id,
                     assignee_name,
                     remarks,
+                    upload_by : me,
                 }),
             });
 
