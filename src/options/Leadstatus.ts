@@ -23,7 +23,8 @@
         'Language barrier',
         'Not interested',
         "Switch Off",
-        "Refer"
+        "Refer",
+        "None"
     ];
 
     export default leadStatuses
