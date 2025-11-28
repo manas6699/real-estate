@@ -30,7 +30,6 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             const token = localStorage.getItem('token');
-            console.log('Token:', token);
 
             let isTokenExpired = false;
 
