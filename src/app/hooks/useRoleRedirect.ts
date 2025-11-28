@@ -6,14 +6,13 @@ import { useRouter } from 'next/navigation';
 import {jwtDecode} from 'jwt-decode';
 
 type UserRole = 'admin' | 'telecaller' | 'salesperson' | 'supervisor' | 'inventory';
-
 interface UseRoleRedirectProps {
   role: UserRole | null;
-  token: string | null; // add token prop
+  token: string | null;
 }
 
 interface DecodedToken {
-  exp: number; // expiration timestamp (seconds)
+  exp: number; 
 }
 
 export default function useRoleRedirect({ role, token }: UseRoleRedirectProps) {
