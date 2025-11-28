@@ -28,6 +28,7 @@ type DayEndStats = {
     visitedFollowUp: number;
     visitFixed: number;
     followUp: number;
+    callback: number
 };
 
 const initialDayEndStats: DayEndStats = {
@@ -35,6 +36,7 @@ const initialDayEndStats: DayEndStats = {
     visitedFollowUp: 0,
     visitFixed: 0,
     followUp: 0,
+    callback: 0
 };
 
 // ✅ Helper: format today's date (YYYY-MM-DD) in IST
@@ -61,6 +63,7 @@ const DayEndReport: React.FC = () => {
                 { key: 'visitedFollowUp', label: 'Visited Followup', url: `${GET_FILTERED_DATA}?lead_status=Visited Followup&updatedStartDate=${today}&updatedEndDate=${today}` },
                 { key: 'visitFixed', label: 'Site Visit Fixed', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed&updatedStartDate=${today}&updatedEndDate=${today}` },
                 { key: 'followUp', label: 'Under Follow Up', url: `${GET_FILTERED_DATA}?lead_status=Under Follow Up&updatedStartDate=${today}&updatedEndDate=${today}` },
+                { key: 'callback', label: 'callback', url: `${GET_FILTERED_DATA}?lead_status=Call Back&updatedStartDate=${today}&updatedEndDate=${today}` },
             ];
 
             const results = await Promise.all(
@@ -117,7 +120,7 @@ const DayEndReport: React.FC = () => {
                     <p className="text-gray-600 text-sm font-medium">Fetching todays Report...</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {Object.entries(stats).map(([key, value]) => (
                         <div
                             key={key}
