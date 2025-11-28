@@ -250,7 +250,7 @@ export default function ReportTable({ data }: Props) {
                 enableColumnFilter: true
             },
             {
-                id: 'dumb_id', 
+                id: 'dumb_id',
                 accessorKey: 'dumb_id',
                 header: 'Id',
                 enableColumnFilter: true,
@@ -296,6 +296,23 @@ export default function ReportTable({ data }: Props) {
                 accessorKey: 'lead_details.comments',
                 header: 'Remarks',
                 enableColumnFilter: false
+            },
+            {
+                id: 'subdisposition', // Explicit ID
+                accessorKey: 'lead_details.subdisposition',
+                header: 'Subdisposition',
+                enableColumnFilter: true,
+                cell: ({ row }) => {
+                    const lead = row.original.lead_details;
+                    const displayStatus = lead.subdisposition;
+
+                    return (
+
+
+                        <span className="truncate max-w-xs">{displayStatus}</span>
+
+                    );
+                },
             },
             {
                 id: 'disposition', // Explicit ID
