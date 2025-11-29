@@ -402,9 +402,13 @@ export default function Overview() {
                                     className={cardClasses}
                                 >
                                     {/* Header with Icon */}
-                                    <div className="flex items-start justify-between">
-                                        <span className="text-sm font-semibold text-gray-700">{item.label} ({totalToday})</span>
-                                        <Icon className={`${text} w-5 h-5`} />
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-semibold text-gray-700">{item.label} 
+                                            </span>
+                                        {/* <Icon className={`${text} w-5 h-5`} /> */}
+                                        <span className='text-xl font-extrabold bg-purple-200 rounded-full px-2'>
+                                            {totalToday}
+                                        </span>
                                     </div>
                                     {/* Split Values */}
                                     <div className="flex justify-between items-end gap-2 pt-2">
@@ -418,7 +422,7 @@ export default function Overview() {
                                             <span className={`text-2xl font-extrabold text-red-600`}>
                                                 {unprocessed}
                                             </span>
-                                            <span className="text-xs text-gray-500 font-medium">Unprocessed</span>
+                                            <span className="text-xs text-gray-500 font-medium">Pending</span>
                                         </div>
                                     </div>
                                 </div>
