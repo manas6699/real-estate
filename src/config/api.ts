@@ -35,6 +35,7 @@ export const GET_LEAD_BY_TELECALLER_ID = (id: string) => `${API_BASE_URL}/mmr/ge
 
 // it handles the fixcard data don't touch it again
 export const GET_LEAD_DETAILS = (id: string) => `${API_BASE_URL}/mmr/getleadDetails/${id}`;
+export const EDIT_BASIC_LEAD_DETAILS = (id: string) => `${API_BASE_URL}/mmr/leads/updateBasic/${id}`;
 
 // Get multiple lead details
 export const GET_MULTIPLE_LEAD_DETAILS = `${API_BASE_URL}/mmr/get/multipleLeadDetails`
