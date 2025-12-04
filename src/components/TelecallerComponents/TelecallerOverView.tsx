@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import ScheduleTracker from '@/components/TelecallerComponents/ScheduleTracker';
 import { GET_LEAD_BY_ID, GET_SCHEDULES_BY_ID } from '@/config/api';
+import Link from 'next/link';
 
 // type AssignLeadCount = {
 //     newLeadCount: number;
@@ -253,9 +254,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     <div className="text-2xl font-bold">{stats.callPending}</div>
                 </div>
                 <div className=" bg-white rounded-lg shadow p-4">
-                    <a href="/telecaller/Calender">
+                    <Link href="/telecaller/Calender">
                         <ScheduleTracker />
-                    </a>
+                    </Link>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
