@@ -211,6 +211,13 @@ export default function AssignedLeads({ data }: Props) {
                                                     hour12: false
                                                 })}
                                             </p>
+                                            <p className="text-[11px] text-gray-400 mt-1 border-t border-gray-200 pt-1">
+                                                <span className="font-medium">Assigned:</span> {new Date(assign.createdAt).toLocaleDateString('en-GB', {
+                                                    day: '2-digit',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -325,7 +332,7 @@ export default function AssignedLeads({ data }: Props) {
                                             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${assign.status === 'assigned' ? 'bg-blue-100 text-blue-800' :
                                                 assign.status === 'processed' ? 'bg-green-100 text-green-800' :
-                                                    assign.status === 'transferred' ? 'bg-orange-100 text-orange-800' :
+                                                    assign.status === 'reassigned' ? 'bg-orange-100 text-orange-800' :
                                                         'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 {assign.status.charAt(0).toUpperCase() + assign.status.slice(1)}
