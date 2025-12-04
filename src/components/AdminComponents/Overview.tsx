@@ -120,6 +120,7 @@ type Stats = Record<
     | 'meta'
     | 'leadToday'
     | 'unprocessedToday'
+    | 'processedToday'
     | 'callToday',
     number
 >;
@@ -144,6 +145,7 @@ const initialStats: Stats = {
     meta: 0,
     leadToday: 0,
     callToday: 0,
+    processedToday: 0, 
     unprocessedToday:0
 };
 
@@ -233,7 +235,10 @@ export default function Overview() {
                     { key: 'leadToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}` },
                     { key: 'callToday', url: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}` },
                     {
-                        key: 'unprocessedToday', url: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}&status=assigned`
+                        key: 'unprocessedToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}&status=assigned`
+                    },
+                    {
+                        key: 'processedToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}&status=processed&status=reassigned`
                     },
                     { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
                     { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
@@ -393,7 +398,7 @@ export default function Overview() {
                         // --- Custom Rendering for Today Leads ---
                         if (item.key === 'leadToday') {
                             const totalToday = stats.leadToday || 0;
-                            const processed = stats.leadToday - (stats.unprocessedToday)  || 0;
+                            const processed = stats.processedToday || 0;
                             const unprocessed = stats.unprocessedToday || 0;
                             return (
                                 <div
