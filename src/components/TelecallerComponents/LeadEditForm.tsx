@@ -1,10 +1,11 @@
 'use client';
 
 import axios from "axios";
-import React, { useEffect, useState , useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "@/components/loader";
+import { useRouter } from "next/navigation";
 import {
     EDIT_LEAD_FORM,
     GET_ALL_TELECALLERS_API,
@@ -22,6 +23,7 @@ import { Dispositions } from "@/app/data/dispositions";
 import TransferLeadModal from "@/components/TelecallerComponents/LeadEdit/TransferLeadModal";
 import ProjectSelector from "@/components/TelecallerComponents/LeadEdit/ProjectSelector";
 import ScheduleSection from "@/components/TelecallerComponents/LeadEdit/ScheduleSection";
+import { ArrowLeft, Lock } from "lucide-react"; // Imported Lock icon for visual cue
 
 
 type leadIdType = { leadId: string };
@@ -32,6 +34,7 @@ const propertyStatusOptions = ["Under Construction", "Ready to Move"];
 
 
 const LeadEditForm = ({ leadId }: leadIdType) => {
+    const router = useRouter();
     // --- State Management ---
     const [formData, setFormData] = useState({
         alternate_phone: "",
@@ -62,6 +65,8 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [transferRemarks, setTransferRemarks] = useState("");
     const [currentUserId, setCurrentUserId] = useState("");
 
+    // ⭐ NEW STATE: Tracks if the lead has been saved in this session
+    const [hasSaved, setHasSaved] = useState(false);
 
 
     // --- API Helpers ---
@@ -93,9 +98,9 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                     setSubDispositionOptions(prev => [...prev, detectedSub]);
                 }
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) { toast.error("Failed to load lead details"); }
-    },[leadId])
+    }, [leadId])
 
     // --- Effects ---
     useEffect(() => {
@@ -127,7 +132,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 setTelecallers(res.data.data.filter((tc: any) => tc.id !== currentUserId));
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) { toast.error("Failed to load telecallers"); }
     };
 
@@ -163,7 +168,7 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             } else {
                 toast.error(res.data.message);
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) { toast.error("Transfer failed"); }
     };
 
@@ -188,12 +193,15 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
             const payload = { ...formData, comments: finalComments, assignee_id: currentUserId, subdisposition: formData.sub_disposition };
             await axios.put(EDIT_LEAD_FORM(leadId), payload);
             toast.success("Lead updated successfully!");
-            // Reset logic here if needed, or redirect
+
+            // ⭐ ENABLE TRANSFER BUTTON ON SUCCESS
+            setHasSaved(true);
+
         } catch (err: unknown) {
             const message =
                 err instanceof Error ? err.message :
-                typeof err === "string" ? err :
-                JSON.stringify(err);
+                    typeof err === "string" ? err :
+                        JSON.stringify(err);
             toast.error(`Error updating lead! , ${message}`);
         } finally {
             setLoading(false);
@@ -203,7 +211,18 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     return (
         <>
             <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-800 mb-6">✏️ Dispose Lead with Details</h2>
+                <div className="flex items-center gap-3 mb-6">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900"
+                        title="Go Back"
+                    >
+                        <ArrowLeft size={24} />
+                    </button>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                        ✏️ Dispose Lead with Details
+                    </h2>
+                </div>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Basic Fields */}
@@ -308,7 +327,20 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         <button type="submit" disabled={loading} className="flex-1 py-2 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:opacity-90 transition">
                             {loading ? <div className="flex justify-center items-center"><Loader color="white" /><span className="ml-2">Submitting...</span></div> : "Save Lead"}
                         </button>
-                        <button type="button" onClick={() => { fetchTelecallers(); setIsModalOpen(true); }} className="flex-1 py-2 px-4 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition">
+
+                        {/* ⭐ CONDITIONALLY DISABLED TRANSFER BUTTON */}
+                        <button
+                            type="button"
+                            disabled={!hasSaved} // Disabled until saved
+                            onClick={() => { fetchTelecallers(); setIsModalOpen(true); }}
+                            className={`flex-1 py-2 px-4 flex justify-center items-center gap-2 font-medium rounded-lg transition
+                                ${hasSaved
+                                    ? "bg-orange-500 text-white hover:bg-orange-600"
+                                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                }`}
+                            title={!hasSaved ? "You must save the lead details first" : "Transfer Lead"}
+                        >
+                            {!hasSaved && <Lock size={16} />}
                             Transfer Lead
                         </button>
                     </div>
