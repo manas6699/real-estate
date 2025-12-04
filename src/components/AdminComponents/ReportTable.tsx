@@ -13,7 +13,8 @@ import {
     flexRender,
     getFacetedRowModel,
     getPaginationRowModel,
-    PaginationState
+    PaginationState,
+    VisibilityState
 } from '@tanstack/react-table';
 import { History, SlidersHorizontal, Download, RotateCcw, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import AssignType from '@/types/AssignType';
@@ -211,6 +212,34 @@ export default function ReportTable({ data }: Props) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [showColumnMenu, setShowColumnMenu] = useState(false);
     const columnMenuRef = useRef<HTMLDivElement>(null);
+
+    // 1. Initialize default column visibility
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+        createdAt: true,
+        customer_name: true,
+        phone: true,
+        dumb_id: true,
+        project_name: true,
+        lead_source: true,
+        client_budget: true,
+        remarks: true,
+        subdisposition: true,
+        disposition: true,
+        user: true,
+        history: true,
+        // Any column NOT listed here will be visible by default unless specified otherwise in the column definition.
+        // To hide others by default, list them as false:
+        email: false,
+        configuration: false,
+        admin_remark: false,
+        location: false,
+        alternate_phone: false,
+        furnished_status: false,
+        interested_project: false,
+        assign_mode: false,
+        upload_by: false,
+        upload_type: false,
+    });
 
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
@@ -410,10 +439,12 @@ export default function ReportTable({ data }: Props) {
         columns,
         state: {
             columnFilters,
-            pagination
+            pagination,
+            columnVisibility
         },
         onColumnFiltersChange: setColumnFilters,
         onPaginationChange: setPagination,
+        onColumnVisibilityChange: setColumnVisibility,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getFacetedRowModel: getFacetedRowModel(), // This enables dynamic facet updates
@@ -542,6 +573,23 @@ export default function ReportTable({ data }: Props) {
                             <div className="py-2">
                                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
                                     Show/Hide Columns
+                                </div>
+
+                                {/* 4. Add Select All / Select None Buttons */}
+                                <div className="px-4 py-2 flex space-x-2 border-b border-gray-100 bg-gray-50">
+                                    <button
+                                        onClick={() => table.toggleAllColumnsVisible(true)}
+                                        className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                                    >
+                                        Select All
+                                    </button>
+                                    <span className="text-gray-300">|</span>
+                                    <button
+                                        onClick={() => table.toggleAllColumnsVisible(false)}
+                                        className="text-xs font-medium text-gray-500 hover:text-gray-700 hover:underline"
+                                    >
+                                        Select None
+                                    </button>
                                 </div>
                                 {table.getAllColumns()
                                     .filter(column => column.getCanHide())
