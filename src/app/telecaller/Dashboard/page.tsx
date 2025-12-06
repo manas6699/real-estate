@@ -6,7 +6,7 @@ import leadStatuses from '@/options/Leadstatus';
 import { toast, ToastContainer } from 'react-toastify';
 
 import preferredConfigs from '@/options/PreferedConfig';
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
@@ -89,6 +89,82 @@ const TelecallerDashboardPage = () => {
     const [isTableLoading, setIsTableLoading] = useState(false);
     const [isOverviewLoading, setIsOverviewLoading] = useState(false);
 
+    // ref to track if this is the first render
+    const isMounted = useRef(false);
+
+    // =========================================================
+    // 🟢 CHANGE 1: RESTORE STATE ON MOUNT
+    // =========================================================
+    useEffect(() => {
+        const restoreState = () => {
+            const savedState = sessionStorage.getItem('telecaller_dashboard_state');
+
+            if (savedState) {
+                try {
+                    const parsed = JSON.parse(savedState);
+
+                    // 1. Restore Filters
+                    setLeadStatus(parsed.leadStatus || "");
+                    setLocation(parsed.location || "");
+                    setPhone(parsed.phone || "");
+                    setidx(parsed.idx || "");
+                    setName(parsed.name || "");
+                    setStartDate(parsed.startDate || "");
+                    setEndDate(parsed.endDate || "");
+                    setConfiguration(parsed.configuration || "");
+                    setProjectName(parsed.projectName || "");
+                    setActiveTile(parsed.activeTile || "");
+                    setUploadType(parsed.uploadType || "");
+
+                    // 2. Restore Data (Instant Load!)
+                    if (parsed.assigns && parsed.assigns.length > 0) {
+                        setAssigns(parsed.assigns);
+                        setTotalNewLeadsCount(parsed.totalNewLeadsCount || 0);
+                        // Disable page loader immediately because we have data
+                        setIsPageLoading(false);
+                    }
+                } catch (e) {
+                    console.error("Failed to restore state", e);
+                    sessionStorage.removeItem('telecaller_dashboard_state');
+                }
+            }
+        };
+
+        restoreState();
+        isMounted.current = true;
+    }, []);
+
+
+    // =========================================================
+    // 🟢 CHANGE 2: SAVE STATE ON EVERY CHANGE
+    // =========================================================
+    useEffect(() => {
+        // Don't save empty state if we are still loading initially
+        if (isPageLoading && assigns.length === 0) return;
+
+        const stateToSave = {
+            leadStatus,
+            location,
+            phone,
+            idx,
+            name,
+            startDate,
+            endDate,
+            configuration,
+            projectName,
+            activeTile,
+            uploadType,
+            assigns, // We save the table data too!
+            totalNewLeadsCount
+        };
+
+        sessionStorage.setItem('telecaller_dashboard_state', JSON.stringify(stateToSave));
+    }, [
+        leadStatus, location, phone, idx, name, startDate, endDate,
+        configuration, projectName, activeTile, uploadType, assigns,
+        totalNewLeadsCount, isPageLoading
+    ]);
+
     /* token validation logic */
     function isTokenValid(token: string) {
         // ... (function unchanged)
@@ -159,28 +235,23 @@ const TelecallerDashboardPage = () => {
         fetchProjects();
     }, []);
 
-    // Function to fetch all leads (unfiltered) and set the total count
+    // =========================================================
+    // 🟢 CHANGE 3: MODIFY INITIAL FETCH
+    // =========================================================
+    // We modify this to NOT show the loader if we already restored data
     const fetchAllLeadsForCount = useCallback(async (currentUploadType: string) => {
-        // ... (function unchanged)
         const storedUser = localStorage.getItem('user');
         if (!storedUser) return 0;
-
         const user = JSON.parse(storedUser);
-        const id = user._id;
         const params: { upload_type?: string } = {};
-        if (currentUploadType) {
-            params.upload_type = currentUploadType;
-        }
+        if (currentUploadType) params.upload_type = currentUploadType;
 
         try {
-            const res = await axios.get(GET_LEAD_BY_ID(id), { params });
-            if (res.data && res.data.success) {
+            const res = await axios.get(GET_LEAD_BY_ID(user._id), { params });
+            if (res.data?.success) {
                 setTotalNewLeadsCount(res.data.data.length);
             }
-        } catch (err) {
-            console.error("Error fetching all assigns for count:", err);
-            setTotalNewLeadsCount(0);
-        }
+        } catch (err) { console.error(err); }
     }, []);
 
     // ✅ Initial Fetch Assigns (Now sets the total count and the initial assigns list)
@@ -190,14 +261,22 @@ const TelecallerDashboardPage = () => {
         if (!storedUser) return;
 
         const user = JSON.parse(storedUser);
-        const id = user._id;
 
         const initialFetch = async () => {
+            // IF we already have data from SessionStorage, don't show full page loader
+            // Just fetch in background to update
+            if (assigns.length === 0) {
+                setIsPageLoading(true);
+            }
             try {
                 await fetchAllLeadsForCount("");
-                const res = await axios.get(GET_LEAD_BY_ID(id));
-                if (res.data && res.data.success) {
-                    setAssigns([...res.data.data].reverse());
+                // Only fetch initial list if we don't have active filters
+                // If we have filters (restored from storage), the 'fetchFiltered' effect will handle it
+                if (!activeTile && !phone && !leadStatus) {
+                    const res = await axios.get(GET_LEAD_BY_ID(user._id));
+                    if (res.data?.success) {
+                        setAssigns([...res.data.data].reverse());
+                    }
                 }
             } catch (err) {
                 console.error("Error fetching initial assigns:", err);
@@ -206,8 +285,9 @@ const TelecallerDashboardPage = () => {
                 setIsPageLoading(false);
             }
         }
-        initialFetch();
-    }, [fetchAllLeadsForCount]);
+        initialFetch()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // socket logic part 2
     useEffect(() => {
@@ -350,8 +430,10 @@ const TelecallerDashboardPage = () => {
         }
     };
 
+    // ✅ Reset Filters Function (Must clear storage too!)
     const resetFilters = () => {
-        window.location.reload()
+        sessionStorage.removeItem('telecaller_dashboard_state');
+        window.location.reload();
     };
 
     // ✨ CHANGED: This effect now *only* fetches data for the OVERVIEW
