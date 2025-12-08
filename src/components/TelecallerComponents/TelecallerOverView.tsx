@@ -253,9 +253,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     <div className="text-2xl font-bold">{stats.callPending}</div>
                 </div>
                 <div className=" bg-white rounded-lg shadow p-4">
-                    <a href="/telecaller/Calender">
+                    {/* <a href="/telecaller/Calender"> */}
                         <ScheduleTracker />
-                    </a>
+                    {/* </a> */}
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
