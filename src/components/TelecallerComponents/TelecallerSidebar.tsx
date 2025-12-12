@@ -19,7 +19,7 @@ import {
 const navItems = [
     { href: "/telecaller/Dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/telecaller/Calender", icon: CalendarDays, label: "My Calendar" },
-    { href: "/telecaller/Transfer", icon: ArrowRightLeft, label: "Transferred Leads" },
+    { href: "/telecaller/transfer", icon: ArrowRightLeft, label: "Transferred Leads" },
     { href: "/telecaller/processed", icon: CheckCircle2, label: "Processed Leads" },
     { href: "/telecaller/inventory", icon: IceCream2, label: "Inventory" },
     { href: "/telecaller/search", icon: Search, label: "Find Inventory" },
@@ -59,9 +59,10 @@ export default function TelecallerSidebar() {
     }
 
     const LinkItem: React.FC<LinkItemProps> = ({ href, icon: Icon, label }) => {
-        // Fixed active state logic - handles exact matches and nested routes
-        const isActive = pathname === href ||
-            (href !== "/telecaller/Dashboard" && pathname.startsWith(href));
+        const isActive =
+            pathname.toLowerCase() === href.toLowerCase() ||
+            pathname.toLowerCase().startsWith(href.toLowerCase());
+
 
         return (
             <a
