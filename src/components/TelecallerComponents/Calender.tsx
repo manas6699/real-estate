@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Calendar } from 'react-big-calendar';
@@ -13,6 +12,20 @@ import { GET_SCHEDULES_BY_ID } from '@/config/api';
 
 const locales = {
     'en-US': enUS,
+};
+
+// ⭐ Fix: Treat backend UTC as IST by reconstructing local Date with same clock values
+const fixIncorrectUTC = (utcString: string) => {
+    const d = new Date(utcString);
+
+    return new Date(
+        d.getUTCFullYear(),
+        d.getUTCMonth(),
+        d.getUTCDate(),
+        d.getUTCHours(),
+        d.getUTCMinutes(),
+        d.getUTCSeconds()
+    );
 };
 
 const localizer = dateFnsLocalizer({
@@ -48,12 +61,11 @@ export default function TelecallerCalendar() {
 
                 const data = await res.json();
 
-                // Map API data to Calendar event format
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const mappedEvents: Event[] = data.map((item: any) => ({
                     title: item.title || 'No Title',
-                    start: new Date(item.start),
-                    end: new Date(item.end),
+                    start: fixIncorrectUTC(item.start),
+                    end: fixIncorrectUTC(item.end),
                     leadId: item.lead_id
                 }));
 
