@@ -286,6 +286,8 @@ export default function AssignedLeads({ data }: Props) {
                                             <p className="text-sm font-medium text-gray-900">
                                                 {lead.upload_type === 'single' ? (
                                                     <span className="text-green-600">In House</span>
+                                                ) : lead.upload_type === 'webhook' ? (
+                                                    <span className="text-purple-600">Webhook</span>
                                                 ) : (
                                                     <span className="text-blue-600">Data Sheet</span>
                                                 )}
