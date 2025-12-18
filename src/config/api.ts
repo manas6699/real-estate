@@ -1,8 +1,8 @@
 
-export const API_BASE_URL = 'https://split-wise-clone-085p.onrender.com/api';
+// export const API_BASE_URL = 'https://split-wise-clone-085p.onrender.com/api';
 // export const API_BASE_URL = 'http://localhost:8000/api';
 
-// export const API_BASE_URL = 'https://mmrrealty.co.in/api';
+export const API_BASE_URL = 'https://mmrrealty.co.in/api';
  
 
 export const LEADS_ENDPOINT = `${API_BASE_URL}/mmr/leads`;
