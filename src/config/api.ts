@@ -37,6 +37,7 @@ export const GET_LEAD_BY_TELECALLER_ID = (id: string) => `${API_BASE_URL}/mmr/ge
 export const GET_LEAD_DETAILS = (id: string) => `${API_BASE_URL}/mmr/getleadDetails/${id}`;
 export const EDIT_BASIC_LEAD_DETAILS = (id: string) => `${API_BASE_URL}/mmr/leads/updateBasic/${id}`;
 
+export const GET_LEAD_DETAILS_FROM_ASSIGN = (id: string) => `${API_BASE_URL}/mmr/getleadDetailsbyAssign/${id}`;
 // Get multiple lead details
 export const GET_MULTIPLE_LEAD_DETAILS = `${API_BASE_URL}/mmr/get/multipleLeadDetails`
 // Get multiple assign details

@@ -1,9 +1,9 @@
 'use client';
 
 import axios from "axios";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css"; // Commented out to prevent build errors in some environments. Ensure this is imported in your _app.tsx or layout.tsx
 import Loader from "@/components/loader";
 import { useRouter } from "next/navigation";
 import {
@@ -11,20 +11,64 @@ import {
     GET_ALL_TELECALLERS_API,
     REASSIGN_NEW_LEADS,
     GET_ALL_PROJECTS,
-    GET_LEAD_DETAILS
+    GET_LEAD_DETAILS_FROM_ASSIGN,
 } from "@/config/api";
-import leadStatuses from "@/options/Leadstatus";
 import preferredConfigs from "@/options/PreferedConfig";
 import BudgetInput from "@/components/TelecallerComponents/BudgetInput";
 import { whoami } from '@/utils/whoami';
-import { Dispositions } from "@/app/data/dispositions";
 
 // --- Imported Sub-Components ---
 import TransferLeadModal from "@/components/TelecallerComponents/LeadEdit/TransferLeadModal";
 import ProjectSelector from "@/components/TelecallerComponents/LeadEdit/ProjectSelector";
 import ScheduleSection from "@/components/TelecallerComponents/LeadEdit/ScheduleSection";
-import { ArrowLeft, Lock } from "lucide-react"; // Imported Lock icon for visual cue
+import { ArrowLeft, Lock } from "lucide-react";
 
+// --- 🟢 STATUS MAPPING CONFIGURATION ---
+const STATUS_MAPPING: Record<string, { disposition: string; category: string }> = {
+    "1st Try": { "disposition": "IN Progress", "category": "Retry" },
+    "2nd try": { "disposition": "IN Progress", "category": "Retry" },
+    "3rd try": { "disposition": "IN Progress", "category": "Retry" },
+    "4th Try": { "disposition": "IN Progress", "category": "Retry" },
+    "5th Try": { "disposition": "IN Progress", "category": "Retry" },
+    "6th Try": { "disposition": "IN Progress", "category": "Retry" },
+    "7th Try": { "disposition": "IN Progress", "category": "Retry" },
+    "8th Try": { "disposition": "IN Progress", "category": "Retry" },
+    "9th Try": { "disposition": "Unqualified", "category": "Junk" },
+    "Call Back": { "disposition": "FOLLOW UP", "category": "Cold" },
+    "Follow up for feedback": { "disposition": "FOLLOW UP", "category": "Cold" },
+    "Interested in the project": { "disposition": "FOLLOW UP", "category": "Cold" },
+    "No Answer/Number is busy": { "disposition": "FOLLOW UP", "category": "Retry" },
+    "SV Fixed": { "disposition": "FOLLOW UP", "category": "Warm" },
+    "Already Booked somewhere": { "disposition": "Unqualified", "category": "Junk" },
+    "Bad Data": { "disposition": "Unqualified", "category": "Junk" },
+    // "Booked with us": { "disposition": "Unqualified", "category": "Junk" },
+    "Complaint Call": { "disposition": "Unqualified", "category": "Junk" },
+    "Channel Partner": { "disposition": "Unqualified", "category": "Junk" },
+    "Customer Stopped Responding": { "disposition": "Unqualified", "category": "Junk" },
+    "Duplicate": { "disposition": "Unqualified", "category": "Junk" },
+    "Flat Size Mismatch": { "disposition": "Unqualified", "category": "Junk" },
+    "Flat Owner for Resale/Rental": { "disposition": "Unqualified", "category": "Junk" },
+    "Requirement Mismatch": { "disposition": "Unqualified", "category": "Junk" },
+    "Floor Mismatch": { "disposition": "Unqualified", "category": "Junk" },
+    "For Upcoming Project": { "disposition": "Unqualified", "category": "Junk" },
+    "General/Casual Enquiry": { "disposition": "Unqualified", "category": "Junk" },
+    "Location Mismatch": { "disposition": "Unqualified", "category": "Junk" },
+    "Non Contactable": { "disposition": "Unqualified", "category": "Junk" },
+    "Not Interested": { "disposition": "Unqualified", "category": "Junk" },
+    "No Requirement": { "disposition": "Unqualified", "category": "Junk" },
+    "Out of Budget/Budget Mismatch": { "disposition": "Unqualified", "category": "Junk" },
+    "Plan Postponed": { "disposition": "Unqualified", "category": "Junk" },
+    "Possession Time Mismatch": { "disposition": "Unqualified", "category": "Junk" },
+    "Test": { "disposition": "Unqualified", "category": "Junk" },
+    "Will Call us back": { "disposition": "Unqualified", "category": "Cold" },
+    "Wrong Number": { "disposition": "Unqualified", "category": "Junk" },
+    "Interested in the Project": { "disposition": "SV Push", "category": "Cold" },
+    "Call Back Needed": { "disposition": "SV Push", "category": "Cold" },
+    "SV Appointed Fixed": { "disposition": "SV Push", "category": "Warm" },
+    "Upcoming Project": { "disposition": "SV Push", "category": "Cold" },
+    "Site Visit Done": { "disposition": "SV Push", "category": "Hot" },
+    "Booked With Us": { "disposition": "SV Push", "category": "Hot" }
+};
 
 type leadIdType = { leadId: string };
 type Project = { _id: string; projectName: string };
@@ -32,16 +76,17 @@ type Project = { _id: string; projectName: string };
 const furnishedOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
 const propertyStatusOptions = ["Under Construction", "Ready to Move"];
 
-
 const LeadEditForm = ({ leadId }: leadIdType) => {
     const router = useRouter();
+
     // --- State Management ---
     const [formData, setFormData] = useState({
         alternate_phone: "",
         client_budget: "",
         interested_project: "",
-        lead_status: "",
-        lead_type: "",
+        lead_status: "",       // Maps to Disposition Group (e.g., IN Progress)
+        sub_disposition: "",   // Maps to specific Status (e.g., 1st Try)
+        lead_type: "",         // Maps to Category (e.g., Retry)
         location: "",
         preferred_floor: "",
         preferred_configuration: "",
@@ -50,10 +95,8 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         comments: "",
         schedule_date: "",
         schedule_time: "",
-        sub_disposition: ""
     });
 
-    const [subDispositionOptions, setSubDispositionOptions] = useState<string[]>(leadStatuses);
     const [projects, setProjects] = useState<Project[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [telecallers, setTelecallers] = useState<any[]>([]);
@@ -64,43 +107,70 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [transferRemarks, setTransferRemarks] = useState("");
     const [currentUserId, setCurrentUserId] = useState("");
-
-    // ⭐ NEW STATE: Tracks if the lead has been saved in this session
     const [hasSaved, setHasSaved] = useState(false);
 
+    // --- 🟢 Helper: Extract Unique Dispositions (Groups) ---
+    const dispositionGroups = useMemo(() => {
+        const groups = new Set(Object.values(STATUS_MAPPING).map(d => d.disposition));
+        return Array.from(groups);
+    }, []);
+
+    // --- 🟢 Helper: Get Sub-Dispositions for a Group ---
+    const getSubDispositionsForGroup = useCallback((group: string) => {
+        return Object.keys(STATUS_MAPPING).filter(key => STATUS_MAPPING[key].disposition === group);
+    }, []);
 
     // --- API Helpers ---
     const fetchLeadDetails = useCallback(async () => {
         try {
-            const res = await axios.get(GET_LEAD_DETAILS(leadId));
-            if (res.data?.lead) {
-                const lead = res.data.lead;
+            const res = await axios.get(GET_LEAD_DETAILS_FROM_ASSIGN(leadId));
+
+            // Change: The data is now inside res.data.data
+            if (res.data?.success && res.data?.data) {
+                const assignmentData = res.data.data;
+                // The actual editable fields are inside lead_details
+                const details = assignmentData.lead_details || {};
+
+                // 1. Extract the raw values from the response
+                const currentSubDisposition = details.subdisposition || "";
+                let currentDisposition = details.lead_status || "";
+                let currentLeadType = details.lead_type || "";
+
+                // 2. Logic to sync with your STATUS_MAPPING
+                // We check if the subdisposition exists in your local mapping to ensure
+                // the dropdowns (Parent/Child/Type) are linked correctly.
+                if (currentSubDisposition && STATUS_MAPPING[currentSubDisposition]) {
+                    const mapping = STATUS_MAPPING[currentSubDisposition];
+                    currentDisposition = mapping.disposition;
+                    currentLeadType = mapping.category;
+                }
+
                 setFormData(prev => ({
                     ...prev,
-                    alternate_phone: lead.alternate_phone || "",
-                    client_budget: lead.client_budget || "",
-                    interested_project: lead.interested_project || "",
-                    lead_status: lead.lead_status || "",
-                    lead_type: lead.lead_type || "",
-                    location: lead.location || "",
-                    preferred_floor: lead.preferred_floor || "",
-                    preferred_configuration: lead.preferred_configuration || "",
-                    furnished_status: lead.furnished_status || "",
-                    property_status: lead.property_status || "",
-                    comments: lead.comments || "",
-                    schedule_date: lead.schedule_date || "",
-                    schedule_time: lead.schedule_time || "",
-                    sub_disposition: lead.subdisposition || lead.sub_disposition || "",
+                    // Existing fields from lead_details
+                    alternate_phone: details.alternate_phone || "",
+                    client_budget: details.client_budget || "",
+                    interested_project: details.interested_project || "",
+                    location: details.location || "",
+                    preferred_floor: details.preferred_floor || "",
+                    preferred_configuration: details.preferred_configuration || "",
+                    furnished_status: details.furnished_status || "",
+                    property_status: details.property_status || "",
+                    comments: details.comments || "",
+                    schedule_date: details.schedule_date || "",
+                    schedule_time: details.schedule_time || "",
+
+                    // --- 🟢 Fixed Disposition Logic ---
+                    lead_status: currentDisposition,       // e.g., "Unqualified"
+                    sub_disposition: currentSubDisposition, // e.g., "Not Interested"
+                    lead_type: currentLeadType              // e.g., "Junk"
                 }));
-                // Check if existing sub_disposition is not in options, add it
-                const detectedSub = lead.subdisposition || lead.sub_disposition;
-                if (detectedSub && !leadStatuses.includes(detectedSub)) {
-                    setSubDispositionOptions(prev => [...prev, detectedSub]);
-                }
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (err) { toast.error("Failed to load lead details"); }
-    }, [leadId])
+        } catch (err) {
+            console.error("Fetch Error:", err);
+            toast.error("Failed to load lead details");
+        }
+    }, [leadId]);
 
     // --- Effects ---
     useEffect(() => {
@@ -109,14 +179,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         fetchProjects();
         fetchLeadDetails();
     }, [fetchLeadDetails, leadId]);
-
-    // Handle Sub-disposition logic
-    useEffect(() => {
-        if (!formData.sub_disposition) return;
-        setSubDispositionOptions((prev) =>
-            prev.includes(formData.sub_disposition) ? prev : [...prev, formData.sub_disposition]
-        );
-    }, [formData.sub_disposition]);
 
     const fetchProjects = async () => {
         try {
@@ -141,10 +203,30 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleLeadStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const status = e.target.value;
-        const type = Dispositions[status] || "";
-        setFormData(prev => ({ ...prev, lead_status: status, lead_type: type }));
+    // 🟢 Handler: Disposition Change (Parent Dropdown)
+    const handleDispositionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedDisposition = e.target.value;
+        setFormData(prev => ({
+            ...prev,
+            lead_status: selectedDisposition,
+            sub_disposition: "", // Reset child selection
+            lead_type: ""       // Reset lead type
+        }));
+    };
+
+    // 🟢 Handler: Sub Disposition Change (Child Dropdown)
+    const handleSubDispositionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedSub = e.target.value;
+        const mapping = STATUS_MAPPING[selectedSub];
+
+        // Automatically set the Lead Type based on JSON mapping
+        const autoLeadType = mapping ? mapping.category : "";
+
+        setFormData(prev => ({
+            ...prev,
+            sub_disposition: selectedSub,
+            lead_type: autoLeadType
+        }));
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -190,23 +272,29 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         }
 
         try {
-            const payload = { ...formData, comments: finalComments, assignee_id: currentUserId, subdisposition: formData.sub_disposition };
+            const payload = {
+                ...formData,
+                comments: finalComments,
+                assignee_id: currentUserId,
+                subdisposition: formData.sub_disposition
+            };
             await axios.put(EDIT_LEAD_FORM(leadId), payload);
             toast.success("Lead updated successfully!");
 
-            // ⭐ ENABLE TRANSFER BUTTON ON SUCCESS
             setHasSaved(true);
 
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message :
-                    typeof err === "string" ? err :
-                        JSON.stringify(err);
+            const message = err instanceof Error ? err.message : typeof err === "string" ? err : JSON.stringify(err);
             toast.error(`Error updating lead! , ${message}`);
         } finally {
             setLoading(false);
         }
     };
+
+    // Calculate options for the Sub Disposition dropdown based on current parent selection
+    const availableSubDispositions = useMemo(() => {
+        return getSubDispositionsForGroup(formData.lead_status);
+    }, [formData.lead_status, getSubDispositionsForGroup]);
 
     return (
         <>
@@ -241,7 +329,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         <BudgetInput value={formData.client_budget} onChange={(val: string) => updateField("client_budget", val)} />
                     </div>
 
-                    {/* Complex Project Selector Component */}
                     <ProjectSelector
                         projects={projects}
                         selectedProject={formData.interested_project}
@@ -283,31 +370,58 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                         </select>
                     </div>
 
-                    {/* Status Section */}
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-600">Disposition Status</label>
-                        <select value={formData.lead_status} onChange={handleLeadStatusChange} className="w-full px-3 py-2 border rounded-lg bg-orange-100 focus:ring-2 focus:ring-orange-500 outline-none" required>
-                            <option value="" disabled>Select Disposition</option>
-                            {subDispositionOptions.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                    </div>
+                    {/* 🟢 DISPOSITION SECTION 🟢 */}
+                    <div className="bg-orange-50 p-4 rounded-xl border border-orange-200 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="md:col-span-2 text-sm font-bold text-orange-800 border-b border-orange-200 pb-2 mb-2">
+                            Disposition Details
+                        </div>
 
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-600">Lead Type</label>
-                        <div className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 font-medium">
-                            {formData.lead_type || "Select Disposition Status"}
+                        {/* 1. Disposition (Group) */}
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Disposition</label>
+                            <select
+                                value={formData.lead_status}
+                                onChange={handleDispositionChange}
+                                className="w-full px-3 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-orange-500 outline-none"
+                                required
+                            >
+                                <option value="" disabled>Select Disposition</option>
+                                {dispositionGroups.map(group => (
+                                    <option key={group} value={group}>{group}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* 2. Sub Disposition (Specific Reason) */}
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Sub Disposition</label>
+                            <select
+                                value={formData.sub_disposition}
+                                onChange={handleSubDispositionChange}
+                                className="w-full px-3 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-orange-500 outline-none"
+                                disabled={!formData.lead_status} // Disable if no parent selected
+                            >
+                                <option value="" disabled>Select Sub Disposition</option>
+                                {availableSubDispositions.map(sub => (
+                                    <option key={sub} value={sub}>{sub}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* 3. Lead Type (Auto-Calculated) */}
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-600">Lead Type (Auto)</label>
+                            <div className={`w-full px-3 py-2 border rounded-lg font-medium flex items-center gap-2
+                                ${formData.lead_type === 'Hot' ? 'bg-red-100 text-red-700 border-red-200' :
+                                    formData.lead_type === 'Warm' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
+                                        formData.lead_type === 'Cold' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                                            'bg-gray-100 text-gray-500 border-gray-200'
+                                }`}>
+                                {formData.lead_type || "Waiting for selection..."}
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block mb-1 text-sm font-medium text-gray-600">Sub Disposition</label>
-                        <select value={formData.sub_disposition} onChange={(e) => updateField("sub_disposition", e.target.value)} className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-orange-500">
-                            <option value="" disabled>Select Sub Disposition</option>
-                            {leadStatuses.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                    </div>
-
-                    {/* Schedule Section Component */}
                     <ScheduleSection
                         scheduleDate={formData.schedule_date}
                         scheduleTime={formData.schedule_time}
@@ -318,8 +432,15 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
 
                     {/* Comments */}
                     <div className="md:col-span-2">
-                        <label className="block mb-1 text-sm font-medium text-gray-600">Comments</label>
-                        <textarea value={formData.comments} onChange={(e) => updateField("comments", e.target.value)} placeholder="Enter comments" className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+                        <label className="block mb-1 text-sm font-medium text-gray-600">🐻‍❄️ Comments</label>
+                        <textarea
+                            cols={50}
+                            rows={10}
+                            value={formData.comments}
+                            onChange={(e) => updateField("comments", e.target.value)}
+                            placeholder="Enter comments ..."
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                        />
                     </div>
 
                     {/* Action Buttons */}
@@ -328,10 +449,9 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                             {loading ? <div className="flex justify-center items-center"><Loader color="white" /><span className="ml-2">Submitting...</span></div> : "Save Lead"}
                         </button>
 
-                        {/* ⭐ CONDITIONALLY DISABLED TRANSFER BUTTON */}
                         <button
                             type="button"
-                            disabled={!hasSaved} // Disabled until saved
+                            disabled={!hasSaved}
                             onClick={() => { fetchTelecallers(); setIsModalOpen(true); }}
                             className={`flex-1 py-2 px-4 flex justify-center items-center gap-2 font-medium rounded-lg transition
                                 ${hasSaved
@@ -347,7 +467,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
                 </form>
             </div>
 
-            {/* Transfer Modal Component */}
             <TransferLeadModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

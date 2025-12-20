@@ -9,7 +9,7 @@ import {
 } from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 import AssignCardTable from './ModifiedAssignedTable';
-import DayEndReport from '@/components/AdminComponents/DayEndReport';
+// import DayEndReport from '@/components/AdminComponents/DayEndReport';
 import CreativeLoader from './CreativeLoader';
 import {
     ExternalLink,
@@ -179,11 +179,11 @@ export default function Overview() {
                     junkLeads: `${GET_FILTERED_DATA}?lead_type=Junk`,
                     retryLeads: `${GET_FILTERED_DATA}?lead_type=Retry`,
                     callPending: `${GET_FILTERED_DATA}?status=assigned`,
-                    booked: `${GET_FILTERED_DATA}?lead_status=Booked`,
-                    siteVisitFixed: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed`,
-                    siteVisitDone: `${GET_FILTERED_DATA}?lead_status=Site Visit Done`,
-                    callBack: `${GET_FILTERED_DATA}?lead_status=Call Back`,
-                    followUp: `${GET_FILTERED_DATA}?lead_status=Under Follow Up`,
+                    booked: `${GET_FILTERED_DATA}?subdisposition=Booked With Us`,
+                    siteVisitFixed: `${GET_FILTERED_DATA}?subdisposition=SV Appointed Fixed`,
+                    siteVisitDone: `${GET_FILTERED_DATA}?subdisposition=Site Visit Done`,
+                    callBack: `${GET_FILTERED_DATA}?subdisposition=Call Back`,
+                    followUp: `${GET_FILTERED_DATA}?lead_status=Follow Up`,
                     reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
                     meta: `${GET_FILTERED_DATA}?projectSource=Meta-Mmr`,
                     leadToday: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}`,
@@ -242,11 +242,11 @@ export default function Overview() {
                     },
                     { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
                     { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
-                    { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Fixed` },
-                    { key: 'siteVisitDone', url: `${GET_FILTERED_DATA}?lead_status=Site Visit Done` },
-                    { key: 'callBack', url: `${GET_FILTERED_DATA}?lead_status=Call Back` },
-                    { key: 'booked', url: `${GET_FILTERED_DATA}?lead_status=Booked` },
-                    { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Under Follow Up` },
+                    { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?subdisposition=SV Appointed Fixed` },
+                    { key: 'siteVisitDone', url: `${GET_FILTERED_DATA}?subdisposition=Site Visit Done` },
+                    { key: 'callBack', url: `${GET_FILTERED_DATA}?subdisposition=Call Back` },
+                    { key: 'booked', url: `${GET_FILTERED_DATA}?subdisposition=Booked With Us` },
+                    { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Follow Up` },
                     { key: 'hotLeads', url: `${GET_FILTERED_DATA}?lead_type=Hot` },
                     { key: 'meta', url: `${GET_FILTERED_DATA}?projectSource=Meta-Mmr` },
                     { key: 'coldLeads', url: `${GET_FILTERED_DATA}?lead_type=Cold` },
@@ -355,8 +355,7 @@ export default function Overview() {
             {/* --- Page Title --- */}
             <h1 className="text-3xl font-bold text-gray-800 mb-6">CRM Dashboard</h1>
 
-            <DayEndReport />
-
+            {/* <DayEndReport /> */}
             {/* --- 🔘 Upload Type Buttons (NOW RESPONSIVE) --- */}
             <div className="flex flex-wrap items-center gap-2 mb-6">
                 {['all', 'single', 'Bulk'].map((type) => (
