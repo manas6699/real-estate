@@ -3,6 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode';
 import leadStatuses from '@/options/Leadstatus';
+import {subLeadStatuses} from '@/options/Subdispositions';
 import { toast, ToastContainer } from 'react-toastify';
 
 import preferredConfigs from '@/options/PreferedConfig';
@@ -69,6 +70,7 @@ const TelecallerDashboardPage = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [activeTile, setActiveTile] = useState("");
     const [uploadType, setUploadType] = useState("");
+    const [subStatus, setSubStatus] = useState("");
 
     // ... (notification, socket, user, token states remain unchanged)
 
@@ -113,6 +115,7 @@ const TelecallerDashboardPage = () => {
                     setEndDate(parsed.endDate || "");
                     setConfiguration(parsed.configuration || "");
                     setProjectName(parsed.projectName || "");
+                    setSubStatus(parsed.subStatus || "");
                     setActiveTile(parsed.activeTile || "");
                     setUploadType(parsed.uploadType || "");
 
@@ -154,13 +157,14 @@ const TelecallerDashboardPage = () => {
             projectName,
             activeTile,
             uploadType,
+            subStatus,
             assigns, // We save the table data too!
             totalNewLeadsCount
         };
 
         sessionStorage.setItem('telecaller_dashboard_state', JSON.stringify(stateToSave));
     }, [
-        leadStatus, location, phone, idx, name, startDate, endDate,
+        leadStatus, subStatus,, location, phone, idx, name, startDate, endDate,
         configuration, projectName, activeTile, uploadType, assigns,
         totalNewLeadsCount, isPageLoading
     ]);
@@ -407,6 +411,7 @@ const TelecallerDashboardPage = () => {
             if (location) params.location = location;
             if (name) params.name = name;
             if (startDate) params.startDate = startDate;
+            if (subStatus) params.subdisposition = subStatus;
             if (projectName) params.source = projectName;
             if (endDate) params.endDate = endDate;
             if (configuration) params.preferred_configuration = configuration;
@@ -475,6 +480,7 @@ const TelecallerDashboardPage = () => {
         startDate,
         endDate,
         projectName,
+        subStatus,
         configuration,
         uploadType, // Table *also* refetches when uploadType changes
         isPageLoading
@@ -599,6 +605,16 @@ const TelecallerDashboardPage = () => {
                                     <option key={status} value={status}>{status}</option>
                                 ))}
                             </select>
+                                <select
+                                    value={subStatus}
+                                    onChange={(e) => setSubStatus(e.target.value)}
+                                    className="border rounded p-2 text-xs"
+                                >
+                                    <option value="">Sub-Disposition</option>
+                                    {subLeadStatuses.map((status) => (
+                                        <option key={status} value={status}>{status}</option>
+                                    ))}
+                                </select>
                             <select
                                 value={location}
                                 onChange={(e) => setLocation(e.target.value)}
