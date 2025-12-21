@@ -2,9 +2,10 @@
 import axios from 'axios';
 import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode';
-import leadStatuses from '@/options/Leadstatus';
-import {subLeadStatuses} from '@/options/Subdispositions';
+// import leadStatuses from '@/options/Leadstatus';
 import { toast, ToastContainer } from 'react-toastify';
+// import {subLeadStatuses} from '@/options/Subdispositions';
+import { STATUS_MAPPING } from '@/options/StatusMapping'
 
 import preferredConfigs from '@/options/PreferedConfig';
 import React, { useEffect, useState, useCallback, useRef } from 'react'
@@ -21,6 +22,7 @@ import {
 // ✨ Using your specified loader path
 import Loader from '@/components/AdminComponents/CreativeLoader';
 import { WhatsMyRole } from '@/utils/WhatsMyRole';
+import { FileWarning } from 'lucide-react';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
@@ -138,6 +140,23 @@ const TelecallerDashboardPage = () => {
     }, []);
 
 
+    // ✨ NEW: Logic to get filtered Sub-Dispositions based on selected leadStatus (Disposition)
+    const getFilteredSubStatuses = useCallback(() => {
+        if (!leadStatus) return [];
+
+        // Filter keys where the value's disposition matches the selected leadStatus
+        return Object.keys(STATUS_MAPPING).filter(
+            (key) => STATUS_MAPPING[key].disposition === leadStatus
+        );
+    }, [leadStatus]);
+
+    // ✨ NEW: Reset subStatus if it's no longer valid for the new leadStatus
+    useEffect(() => {
+        const validSubs = getFilteredSubStatuses();
+        if (subStatus && !validSubs.includes(subStatus)) {
+            setSubStatus("");
+        }
+    }, [leadStatus, getFilteredSubStatuses, subStatus]);
     // =========================================================
     // 🟢 CHANGE 2: SAVE STATE ON EVERY CHANGE
     // =========================================================
@@ -583,7 +602,10 @@ const TelecallerDashboardPage = () => {
 
                             </>
                         )}
-
+                            <p className='bg-amber-200 p-2 text-orange-600 text-xs rounded flex font-bold'>
+                                <FileWarning size={15}/>
+                                Please Select Subdisposition filter after selecting Disposition filter
+                            </p>
                         {/* Filters */}
                         <div className="grid grid-cols-1 mt-2 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
                             {/* ... (all your filter inputs remain unchanged) ... */}
@@ -594,25 +616,30 @@ const TelecallerDashboardPage = () => {
                                 onChange={(e) => setidx(e.target.value)}
                                 className="border p-2 rounded text-xs"
                             />
+                            
 
-                            <select
-                                value={leadStatus}
-                                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLeadStatus(e.target.value)}
-                                className="border rounded p-2 text-xs"
-                            >
-                                <option value="">Disposition</option>
-                                {leadStatuses.map((status) => (
-                                    <option key={status} value={status}>{status}</option>
-                                ))}
-                            </select>
+                                <select
+                                    value={leadStatus}
+                                    onChange={(e) => setLeadStatus(e.target.value)}
+                                    className="border rounded p-2 text-xs"
+                                >
+                                    <option value="">Select Disposition</option>
+                                    {/* Get unique disposition values from your JSON mapping */}
+                                    {Array.from(new Set(Object.values(STATUS_MAPPING).map(v => v.disposition))).map((disp) => (
+                                        <option key={disp} value={disp}>{disp}</option>
+                                    ))}
+                                </select>
                                 <select
                                     value={subStatus}
                                     onChange={(e) => setSubStatus(e.target.value)}
                                     className="border rounded p-2 text-xs"
+                                    disabled={!leadStatus} // Disable if no Disposition is selected
                                 >
-                                    <option value="">Sub-Disposition</option>
-                                    {subLeadStatuses.map((status) => (
-                                        <option key={status} value={status}>{status}</option>
+                                    <option value="">Select Sub-Disposition</option>
+                                    {getFilteredSubStatuses().map((sub) => (
+                                        <option key={sub} value={sub}>
+                                            {sub}
+                                        </option>
                                     ))}
                                 </select>
                             <select
