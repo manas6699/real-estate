@@ -33,6 +33,7 @@ const STATUS_MAPPING: Record<string, { disposition: string; category: string }> 
     "6th Try": { "disposition": "IN Progress", "category": "Retry" },
     "7th Try": { "disposition": "IN Progress", "category": "Retry" },
     "8th Try": { "disposition": "IN Progress", "category": "Retry" },
+    "Call Back in Progress": { "disposition": "IN Progress", "category": "Retry" },
     "9th Try": { "disposition": "Unqualified", "category": "Junk" },
     "Call Back": { "disposition": "Follow Up", "category": "Cold" },
     "Follow Up for feedback": { "disposition": "Follow Up", "category": "Cold" },
