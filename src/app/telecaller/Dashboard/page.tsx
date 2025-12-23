@@ -2,27 +2,26 @@
 import axios from 'axios';
 import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode';
-// import leadStatuses from '@/options/Leadstatus';
 import { toast, ToastContainer } from 'react-toastify';
-// import {subLeadStatuses} from '@/options/Subdispositions';
 import { STATUS_MAPPING } from '@/options/StatusMapping'
 
-import preferredConfigs from '@/options/PreferedConfig';
+// import preferredConfigs from '@/options/PreferedConfig';
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
-import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
+// import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
 import {
     GET_LEAD_BY_ID,
     GET_ALL_LOCATIONS,
     GET_ALL_PROJECTS,
-    WEB_SOCKET_URL
+    WEB_SOCKET_URL,
+    GET_TELECALLER_NEW_ASSIGN_FLOW_DATA
 } from '@/config/api';
 // ✨ Using your specified loader path
 import Loader from '@/components/AdminComponents/CreativeLoader';
 import { WhatsMyRole } from '@/utils/WhatsMyRole';
-import { FileWarning } from 'lucide-react';
+import AssignedLeads2 from '@/components/TelecallerComponents/AssignedLeads2';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
@@ -73,6 +72,8 @@ const TelecallerDashboardPage = () => {
     const [activeTile, setActiveTile] = useState("");
     const [uploadType, setUploadType] = useState("");
     const [subStatus, setSubStatus] = useState("");
+
+    console.log(projects , locations)
 
     // ... (notification, socket, user, token states remain unchanged)
 
@@ -296,9 +297,9 @@ const TelecallerDashboardPage = () => {
                 // Only fetch initial list if we don't have active filters
                 // If we have filters (restored from storage), the 'fetchFiltered' effect will handle it
                 if (!activeTile && !phone && !leadStatus) {
-                    const res = await axios.get(GET_LEAD_BY_ID(user._id));
+                    const res = await axios.get(GET_TELECALLER_NEW_ASSIGN_FLOW_DATA(user._id));
                     if (res.data?.success) {
-                        setAssigns([...res.data.data].reverse());
+                        setAssigns(res.data.data);
                     }
                 }
             } catch (err) {
@@ -442,8 +443,8 @@ const TelecallerDashboardPage = () => {
             const user = JSON.parse(storedUser);
             const id = user._id;
 
-            const res = await axios.get(GET_LEAD_BY_ID(id), { params });
-            if (res.data && res.data.data) {
+            const res = await axios.get(GET_TELECALLER_NEW_ASSIGN_FLOW_DATA(id), { params });
+            if (res.data && res.data.success) {
                 setAssigns(res.data.data);
             }
         } catch (err) {
@@ -548,41 +549,7 @@ const TelecallerDashboardPage = () => {
                 ) : (
                     <>
                         <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
-                        <div className="flex items-center space-x-3  rounded-lg mb-4">
-                            <div className="flex bg-gray-100 rounded-full p-1">
-                                {/* ... (All, Data-Sheet, In House buttons are unchanged) ... */}
-                                <button
-                                    type="button"
-                                    onClick={() => setUploadType("")}
-                                    className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === ""
-                                        ? "bg-pink-500 text-white shadow-md"
-                                        : "text-gray-600 hover:text-gray-800"
-                                        }`}
-                                >
-                                    All
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setUploadType("Bulk")}
-                                    className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "Bulk"
-                                        ? "bg-pink-500 text-white shadow-md"
-                                        : "text-gray-600 hover:text-gray-800"
-                                        }`}
-                                >
-                                    Data-Sheet
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setUploadType("single")}
-                                    className={`px-4 py-2 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer ${uploadType === "single"
-                                        ? "bg-pink-500 text-white shadow-md"
-                                        : "text-gray-600 hover:text-gray-800"
-                                        }`}
-                                >
-                                    In House
-                                </button>
-                            </div>
-                        </div>
+                        
 
                         {/* ✨ CHANGED: Added loader for the overview section */}
                         {isOverviewLoading ? (
@@ -602,122 +569,13 @@ const TelecallerDashboardPage = () => {
 
                             </>
                         )}
-                            <p className='bg-amber-200 p-2 text-orange-600 text-xs rounded flex font-bold'>
-                                <FileWarning size={15}/>
-                                Please Select Subdisposition filter after selecting Disposition filter
-                            </p>
-                        {/* Filters */}
-                        <div className="grid grid-cols-1 mt-2 md:grid-cols-5 gap-4 bg-gray-50 p-4 rounded-lg shadow items-end mb-6">
-                            {/* ... (all your filter inputs remain unchanged) ... */}
-                            <input
-                                type="text"
-                                placeholder="id"
-                                value={idx}
-                                onChange={(e) => setidx(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            />
-                            
-
-                                <select
-                                    value={leadStatus}
-                                    onChange={(e) => setLeadStatus(e.target.value)}
-                                    className="border rounded p-2 text-xs"
-                                >
-                                    <option value="">Select Disposition</option>
-                                    {/* Get unique disposition values from your JSON mapping */}
-                                    {Array.from(new Set(Object.values(STATUS_MAPPING).map(v => v.disposition))).map((disp) => (
-                                        <option key={disp} value={disp}>{disp}</option>
-                                    ))}
-                                </select>
-                                <select
-                                    value={subStatus}
-                                    onChange={(e) => setSubStatus(e.target.value)}
-                                    className="border rounded p-2 text-xs"
-                                    disabled={!leadStatus} // Disable if no Disposition is selected
-                                >
-                                    <option value="">Select Sub-Disposition</option>
-                                    {getFilteredSubStatuses().map((sub) => (
-                                        <option key={sub} value={sub}>
-                                            {sub}
-                                        </option>
-                                    ))}
-                                </select>
-                            <select
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            >
-                                <option value="">Location</option>
-                                {locations.map((loc) => (
-                                    <option key={loc._id} value={loc.locationName}>{loc.locationName}</option>
-                                ))}
-                            </select>
-
-                            <input
-                                type="text"
-                                placeholder="Phone"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            />
-
-                            <input
-                                type="text"
-                                placeholder="Name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            />
-
-                            <select
-                                value={projectName}
-                                onChange={(e) => setProjectName(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            >
-                                <option value="">Project</option>
-                                {projects.map((proj) => (
-                                    <option key={proj._id} value={proj.projectName}>{proj.projectName}</option>
-                                ))}
-                            </select>
-
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            />
-
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            />
-
-                            <select
-                                value={configuration}
-                                onChange={(e) => setConfiguration(e.target.value)}
-                                className="border p-2 rounded text-xs"
-                            >
-                                <option value="">Configuration</option>
-                                {preferredConfigs.map((config) => (
-                                    <option key={config} value={config}>{config}</option>
-                                ))}
-                            </select>
-
-                            <button
-                                onClick={resetFilters}
-                                className='bg-red-500 text-white text-xs px-4 py-2 rounded cursor-pointer'
-                            >
-                                Reset Filter
-                            </button>
-                        </div>
+                         
 
                         {/* Assigned Leads Table Loader (Unchanged) */}
                         {isTableLoading ? (
                             <Loader />
                         ) : (
-                            <AssignedLeads data={assigns} />
+                            <AssignedLeads2 data={assigns} />
                         )}
                     </>
                 )}
