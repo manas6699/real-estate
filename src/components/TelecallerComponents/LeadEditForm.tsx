@@ -5,7 +5,6 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css"; // Commented out to prevent build errors in some environments. Ensure this is imported in your _app.tsx or layout.tsx
 import Loader from "@/components/loader";
-import { useRouter } from "next/navigation";
 import {
     EDIT_LEAD_FORM,
     GET_ALL_TELECALLERS_API,
@@ -21,7 +20,7 @@ import { whoami } from '@/utils/whoami';
 import TransferLeadModal from "@/components/TelecallerComponents/LeadEdit/TransferLeadModal";
 import ProjectSelector from "@/components/TelecallerComponents/LeadEdit/ProjectSelector";
 import ScheduleSection from "@/components/TelecallerComponents/LeadEdit/ScheduleSection";
-import { ArrowLeft, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 
 // --- 🟢 STATUS MAPPING CONFIGURATION ---
 const STATUS_MAPPING: Record<string, { disposition: string; category: string }> = {
@@ -78,7 +77,6 @@ const furnishedOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
 const propertyStatusOptions = ["Under Construction", "Ready to Move"];
 
 const LeadEditForm = ({ leadId }: leadIdType) => {
-    const router = useRouter();
 
     // --- State Management ---
     const [formData, setFormData] = useState({
@@ -301,13 +299,6 @@ const LeadEditForm = ({ leadId }: leadIdType) => {
         <>
             <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
                 <div className="flex items-center gap-3 mb-6">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900"
-                        title="Go Back"
-                    >
-                        <ArrowLeft size={24} />
-                    </button>
                     <h2 className="text-xl font-semibold text-gray-800">
                         ✏️ Dispose Lead with Details
                     </h2>
