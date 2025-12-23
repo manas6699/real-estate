@@ -30,6 +30,7 @@ export const GET_ALL_SALES_PERSONS_API = `${API_BASE_URL}/users/salespersons`;
 export const CREATE_CAMPAIGN = `${API_BASE_URL}/create/campaigns`;
 
 export const GET_LEAD_BY_ID = (id: string) => `${API_BASE_URL}/admin/assigns/${id}`;
+export const GET_TELECALLER_NEW_ASSIGN_FLOW_DATA = (id: string) => `${API_BASE_URL}/calender/schedules/fullData/${id}`;
 
 export const GET_LEAD_BY_TELECALLER_ID = (id: string) => `${API_BASE_URL}/mmr/getlead/${id}`;
 
