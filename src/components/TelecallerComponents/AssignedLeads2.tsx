@@ -18,8 +18,6 @@ import {
 import { WhatsMyRole } from '@/utils/WhatsMyRole';
 
 // --- Types ---
-
-
 type Assign = {
     _id: string;
     lead_id: string;
@@ -53,6 +51,7 @@ interface Props {
 export default function AssignedLeads2({ data }: Props) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
+    const [isBulk, setIsBulk] = useState(false); // Default to single
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [history, setHistory] = useState<any[]>([]);
     const [showHistory, setShowHistory] = useState(false);
@@ -68,6 +67,13 @@ export default function AssignedLeads2({ data }: Props) {
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
     };
+
+    const filteredData = useMemo(() => {
+        const targetType = isBulk ? 'bulk' : 'single';
+        return data.filter(item =>
+            (item.lead_details.upload_type || '').toLowerCase() === targetType
+        );
+    }, [data, isBulk]);
 
     const handleCopyId = (id: string) => {
         navigator.clipboard.writeText(id);
@@ -222,7 +228,7 @@ export default function AssignedLeads2({ data }: Props) {
     ], [copiedId]);
 
     const table = useReactTable({
-        data,
+        data : filteredData,
         columns,
         state: { globalFilter, columnFilters },
         onGlobalFilterChange: setGlobalFilter,
@@ -239,7 +245,36 @@ export default function AssignedLeads2({ data }: Props) {
             <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <h2 className="font-bold text-gray-700">Lead Registry</h2>
-                    <div className="bg-black text-white text-xs px-2.5 py-1 rounded-full">{data.length}</div>
+                    <div className="bg-black text-white text-xs px-2.5 py-1 rounded-full">{table.getFilteredRowModel().rows.length}</div>
+                    {/* --- The "Cool" Toggle --- */}
+                    <div className="relative flex p-1 bg-gray-200/80 backdrop-blur-md rounded-xl border border-gray-300 shadow-inner w-fit">
+                        {/* In House Button */}
+                        <button
+                            onClick={() => setIsBulk(false)}
+                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${!isBulk ? 'text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            {!isBulk && <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />}
+                            In House
+                        </button>
+
+                        {/* Data Sheet Button */}
+                        <button
+                            onClick={() => setIsBulk(true)}
+                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${isBulk ? 'text-orange-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            {isBulk && <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-pulse" />}
+                            Data Sheet
+                        </button>
+
+                        {/* Sliding Background Indicator */}
+                        <div
+                            className={`absolute top-1 bottom-1 left-1 transition-all duration-300 ease-out bg-white rounded-lg shadow-sm border border-gray-100 ${isBulk ? 'left-[calc(50%+2px)] w-[48%]' : 'left-1 w-[48%]'
+                                }`}
+                            style={{ zIndex: 0 }}
+                        />
+                    </div>
                 </div>
                 <div className="relative">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
