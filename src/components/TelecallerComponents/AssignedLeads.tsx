@@ -80,7 +80,7 @@ export default function AssignedLeads({ data }: Props) {
         }
     };
 
-    const FilldetailsHandler = (b : string) => {
+    const FilldetailsHandler = (b: string) => {
         const role = WhatsMyRole();
         console.log(role)
         if (role == 'inventory') {
@@ -88,7 +88,7 @@ export default function AssignedLeads({ data }: Props) {
         } else {
             router.push((`/telecaller/change/${b}`))
         }
-        
+
     }
 
     const handleCopyId = async (id: string) => {
@@ -137,6 +137,7 @@ export default function AssignedLeads({ data }: Props) {
 
             {/* Cards */}
             {[...table.getRowModel().rows]
+                .sort((a, b) => new Date(b.original.updatedAt).getTime() - new Date(a.original.updatedAt).getTime())
                 .map((row) => {
                     const lead = row.original.lead_details;
                     const assign = row.original;
