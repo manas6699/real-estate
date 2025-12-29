@@ -46,8 +46,6 @@ const ScheduleTracker = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            // Note: We do NOT set loading(true) here to prevent UI flickering
-
             const now = new Date();
             const newOverdueIds: string[] = [];
 
@@ -81,7 +79,7 @@ const ScheduleTracker = () => {
                             {
                                 toastId: toastId,
                                 position: "top-right",
-                                autoClose: false,      // Stays open until clicked
+                                // autoClose: false,      // Stays open until clicked
                                 closeOnClick: true,    // Dismisses when clicked
                                 draggable: true,
                                 pauseOnHover: true,
@@ -103,7 +101,7 @@ const ScheduleTracker = () => {
 
     return (
         <div className='flex flex-col'>
-            <p className="text-gray-600">Overdue</p>
+            <p className="text-gray-600">Missed Follow Up</p>
 
             {loading ? (
                 <div className="flex items-center space-x-2 pt-2">

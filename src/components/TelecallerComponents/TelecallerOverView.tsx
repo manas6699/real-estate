@@ -19,8 +19,10 @@ type Stats = {
     retry: number,
     junk: number,
     callPending: number;
-    callBack: number;   // ✅ added here
+    callBack: number;  
+    yesterdayLeadsCount: number;
     todayLeadsCount: number;
+    todayProcessedLeadsCount: number;
 };
 
 type AssignsCountResponse = {
@@ -65,11 +67,13 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
         junk: 0,
         callPending: 0,
         callBack: 0,   // ✅ initialize correctly
-        todayLeadsCount: 0
+        todayLeadsCount: 0,
+        yesterdayLeadsCount: 0,
+        todayProcessedLeadsCount: 0
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
-
+    console.log(scheduleCallCount)
     useEffect(() => {
         let mounted = true;
 
@@ -106,6 +110,20 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
             return data.count ?? 0;
         };
 
+
+        const getYesterdayDateRange = () => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // start of today
+
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1); // start of yesterday
+
+            return {
+                startDate: yesterday.toISOString(),
+                endDate: today.toISOString(), // end = start of today
+            };
+        };
+
         const fetchStats = async () => {
             try {
                 const userId = getUserIdFromLocalStorage();
@@ -119,6 +137,20 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                 const todayLeadsParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
+                    status:'assigned'
+                };
+
+                const yesterdayRange = getYesterdayDateRange();
+
+                const yesterdayLeadsParams = {
+                    startDate: yesterdayRange.startDate,
+                    endDate: yesterdayRange.endDate,
+                };
+
+                const todayProcessedParams = {
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
+                    status: 'processed'
                 };
 
                 // if(uploadType){
@@ -138,7 +170,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     junk,
                     callPending,
                     callBack,
-                    todayLeadsCount
+                    todayLeadsCount,
+                    yesterdayLeadsCount,
+                    todayProcessedLeadsCount 
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
@@ -151,7 +185,10 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     getCount(userId, { lead_type: 'Junk' }),
                     getCount(userId, { status: 'assigned' }),
                     getCount(userId, { lead_status: 'Call Back' }),
-                    getCount(userId, todayLeadsParams)
+                    getCount(userId, todayLeadsParams),
+                    getCount(userId, yesterdayLeadsParams),
+                    getCount(userId, todayProcessedParams)
+
                 ]);
 
                 safeSet(() => ({
@@ -166,7 +203,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     junk,
                     callPending,
                     callBack,
-                    todayLeadsCount
+                    todayLeadsCount,
+                    yesterdayLeadsCount,
+                    todayProcessedLeadsCount 
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -232,15 +271,20 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     ${activeTile === 'new' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('new')}
                 >
-                    <div className="text-gray-600">Total</div>
+                    <div className="text-gray-600">All Leads</div>
                     <div className="text-2xl font-bold">{newLeadCount}</div>
                 </div>
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
-
                 >
-                    <div className="text-gray-600">Today</div>
+                    <div className="text-gray-600">Today Leads</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
+                </div>
+                <div
+                    className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col justify-between"
+                >
+                    <div className="text-gray-600">Yesterday new Leads</div>
+                    <div className="text-2xl font-bold">{stats.yesterdayLeadsCount}</div>
                 </div>
 
 
@@ -249,7 +293,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     ${activeTile === 'callPending' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('callPending')}
                 >
-                    <div className="text-gray-600"> Pending</div>
+                    <div className="text-gray-600"> New Leads (Pending)</div>
                     <div className="text-2xl font-bold">{stats.callPending}</div>
                 </div>
                 <div className=" bg-white rounded-lg shadow p-4">
@@ -258,6 +302,17 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     {/* </a> */}
                 </div>
                 <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+    ${activeTile === 'todayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('todayProcessed')}
+                >
+                    <div className="text-gray-600">Today Processed Leads</div>
+                    <div className="text-2xl font-bold">
+                        {stats.todayProcessedLeadsCount}
+                    </div>
+                </div>
+
+                {/* <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
                     ${activeTile === 'hot' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('hot')}
@@ -296,10 +351,10 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                 >
                     <div className="text-gray-600">Junk</div>
                     <div className="text-2xl font-bold">{stats.junk}</div>
-                </div>
+                </div> */}
             </section>
 
-            <section className="flex flex-col md:flex-row gap-4 mb-4">
+            {/* <section className="flex flex-col md:flex-row gap-4 mb-4">
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitFixed' ? 'ring-2 ring-blue-500' : ''}`}
@@ -349,7 +404,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     <div className="text-gray-600">Call Back</div>
                     <div className="text-2xl font-bold">{stats.callBack}</div>
                 </div>
-            </section>
+            </section> */}
         </section>
     );
 };

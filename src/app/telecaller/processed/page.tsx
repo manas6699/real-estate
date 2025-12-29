@@ -395,13 +395,34 @@ const TelecallerDashboardPage = () => {
     }, [userId, token, socket]);
 
 
+    // Helper function to get today's date range
+    const getTodayDateRange = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Start of today
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Start of tomorrow (end of today)
+
+        return {
+            startDate: today.toISOString(),
+            endDate: tomorrow.toISOString(),
+        };
+    };
+
     const buildCallPendingFilter = (activeTile: string) => {
-        // ... (function unchanged)
         if (activeTile === 'callPending') {
             return { status: 'assigned' };
         }
         if (activeTile === 'scheduleCall') {
             return { status: 'processed' };
+        }
+        if (activeTile === 'todayProcessed') {
+            const todayRange = getTodayDateRange();
+            return {
+                status: 'processed',
+                startDate: todayRange.startDate,
+                endDate: todayRange.endDate
+            };
         }
         return {};
     };
@@ -415,7 +436,7 @@ const TelecallerDashboardPage = () => {
             // ... (rest of filter param logic is unchanged)
             const primaryFilter = buildCallPendingFilter(activeTile);
             Object.assign(params, primaryFilter);
-            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall';
+            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall' || activeTile === 'todayProcessed';
             const isLeadTypeFilter = ['hot', 'cold', 'warm', 'retry', 'junk'].includes(activeTile);
             if (!isTopLevelStatusFilter && leadStatus) {
                 if (isLeadTypeFilter) {
@@ -429,10 +450,11 @@ const TelecallerDashboardPage = () => {
             if (idx) params.dumb_id = idx;
             if (location) params.location = location;
             if (name) params.name = name;
-            if (startDate) params.startDate = startDate;
+            // Only add startDate/endDate if not already set by primaryFilter (e.g., todayProcessed)
+            if (startDate && !params.startDate) params.startDate = startDate;
             if (subStatus) params.subdisposition = subStatus;
             if (projectName) params.source = projectName;
-            if (endDate) params.endDate = endDate;
+            if (endDate && !params.endDate) params.endDate = endDate;
             if (configuration) params.preferred_configuration = configuration;
             if (uploadType) params.upload_type = uploadType;
 
@@ -520,21 +542,29 @@ const TelecallerDashboardPage = () => {
         callPending: "assigned",
         scheduleCall: "processed",
         callBack: "Call Back",
+        todayProcessed: 'processed',
     };
 
     const handleTileClick = (tile: string) => {
-        // ... (function unchanged)
         if (activeTile === tile) {
             setActiveTile("");
             resetFilters();
             return;
         }
+
         setActiveTile(tile);
-        const status = tileToStatusMap[tile];
-        if (status !== undefined) {
+
+        // Top-level status filters handle their own filtering logic
+        const topLevelFilters = ['callPending', 'scheduleCall', 'todayProcessed'];
+        if (!topLevelFilters.includes(tile)) {
+            const status = tileToStatusMap[tile] ?? null;
             setLeadStatus(status);
+        } else {
+            // Clear leadStatus for top-level filters since they use status param instead
+            setLeadStatus("");
         }
     };
+
 
     return (
         <>

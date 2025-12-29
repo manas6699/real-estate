@@ -5,12 +5,6 @@ import { jwtDecode } from 'jwt-decode';
 import { toast, ToastContainer } from 'react-toastify';
 import { STATUS_MAPPING } from '@/options/StatusMapping'
 
-// import preferredConfigs from '@/options/PreferedConfig';
-import React, { useEffect, useState, useCallback, useRef } from 'react'
-import Navbar from '@/components/AdminComponents/Navbar'
-// import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
-import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
-import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
 import {
     GET_LEAD_BY_ID,
     GET_ALL_LOCATIONS,
@@ -18,10 +12,17 @@ import {
     WEB_SOCKET_URL,
     GET_TELECALLER_NEW_ASSIGN_FLOW_DATA
 } from '@/config/api';
-// ✨ Using your specified loader path
-import Loader from '@/components/AdminComponents/CreativeLoader';
+
+
+
 import { WhatsMyRole } from '@/utils/WhatsMyRole';
+import Navbar from '@/components/AdminComponents/Navbar'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import Loader from '@/components/AdminComponents/CreativeLoader';
+// import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
+import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
 import AssignedLeads2 from '@/components/TelecallerComponents/AssignedLeads2';
+import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
 
 type Location = { _id: string; locationName: string };
 type Project = { _id: string; projectName: string };
@@ -73,7 +74,7 @@ const TelecallerDashboardPage = () => {
     const [uploadType, setUploadType] = useState("");
     const [subStatus, setSubStatus] = useState("");
 
-    console.log(projects , locations)
+    console.log(projects, locations)
 
     // ... (notification, socket, user, token states remain unchanged)
 
@@ -184,7 +185,7 @@ const TelecallerDashboardPage = () => {
 
         sessionStorage.setItem('telecaller_dashboard_state', JSON.stringify(stateToSave));
     }, [
-        leadStatus, subStatus,, location, phone, idx, name, startDate, endDate,
+        leadStatus, subStatus, , location, phone, idx, name, startDate, endDate,
         configuration, projectName, activeTile, uploadType, assigns,
         totalNewLeadsCount, isPageLoading
     ]);
@@ -310,7 +311,7 @@ const TelecallerDashboardPage = () => {
             }
         }
         initialFetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // socket logic part 2
@@ -549,7 +550,7 @@ const TelecallerDashboardPage = () => {
                 ) : (
                     <>
                         <h1 className="text-xl text-gray-700 font-bold mb-4">Overview</h1>
-                        
+
 
                         {/* ✨ CHANGED: Added loader for the overview section */}
                         {isOverviewLoading ? (
@@ -569,7 +570,7 @@ const TelecallerDashboardPage = () => {
 
                             </>
                         )}
-                         
+
 
                         {/* Assigned Leads Table Loader (Unchanged) */}
                         {isTableLoading ? (
