@@ -24,7 +24,8 @@ type Stats = {
     todayLeadsCount: number;
     todayProcessedLeadsCount: number;
     yesterdayProcessedLeadsCount: number;
-    inProgressToday: number
+    inProgressToday: number;
+    followupToday: number;
 };
 
 type AssignsCountResponse = {
@@ -74,7 +75,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
         yesterdayLeadsCount: 0,
         todayProcessedLeadsCount: 0,
         yesterdayProcessedLeadsCount: 0,
-        inProgressToday: 0
+        inProgressToday: 0,
+        followupToday:0,
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -171,6 +173,11 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     lead_status: 'IN Progress'
 
                 }
+                const followupTodayParams = {
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
+                    lead_status: 'Follow Up'
+                }
                 // if(uploadType){
                 //     todayLeadsParams.upload_type = uploadType;
                 // }
@@ -192,7 +199,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     yesterdayLeadsCount,
                     todayProcessedLeadsCount,
                     yesterdayProcessedLeadsCount,
-                    inProgressToday
+                    inProgressToday,
+                    followupToday
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
@@ -209,7 +217,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     getCount(userId, yesterdayLeadsParams),
                     getCount(userId, todayProcessedParams),
                     getCount(userId, yesterdayProcessedParams),
-                    getCount(userId, inProgressTodayParams)
+                    getCount(userId, inProgressTodayParams),
+                    getCount(userId, followupTodayParams)
 
                 ]);
 
@@ -229,7 +238,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     yesterdayLeadsCount,
                     todayProcessedLeadsCount,
                     yesterdayProcessedLeadsCount,
-                    inProgressToday
+                    inProgressToday,
+                    followupToday
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -294,7 +304,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
                 >
-                    <div className="text-gray-600">Total Leads</div>
+                    <div className="text-gray-600">New Leads</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
                 </div>
                 <div
@@ -313,7 +323,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     <div className="text-gray-600">Yesterday new Leads</div>
                     <div className="text-2xl font-bold">{stats.yesterdayLeadsCount}</div>
                 </div>
-                <div
+                {/* <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
                     ${activeTile === 'yesterdayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('yesterdayProcessed')}
@@ -322,7 +332,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     <div className="text-2xl font-bold">
                         {stats.yesterdayProcessedLeadsCount}
                     </div>
-                </div>
+                </div> */}
 
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
@@ -331,6 +341,14 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 >
                     <div className="text-gray-600">In Progress Leads Today</div>
                     <div className="text-2xl font-bold">{stats.inProgressToday}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'inProgressToday' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('inProgressToday')}
+                >
+                    <div className="text-gray-600">Follow Up Leads Today</div>
+                    <div className="text-2xl font-bold">{stats.followupToday}</div>
                 </div>
                 <div className=" bg-white rounded-lg shadow p-4">
                     {/* <a href="/telecaller/Calender"> */}
