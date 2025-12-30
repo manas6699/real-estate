@@ -101,7 +101,7 @@ const ScheduleTracker = () => {
 
     return (
         <div className='flex flex-col'>
-            <p className="text-gray-600">Missed Follow Up</p>
+            <p className="text-gray-600">Overdue &nbsp;</p>
 
             {loading ? (
                 <div className="flex items-center space-x-2 pt-2">

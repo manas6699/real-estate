@@ -294,7 +294,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
                 >
-                    <div className="text-gray-600">Today Leads</div>
+                    <div className="text-gray-600">Total Leads</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
                 </div>
                 <div
