@@ -19,10 +19,12 @@ type Stats = {
     retry: number,
     junk: number,
     callPending: number;
-    callBack: number;  
+    callBack: number;
     yesterdayLeadsCount: number;
     todayLeadsCount: number;
     todayProcessedLeadsCount: number;
+    yesterdayProcessedLeadsCount: number;
+    inProgressToday: number
 };
 
 type AssignsCountResponse = {
@@ -35,7 +37,7 @@ type AssignsCountResponse = {
 type TelecallerOverViewProps = {
     newLeadCount: number;
     onTileClick: (filterType: string) => void;
-    activeTile: string; // <-- from parent for styling
+    activeTile: string;
     uploadType: string
 };
 
@@ -54,7 +56,8 @@ const getTodayDateRange = () => {
 };
 
 
-const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType }: TelecallerOverViewProps) => {
+const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType }: TelecallerOverViewProps) => {
+    console.log(newLeadCount)
     const [stats, setStats] = useState<Stats>({
         siteVisitFixed: 0,
         siteVisitDone: 0,
@@ -69,7 +72,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
         callBack: 0,   // ✅ initialize correctly
         todayLeadsCount: 0,
         yesterdayLeadsCount: 0,
-        todayProcessedLeadsCount: 0
+        todayProcessedLeadsCount: 0,
+        yesterdayProcessedLeadsCount: 0,
+        inProgressToday: 0
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -137,7 +142,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                 const todayLeadsParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
-                    status:'assigned'
+                    status: 'assigned'
                 };
 
                 const yesterdayRange = getYesterdayDateRange();
@@ -153,6 +158,19 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     status: 'processed'
                 };
 
+                const yesterdayProcessedParams = {
+                    startDate: yesterdayRange.startDate,
+                    endDate: yesterdayRange.endDate,
+                    status: 'processed'
+                }
+
+                const inProgressTodayParams = {
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
+
+                    lead_status: 'IN Progress'
+
+                }
                 // if(uploadType){
                 //     todayLeadsParams.upload_type = uploadType;
                 // }
@@ -172,7 +190,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     callBack,
                     todayLeadsCount,
                     yesterdayLeadsCount,
-                    todayProcessedLeadsCount 
+                    todayProcessedLeadsCount,
+                    yesterdayProcessedLeadsCount,
+                    inProgressToday
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
@@ -187,7 +207,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     getCount(userId, { lead_status: 'Call Back' }),
                     getCount(userId, todayLeadsParams),
                     getCount(userId, yesterdayLeadsParams),
-                    getCount(userId, todayProcessedParams)
+                    getCount(userId, todayProcessedParams),
+                    getCount(userId, yesterdayProcessedParams),
+                    getCount(userId, inProgressTodayParams)
 
                 ]);
 
@@ -205,7 +227,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                     callBack,
                     todayLeadsCount,
                     yesterdayLeadsCount,
-                    todayProcessedLeadsCount 
+                    todayProcessedLeadsCount,
+                    yesterdayProcessedLeadsCount,
+                    inProgressToday
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -257,7 +281,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
 
     return (
         <section>
-           
+
 
             {error && (
                 <div className="mb-4 p-2 rounded bg-red-100 text-red-700 text-sm">
@@ -266,40 +290,12 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
             )}
 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'new' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('new')}
-                >
-                    <div className="text-gray-600">All Leads</div>
-                    <div className="text-2xl font-bold">{newLeadCount}</div>
-                </div>
+
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
                 >
                     <div className="text-gray-600">Today Leads</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
-                </div>
-                <div
-                    className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col justify-between"
-                >
-                    <div className="text-gray-600">Yesterday new Leads</div>
-                    <div className="text-2xl font-bold">{stats.yesterdayLeadsCount}</div>
-                </div>
-
-
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'callPending' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('callPending')}
-                >
-                    <div className="text-gray-600"> New Leads (Pending)</div>
-                    <div className="text-2xl font-bold">{stats.callPending}</div>
-                </div>
-                <div className=" bg-white rounded-lg shadow p-4">
-                    {/* <a href="/telecaller/Calender"> */}
-                        <ScheduleTracker />
-                    {/* </a> */}
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
@@ -311,6 +307,37 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile , uploadType
                         {stats.todayProcessedLeadsCount}
                     </div>
                 </div>
+                <div
+                    className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col justify-between"
+                >
+                    <div className="text-gray-600">Yesterday new Leads</div>
+                    <div className="text-2xl font-bold">{stats.yesterdayLeadsCount}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'yesterdayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('yesterdayProcessed')}
+                >
+                    <div className="text-gray-600">Yesterday Processed Leads</div>
+                    <div className="text-2xl font-bold">
+                        {stats.yesterdayProcessedLeadsCount}
+                    </div>
+                </div>
+
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'inProgressToday' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('inProgressToday')}
+                >
+                    <div className="text-gray-600">In Progress Leads Today</div>
+                    <div className="text-2xl font-bold">{stats.inProgressToday}</div>
+                </div>
+                <div className=" bg-white rounded-lg shadow p-4">
+                    {/* <a href="/telecaller/Calender"> */}
+                    <ScheduleTracker />
+                    {/* </a> */}
+                </div>
+
 
                 {/* <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between

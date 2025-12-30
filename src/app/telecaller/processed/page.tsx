@@ -409,6 +409,20 @@ const TelecallerDashboardPage = () => {
         };
     };
 
+    // Helper function to get yesterday's date range
+    const getYesterdayDateRange = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Start of today
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1); // Start of yesterday
+
+        return {
+            startDate: yesterday.toISOString(),
+            endDate: today.toISOString(), // End = start of today
+        };
+    };
+
     const buildCallPendingFilter = (activeTile: string) => {
         if (activeTile === 'callPending') {
             return { status: 'assigned' };
@@ -420,6 +434,22 @@ const TelecallerDashboardPage = () => {
             const todayRange = getTodayDateRange();
             return {
                 status: 'processed',
+                startDate: todayRange.startDate,
+                endDate: todayRange.endDate
+            };
+        }
+        if (activeTile === 'yesterdayProcessed') {
+            const yesterdayRange = getYesterdayDateRange();
+            return {
+                status: 'processed',
+                startDate: yesterdayRange.startDate,
+                endDate: yesterdayRange.endDate
+            };
+        }
+        if (activeTile === 'inProgressToday') {
+            const todayRange = getTodayDateRange();
+            return {
+                lead_status: 'IN Progress',
                 startDate: todayRange.startDate,
                 endDate: todayRange.endDate
             };
@@ -436,7 +466,7 @@ const TelecallerDashboardPage = () => {
             // ... (rest of filter param logic is unchanged)
             const primaryFilter = buildCallPendingFilter(activeTile);
             Object.assign(params, primaryFilter);
-            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall' || activeTile === 'todayProcessed';
+            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall' || activeTile === 'todayProcessed' || activeTile === 'yesterdayProcessed' || activeTile === 'inProgressToday';
             const isLeadTypeFilter = ['hot', 'cold', 'warm', 'retry', 'junk'].includes(activeTile);
             if (!isTopLevelStatusFilter && leadStatus) {
                 if (isLeadTypeFilter) {
@@ -555,12 +585,12 @@ const TelecallerDashboardPage = () => {
         setActiveTile(tile);
 
         // Top-level status filters handle their own filtering logic
-        const topLevelFilters = ['callPending', 'scheduleCall', 'todayProcessed'];
+        const topLevelFilters = ['callPending', 'scheduleCall', 'todayProcessed', 'yesterdayProcessed', 'inProgressToday'];
         if (!topLevelFilters.includes(tile)) {
             const status = tileToStatusMap[tile] ?? null;
             setLeadStatus(status);
         } else {
-            // Clear leadStatus for top-level filters since they use status param instead
+            // Clear leadStatus for top-level filters since they use status/lead_status param instead
             setLeadStatus("");
         }
     };

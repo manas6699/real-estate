@@ -119,10 +119,10 @@ export default function TelecallerSidebar() {
                         <button
                             onClick={handleLogout}
                             className="flex items-center cursor-pointer gap-2 px-9 py-2 text-sm font-semibold rounded-lg transition duration-200 
-                               bg-red-50 text-red-600 hover:bg-red-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+            w-full bg-red-50 text-red-600 hover:bg-red-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
                         >
-                            <LogOut className="w-10 h-10" />
-                            <span className='text-xl'>Log Out</span> {/* Hidden on mobile, shown on tablet/desktop */}
+                            <LogOut className="w-6 h-10" />
+                            <span className='text-sm'>Log Out</span> {/* Hidden on mobile, shown on tablet/desktop */}
                         </button>
                   
                 </div>
