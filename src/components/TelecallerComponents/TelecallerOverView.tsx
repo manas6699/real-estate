@@ -26,6 +26,13 @@ type Stats = {
     yesterdayProcessedLeadsCount: number;
     inProgressToday: number;
     followupToday: number;
+    totalProcessed: number;
+    answered: number;
+    svpushToday:number;
+    svpushYesterday: number;
+    svPushCount: number;
+    followUpSvpush: number;
+    svDonepermonth: number;
 };
 
 type AssignsCountResponse = {
@@ -77,6 +84,13 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
         yesterdayProcessedLeadsCount: 0,
         inProgressToday: 0,
         followupToday:0,
+        totalProcessed:0,
+        answered: 0,
+        svpushToday:0,
+        svpushYesterday:0,
+        svPushCount:0,
+        followUpSvpush: 0,
+        svDonepermonth: 0,
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -169,20 +183,30 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 const inProgressTodayParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
-
                     lead_status: 'IN Progress'
-
                 }
+
                 const followupTodayParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
                     lead_status: 'Follow Up'
                 }
-                // if(uploadType){
-                //     todayLeadsParams.upload_type = uploadType;
-                // }
+                const svpushTodayParams = {
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
+                    lead_status: 'SV Push'
+                }
+                const svpushYesterdayParams = {
+                    startDate: yesterdayRange.startDate,
+                    endDate: yesterdayRange.endDate,
+                    lead_status: 'SV Push'
+                }
 
-                // Parallel counts
+                const followUpSvpushParams = {
+                    lead_status:'Follow Up',
+                    subdisposition:'SV Fixed'
+                }
+               
                 const [
                     siteVisitFixed,
                     siteVisitDone,
@@ -200,7 +224,15 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     todayProcessedLeadsCount,
                     yesterdayProcessedLeadsCount,
                     inProgressToday,
-                    followupToday
+                    followupToday,
+                    unqualifiedCount,
+                    followUpCount,
+                    svPushCount,
+                    totalProcessed,
+                    svpushToday,
+                    svpushYesterday,
+                    followUpSvpush,
+                    svDonepermonth,
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
@@ -218,8 +250,15 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     getCount(userId, todayProcessedParams),
                     getCount(userId, yesterdayProcessedParams),
                     getCount(userId, inProgressTodayParams),
-                    getCount(userId, followupTodayParams)
-
+                    getCount(userId, followupTodayParams),
+                    getCount(userId, { lead_status: 'Unqualified' }), // Fetch 1
+                    getCount(userId, { lead_status: 'Follow Up' }),  // Fetch 2
+                    getCount(userId, { lead_status: 'SV Push' }),
+                    getCount(userId, { status: 'processed' }),
+                    getCount(userId , svpushTodayParams),
+                    getCount(userId , svpushYesterdayParams),
+                    getCount(userId, followUpSvpushParams),
+                    getCount(userId, { subdisposition : 'Site Visit Done'}),
                 ]);
 
                 safeSet(() => ({
@@ -239,7 +278,14 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     todayProcessedLeadsCount,
                     yesterdayProcessedLeadsCount,
                     inProgressToday,
-                    followupToday
+                    followupToday,
+                    answered: unqualifiedCount + followUpCount + svPushCount,
+                    totalProcessed,
+                    svpushToday,
+                    svpushYesterday,
+                    svPushCount,
+                    followUpSvpush,
+                    svDonepermonth
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -399,57 +445,111 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 </div> */}
             </section>
 
-            {/* <section className="flex flex-col md:flex-row gap-4 mb-4">
+            <section className="flex flex-col md:flex-row gap-4 mb-4">
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitFixed' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('SiteVisitFixed')}
                 >
-                    <div className="text-gray-600">Site Visit Fixed</div>
-                    <div className="text-2xl font-bold">{stats.siteVisitFixed}</div>
+                    <div className="text-gray-600">Total Call</div>
+                    <div className="text-2xl font-bold">{stats.totalProcessed}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('SiteVisitDone')}
+                    
                 >
-                    <div className="text-gray-600">Site Visit Done</div>
-                    <div className="text-2xl font-bold">{stats.siteVisitDone}</div>
+                    <div className="text-gray-600">Answered</div>
+                    <div className="text-2xl font-bold">{stats.answered}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'scheduleCall' ? 'ring-2 ring-blue-500' : ''}`}
+                    
+                >
+                    <div className="text-gray-600">Not Answered</div>
+                    <div className="text-2xl font-bold">{stats.totalProcessed - stats.answered}</div>
+
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
+                >
+                    <div className="text-gray-600">&nbsp;</div>
+                    <div className="text-2xl font-bold">0</div>
+                </div>
+            </section>
+            <section className="flex flex-col md:flex-row gap-4 mb-4">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'SiteVisitFixed' ? 'ring-2 ring-blue-500' : ''}`}
+                >
+                    <div className="text-gray-600">SV Push Today</div>
+                    <div className="text-2xl font-bold">{stats.svpushToday}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
+                    ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
+                >
+                    <div className="text-gray-600">SV Push Yesterday</div>
+                    <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'scheduleCall' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('scheduleCall')}
                 >
-                    <div className="text-gray-600">Schedule Calls</div>
-                    <div className="text-2xl font-bold">{scheduleCallCount}</div>
+                    <div className="text-gray-600">SV Push per Month</div>
+                    <div className="text-2xl font-bold">{stats.svPushCount}</div>
 
                 </div>
                 <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
-                    ${activeTile === 'followUp' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('followUp')}
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
                 >
-                    <div className="text-gray-600">Follow Up</div>
-                    <div className="text-2xl font-bold">{stats.followUp}</div>
+                    <div className="text-gray-600">Follow Up SV Fixed</div>
+                    <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
+                >
+                    <div className="text-gray-600">SV Done per Month</div>
+                    <div className="text-2xl font-bold">{stats.svDonepermonth}</div>
+                </div>
+            </section>
+            <section className="flex flex-col md:flex-row gap-4 mb-4">
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'warm' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('warm')}
+                >
+                    <div className="text-gray-600">Warm </div>
+                    <div className="text-2xl font-bold">{stats.warm}</div>
+                </div>
+                <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                    ${activeTile === 'hot' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('hot')}
+                >
+                    <div className="text-gray-600">Hot </div>
+                    <div className="text-2xl font-bold">{stats.hot}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'booked' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('booked')}
                 >
-                    <div className="text-gray-600">Booked</div>
+                    <div className="text-gray-600">Booked per month</div>
                     <div className="text-2xl font-bold">{stats.booked}</div>
+
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
-                    ${activeTile === 'callBack' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('callBack')}
+                    ${activeTile === 'booked' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('booked')}
                 >
-                    <div className="text-gray-600">Call Back</div>
-                    <div className="text-2xl font-bold">{stats.callBack}</div>
+                    <div className="text-gray-600">Booked Yearly</div>
+                    <div className="text-2xl font-bold">{stats.booked}</div>
                 </div>
-            </section> */}
+            </section>
         </section>
     );
 };
