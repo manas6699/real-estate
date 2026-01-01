@@ -358,7 +358,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
     ${activeTile === 'todayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('todayProcessed')}
                 >
-                    <div className="text-gray-600">Today Processed Leads</div>
+                    <div className="text-gray-600">Processed Today </div>
                     <div className="text-2xl font-bold">
                         {stats.todayProcessedLeadsCount}
                     </div>
@@ -366,7 +366,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col justify-between"
                 >
-                    <div className="text-gray-600">Yesterday new Leads</div>
+                    <div className="text-gray-600">New Leads YD</div>
                     <div className="text-2xl font-bold">{stats.yesterdayLeadsCount}</div>
                 </div>
                 {/* <div
@@ -385,7 +385,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     ${activeTile === 'inProgressToday' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('inProgressToday')}
                 >
-                    <div className="text-gray-600">In Progress Leads Today</div>
+                    <div className="text-gray-600">In-Prog Today</div>
                     <div className="text-2xl font-bold">{stats.inProgressToday}</div>
                 </div>
                 <div
@@ -393,7 +393,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     ${activeTile === 'inProgressToday' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('inProgressToday')}
                 >
-                    <div className="text-gray-600">Follow Up Leads Today</div>
+                    <div className="text-gray-600">FU Today</div>
                     <div className="text-2xl font-bold">{stats.followupToday}</div>
                 </div>
                 <div className=" bg-white rounded-lg shadow p-4">
@@ -483,14 +483,14 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitFixed' ? 'ring-2 ring-blue-500' : ''}`}
                 >
-                    <div className="text-gray-600">SV Push Today</div>
+                    <div className="text-gray-600">SV Push Tdy</div>
                     <div className="text-2xl font-bold">{stats.svpushToday}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
                 >
-                    <div className="text-gray-600">SV Push Yesterday</div>
+                    <div className="text-gray-600">SV Push YD</div>
                     <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
                 </div>
                 <div
@@ -498,20 +498,20 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     ${activeTile === 'scheduleCall' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('scheduleCall')}
                 >
-                    <div className="text-gray-600">SV Push per Month</div>
+                    <div className="text-gray-600">SV Push MTD</div>
                     <div className="text-2xl font-bold">{stats.svPushCount}</div>
 
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
                 >
-                    <div className="text-gray-600">Follow Up SV Fixed</div>
+                    <div className="text-gray-600">FU SV Fixed</div>
                     <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
                 >
-                    <div className="text-gray-600">SV Done per Month</div>
+                    <div className="text-gray-600">SV Done MTD</div>
                     <div className="text-2xl font-bold">{stats.svDonepermonth}</div>
                 </div>
             </section>
@@ -537,7 +537,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     ${activeTile === 'booked' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('booked')}
                 >
-                    <div className="text-gray-600">Booked per month</div>
+                    <div className="text-gray-600">Booked MTD</div>
                     <div className="text-2xl font-bold">{stats.booked}</div>
 
                 </div>
@@ -546,7 +546,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     ${activeTile === 'booked' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('booked')}
                 >
-                    <div className="text-gray-600">Booked Yearly</div>
+                    <div className="text-gray-600">Booked YTD</div>
                     <div className="text-2xl font-bold">{stats.booked}</div>
                 </div>
             </section>
