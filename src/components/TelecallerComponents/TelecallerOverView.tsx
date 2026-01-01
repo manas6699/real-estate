@@ -28,7 +28,7 @@ type Stats = {
     followupToday: number;
     totalProcessed: number;
     answered: number;
-    svpushToday:number;
+    svpushToday: number;
     svpushYesterday: number;
     svPushCount: number;
     followUpSvpush: number;
@@ -83,12 +83,12 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
         todayProcessedLeadsCount: 0,
         yesterdayProcessedLeadsCount: 0,
         inProgressToday: 0,
-        followupToday:0,
-        totalProcessed:0,
+        followupToday: 0,
+        totalProcessed: 0,
         answered: 0,
-        svpushToday:0,
-        svpushYesterday:0,
-        svPushCount:0,
+        svpushToday: 0,
+        svpushYesterday: 0,
+        svPushCount: 0,
         followUpSvpush: 0,
         svDonepermonth: 0,
     });
@@ -139,11 +139,16 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1); // start of yesterday
 
+            
             return {
                 startDate: yesterday.toISOString(),
                 endDate: today.toISOString(), // end = start of today
             };
         };
+
+        function formatIsoDate(isoString: string) {
+            return isoString.split('T')[0];
+        }
 
         const fetchStats = async () => {
             try {
@@ -155,6 +160,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
 
                 // ✅ Prepare the date range for today's leads
                 const todayRange = getTodayDateRange();
+                console.log(todayRange.endDate)
                 const todayLeadsParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
@@ -181,14 +187,12 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 }
 
                 const inProgressTodayParams = {
-                    startDate: todayRange.startDate,
-                    endDate: todayRange.endDate,
+                    schedule_date: formatIsoDate(todayRange.endDate),
                     lead_status: 'IN Progress'
                 }
 
                 const followupTodayParams = {
-                    startDate: todayRange.startDate,
-                    endDate: todayRange.endDate,
+                    schedule_date: formatIsoDate(todayRange.endDate),
                     lead_status: 'Follow Up'
                 }
                 const svpushTodayParams = {
@@ -203,10 +207,10 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 }
 
                 const followUpSvpushParams = {
-                    lead_status:'Follow Up',
-                    subdisposition:'SV Fixed'
+                    lead_status: 'Follow Up',
+                    subdisposition: 'SV Fixed'
                 }
-               
+
                 const [
                     siteVisitFixed,
                     siteVisitDone,
@@ -255,10 +259,10 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     getCount(userId, { lead_status: 'Follow Up' }),  // Fetch 2
                     getCount(userId, { lead_status: 'SV Push' }),
                     getCount(userId, { status: 'processed' }),
-                    getCount(userId , svpushTodayParams),
-                    getCount(userId , svpushYesterdayParams),
+                    getCount(userId, svpushTodayParams),
+                    getCount(userId, svpushYesterdayParams),
                     getCount(userId, followUpSvpushParams),
-                    getCount(userId, { subdisposition : 'Site Visit Done'}),
+                    getCount(userId, { subdisposition: 'Site Visit Done' }),
                 ]);
 
                 safeSet(() => ({
@@ -457,7 +461,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
-                    
+
                 >
                     <div className="text-gray-600">Answered</div>
                     <div className="text-2xl font-bold">{stats.answered}</div>
@@ -465,7 +469,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'scheduleCall' ? 'ring-2 ring-blue-500' : ''}`}
-                    
+
                 >
                     <div className="text-gray-600">Not Answered</div>
                     <div className="text-2xl font-bold">{stats.totalProcessed - stats.answered}</div>
@@ -487,6 +491,12 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     <div className="text-2xl font-bold">{stats.svpushToday}</div>
                 </div>
                 <div
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
+                >
+                    <div className="text-gray-600">FU SV Fixed</div>
+                    <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
+                </div>
+                <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
                     ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
                 >
@@ -502,12 +512,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     <div className="text-2xl font-bold">{stats.svPushCount}</div>
 
                 </div>
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
-                >
-                    <div className="text-gray-600">FU SV Fixed</div>
-                    <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
-                </div>
+               
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer`}
                 >
