@@ -33,6 +33,8 @@ type Stats = {
     svPushCount: number;
     followUpSvpush: number;
     svDonepermonth: number;
+    unqualifiedToday: number;
+    total: number;
 };
 
 type AssignsCountResponse = {
@@ -91,6 +93,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
         svPushCount: 0,
         followUpSvpush: 0,
         svDonepermonth: 0,
+        unqualifiedToday:0,
+        total:0,
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -210,6 +214,12 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     lead_status: 'Follow Up',
                     subdisposition: 'SV Fixed'
                 }
+                const unqualifiedTodayParams = {
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
+                    lead_status: 'Unqualified'
+                }
+                
 
                 const [
                     siteVisitFixed,
@@ -229,14 +239,14 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     yesterdayProcessedLeadsCount,
                     inProgressToday,
                     followupToday,
-                    unqualifiedCount,
-                    followUpCount,
                     svPushCount,
                     totalProcessed,
                     svpushToday,
                     svpushYesterday,
                     followUpSvpush,
                     svDonepermonth,
+                    unqualifiedToday,
+                    
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
                     getCount(userId, { lead_status: 'Site Visit Done' }),
@@ -255,15 +265,15 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     getCount(userId, yesterdayProcessedParams),
                     getCount(userId, inProgressTodayParams),
                     getCount(userId, followupTodayParams),
-                    getCount(userId, { lead_status: 'Unqualified' }), // Fetch 1
-                    getCount(userId, { lead_status: 'Follow Up' }),  // Fetch 2
                     getCount(userId, { lead_status: 'SV Push' }),
                     getCount(userId, { status: 'processed' }),
                     getCount(userId, svpushTodayParams),
                     getCount(userId, svpushYesterdayParams),
                     getCount(userId, followUpSvpushParams),
                     getCount(userId, { subdisposition: 'Site Visit Done' }),
+                    getCount(userId, unqualifiedTodayParams),
                 ]);
+
 
                 safeSet(() => ({
                     siteVisitFixed,
@@ -283,13 +293,15 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     yesterdayProcessedLeadsCount,
                     inProgressToday,
                     followupToday,
-                    answered: unqualifiedCount + followUpCount + svPushCount,
+                    answered: unqualifiedToday + followupToday + svpushToday,
                     totalProcessed,
                     svpushToday,
                     svpushYesterday,
                     svPushCount,
                     followUpSvpush,
-                    svDonepermonth
+                    svDonepermonth,
+                    unqualifiedToday,
+                    total: unqualifiedToday + followupToday + svpushToday + inProgressToday,
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -456,7 +468,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     onClick={() => onTileClick('SiteVisitFixed')}
                 >
                     <div className="text-gray-600">Total Call</div>
-                    <div className="text-2xl font-bold">{stats.totalProcessed}</div>
+                    <div className="text-2xl font-bold">{stats.total}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
@@ -472,7 +484,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
 
                 >
                     <div className="text-gray-600">Not Answered</div>
-                    <div className="text-2xl font-bold">{stats.totalProcessed - stats.answered}</div>
+                    <div className="text-2xl font-bold">{stats.inProgressToday}</div>
 
                 </div>
                 <div
