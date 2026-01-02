@@ -12,7 +12,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react'
 import Navbar from '@/components/AdminComponents/Navbar'
 import AssignedLeads from '@/components/TelecallerComponents/AssignedLeads';
 import TelecallerSidebar from '@/components/TelecallerComponents/TelecallerSidebar'
-import TelecallerOverView from '@/components/TelecallerComponents/TelecallerOverView';
+import TelecallerOverViewProcessed from '@/components/TelecallerComponents/TelecallerOverviewProcessed';
 import {
     GET_LEAD_BY_ID,
     GET_ALL_LOCATIONS,
@@ -423,6 +423,11 @@ const TelecallerDashboardPage = () => {
         };
     };
 
+    // Helper function to format ISO date string to YYYY-MM-DD
+    const formatIsoDate = (isoString: string): string => {
+        return isoString.split('T')[0];
+    };
+
     const buildCallPendingFilter = (activeTile: string) => {
         if (activeTile === 'callPending') {
             return { status: 'assigned' };
@@ -446,12 +451,58 @@ const TelecallerDashboardPage = () => {
                 endDate: yesterdayRange.endDate
             };
         }
+        if(activeTile == 'newleadsyd'){
+            const yesterdayRange = getYesterdayDateRange();
+            return {
+                startDate: yesterdayRange.startDate,
+                endDate: yesterdayRange.endDate
+            }
+        }
         if (activeTile === 'inProgressToday') {
             const todayRange = getTodayDateRange();
             return {
                 lead_status: 'IN Progress',
+                schedule_date: formatIsoDate(todayRange.endDate)
+            };
+        }
+        if (activeTile === 'followupToday') {
+            const todayRange = getTodayDateRange();
+            return {
+                lead_status: 'Follow Up',
+                schedule_date: formatIsoDate(todayRange.endDate)
+            };
+        }
+        if (activeTile === 'svpushToday') {
+            const todayRange = getTodayDateRange();
+            return {
+                lead_status: 'SV Push',
                 startDate: todayRange.startDate,
                 endDate: todayRange.endDate
+            };
+        }
+        if (activeTile === 'svpushYesterday') {
+            const yesterdayRange = getYesterdayDateRange();
+            return {
+                lead_status: 'SV Push',
+                startDate: yesterdayRange.startDate,
+                endDate: yesterdayRange.endDate
+            };
+        }
+        if (activeTile === 'svPushCount') {
+            return {
+                lead_status: 'SV Push'
+            };
+        }
+        if (activeTile === 'fusv') {
+            return {
+                lead_status: 'SV Push',
+                subdisposition:'SV Fixed'
+            };
+        }
+        if (activeTile === 'svDonepermonth') {
+            return {
+                lead_status: 'SV Push',
+                subdisposition:'Site Visit Done'
             };
         }
         return {};
@@ -466,7 +517,7 @@ const TelecallerDashboardPage = () => {
             // ... (rest of filter param logic is unchanged)
             const primaryFilter = buildCallPendingFilter(activeTile);
             Object.assign(params, primaryFilter);
-            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall' || activeTile === 'todayProcessed' || activeTile === 'yesterdayProcessed' || activeTile === 'inProgressToday';
+            const isTopLevelStatusFilter = activeTile === 'callPending' || activeTile === 'scheduleCall' || activeTile === 'todayProcessed' || activeTile === 'yesterdayProcessed' || activeTile === 'inProgressToday' || activeTile === 'followupToday' || activeTile === 'svpushToday' || activeTile === 'svpushYesterday' || activeTile === 'svPushCount';
             const isLeadTypeFilter = ['hot', 'cold', 'warm', 'retry', 'junk'].includes(activeTile);
             if (!isTopLevelStatusFilter && leadStatus) {
                 if (isLeadTypeFilter) {
@@ -585,7 +636,7 @@ const TelecallerDashboardPage = () => {
         setActiveTile(tile);
 
         // Top-level status filters handle their own filtering logic
-        const topLevelFilters = ['callPending', 'scheduleCall', 'todayProcessed', 'yesterdayProcessed', 'inProgressToday'];
+        const topLevelFilters = ['callPending', 'scheduleCall', 'todayProcessed', 'yesterdayProcessed', 'inProgressToday', 'followupToday', 'svpushToday', 'svpushYesterday', 'svPushCount'];
         if (!topLevelFilters.includes(tile)) {
             const status = tileToStatusMap[tile] ?? null;
             setLeadStatus(status);
@@ -652,7 +703,7 @@ const TelecallerDashboardPage = () => {
                         ) : (
                             <>
                                 {WhatsMyRole() === "telecaller" ? <>
-                                    <TelecallerOverView
+                                    <TelecallerOverViewProcessed
                                         newLeadCount={totalNewLeadsCount}
                                         onTileClick={handleTileClick}
                                         activeTile={activeTile}
