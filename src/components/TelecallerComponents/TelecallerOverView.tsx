@@ -35,6 +35,7 @@ type Stats = {
     svDonepermonth: number;
     unqualifiedToday: number;
     total: number;
+    totalCallToday : number;
 };
 
 type AssignsCountResponse = {
@@ -95,6 +96,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
         svDonepermonth: 0,
         unqualifiedToday: 0,
         total: 0,
+        totalCallToday: 0,
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -220,6 +222,11 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     lead_status: 'Unqualified'
                 }
 
+                const totalCallTodayParams = {
+                    updatedStartDate: todayRange.startDate,
+                    updatedEndDate: todayRange.endDate,
+                    status: 'processed'
+                }
 
                 const [
                     siteVisitFixed,
@@ -246,6 +253,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     followUpSvpush,
                     svDonepermonth,
                     unqualifiedToday,
+                    totalCallToday,
 
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
@@ -272,6 +280,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     getCount(userId, followUpSvpushParams),
                     getCount(userId, { subdisposition: 'Site Visit Done' }),
                     getCount(userId, unqualifiedTodayParams),
+                    getCount(userId, totalCallTodayParams),
                 ]);
 
 
@@ -302,6 +311,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     svDonepermonth,
                     unqualifiedToday,
                     total: unqualifiedToday + followupToday + svpushToday + inProgressToday,
+                    totalCallToday,
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -366,13 +376,13 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col justify-between"
                 >
-                    <div className="text-gray-600">New Leads</div>
+                    <div className="text-gray-600">Untouched</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col justify-between`}
                 >
-                    <div className="text-gray-600">Processed Today </div>
+                    <div className="text-gray-600">Touched </div>
                     <div className="text-2xl font-bold">
                         {stats.todayProcessedLeadsCount}
                     </div>
@@ -411,7 +421,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col  "
                 >
                     <div className="text-gray-600">Total Call</div>
-                    <div className="text-2xl font-bold">{stats.todayProcessedLeadsCount}</div>
+                    <div className="text-2xl font-bold">{stats.totalCallToday}</div>
                 </div>
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col  "

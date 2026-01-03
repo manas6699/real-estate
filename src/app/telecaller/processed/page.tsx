@@ -464,13 +464,14 @@ const TelecallerDashboardPage = () => {
                 lead_status: 'IN Progress',
                 schedule_date: formatIsoDate(todayRange.endDate)
             };
-        }
+        } //
+        
         if (activeTile === 'followupToday') {
             const todayRange = getTodayDateRange();
             return {
                 lead_status: 'Follow Up',
                 schedule_date: formatIsoDate(todayRange.endDate)
-            };
+            }; // 
         }
         if (activeTile === 'svpushToday') {
             const todayRange = getTodayDateRange();
@@ -479,7 +480,23 @@ const TelecallerDashboardPage = () => {
                 startDate: todayRange.startDate,
                 endDate: todayRange.endDate
             };
+        } //
+        if (activeTile === 'unqualifiedtoday') {
+            const todayRange = getTodayDateRange();
+            return {
+                lead_status: 'Unqualified',
+                startDate: todayRange.startDate,
+                endDate: todayRange.endDate
+            };
+        } //
+        if (activeTile === 'totaltoday') {
+            const todayRange = getTodayDateRange();
+            return {
+                updatedStartDate: todayRange.startDate,
+                updatedEndDate: todayRange.endDate
+            };
         }
+
         if (activeTile === 'svpushYesterday') {
             const yesterdayRange = getYesterdayDateRange();
             return {
@@ -503,6 +520,22 @@ const TelecallerDashboardPage = () => {
             return {
                 lead_status: 'SV Push',
                 subdisposition:'Site Visit Done'
+            };
+        }
+        if (activeTile === 'answered') {
+            const todayRange = getTodayDateRange();
+            return {
+                lead_status: ['Follow Up', 'SV Push', 'Unqualified'],
+                updatedStartDate: todayRange.startDate,
+                updatedEndDate: todayRange.endDate
+            };
+        }
+        if (activeTile === 'notanswered') {
+            const todayRange = getTodayDateRange();
+            return {
+                lead_status: 'IN Progress',
+                updatedStartDate: todayRange.startDate,
+                updatedEndDate: todayRange.endDate
             };
         }
         return {};

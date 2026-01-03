@@ -35,6 +35,7 @@ type Stats = {
     svDonepermonth: number;
     unqualifiedToday: number;
     total: number;
+    totalCallToday : number;
 };
 
 type AssignsCountResponse = {
@@ -95,6 +96,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
         svDonepermonth: 0,
         unqualifiedToday: 0,
         total: 0,
+        totalCallToday: 0,
     });
     const [error, setError] = useState<string | null>(null);
     const [scheduleCallCount, setScheduleCallCount] = useState(0);
@@ -164,7 +166,6 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
 
                 // ✅ Prepare the date range for today's leads
                 const todayRange = getTodayDateRange();
-                console.log(todayRange.endDate)
                 const todayLeadsParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
@@ -200,10 +201,11 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     lead_status: 'Follow Up'
                 }
                 const svpushTodayParams = {
-                    startDate: todayRange.startDate,
-                    endDate: todayRange.endDate,
+                    updatedStartDate: todayRange.startDate,
+                    updatedEndDate: todayRange.endDate,
                     lead_status: 'SV Push'
-                }
+                }// 
+
                 const svpushYesterdayParams = {
                     startDate: yesterdayRange.startDate,
                     endDate: yesterdayRange.endDate,
@@ -215,11 +217,21 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     subdisposition: 'SV Fixed'
                 }
                 const unqualifiedTodayParams = {
-                    startDate: todayRange.startDate,
-                    endDate: todayRange.endDate,
+                    updatedStartDate: todayRange.startDate,
+                    updatedEndDate: todayRange.endDate,
                     lead_status: 'Unqualified'
                 }
+                const futdy = {
+                    updatedStartDate: todayRange.startDate,
+                    updatedEndDate: todayRange.endDate,
+                    lead_status: 'Follow Up'
+                }
 
+                const totalCallTodayParams = {
+                    updatedStartDate: todayRange.startDate,
+                    updatedEndDate: todayRange.endDate,
+                    status: 'processed'
+                }
 
                 const [
                     siteVisitFixed,
@@ -246,6 +258,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     followUpSvpush,
                     svDonepermonth,
                     unqualifiedToday,
+                    totalCallToday,
+                    followupTodayProcessed,
 
                 ] = await Promise.all([
                     getCount(userId, { lead_status: 'Site Visit Fixed' }),
@@ -272,9 +286,11 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     getCount(userId, followUpSvpushParams),
                     getCount(userId, { subdisposition: 'Site Visit Done' }),
                     getCount(userId, unqualifiedTodayParams),
+                    getCount(userId, totalCallTodayParams),
+                    getCount(userId, futdy),
                 ]);
 
-
+              
                 safeSet(() => ({
                     siteVisitFixed,
                     siteVisitDone,
@@ -293,7 +309,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     yesterdayProcessedLeadsCount,
                     inProgressToday,
                     followupToday,
-                    answered: unqualifiedToday + followupToday + svpushToday,
+                    answered: unqualifiedToday + followupTodayProcessed + svpushToday,
                     totalProcessed,
                     svpushToday,
                     svpushYesterday,
@@ -302,6 +318,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     svDonepermonth,
                     unqualifiedToday,
                     total: unqualifiedToday + followupToday + svpushToday + inProgressToday,
+                    totalCallToday,
                 }));
             } catch (err) {
                 const msg = axios.isAxiosError(err)
@@ -366,7 +383,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 <div
                     className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
                 >
-                    <div className="text-gray-600">New Leads</div>
+                    <div className="text-gray-600">Untouched</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
                 </div>
                 <div
@@ -374,7 +391,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
     ${activeTile === 'todayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('todayProcessed')}
                 >
-                    <div className="text-gray-600">Processed Today </div>
+                    <div className="text-gray-600">Touched</div>
                     <div className="text-2xl font-bold">
                         {stats.todayProcessedLeadsCount}
                     </div>
@@ -466,27 +483,27 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
-                    ${activeTile === 'todayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('todayProcessed')}
+                    ${activeTile === 'totaltoday' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('totaltoday')}
                 >
                     <div className="text-gray-600">Total Call</div>
-                    <div className="text-2xl font-bold">{stats.todayProcessedLeadsCount}</div>
+                    <div className="text-2xl font-bold">{stats.totalCallToday}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
-                    ${activeTile === 'SiteVisitDone' ? 'ring-2 ring-blue-500' : ''}`}
-
+                    ${activeTile === 'answered' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('answered')}
                 >
                     <div className="text-gray-600">Answered</div>
                     <div className="text-2xl font-bold">{stats.answered}</div>
                 </div>
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer 
-                    ${activeTile === 'scheduleCall' ? 'ring-2 ring-blue-500' : ''}`}
-
+                    ${activeTile === 'notanswered' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('notanswered')}
                 >
                     <div className="text-gray-600">Not Answered</div>
-                    <div className="text-2xl font-bold">{stats.inProgressToday}</div>
+                    <div className="text-2xl font-bold">{stats.totalCallToday - stats.answered}</div>
 
                 </div>
                 <div
