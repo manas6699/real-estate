@@ -436,48 +436,6 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     <ScheduleTracker />
                     {/* </a> */}
                 </div>
-
-
-                {/* <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'hot' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('hot')}
-                >
-                    <div className="text-gray-600">Hot </div>
-                    <div className="text-2xl font-bold">{stats.hot}</div>
-                </div>
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'cold' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('cold')}
-                >
-                    <div className="text-gray-600">Cold </div>
-                    <div className="text-2xl font-bold">{stats.cold}</div>
-                </div>
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'warm' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('warm')}
-                >
-                    <div className="text-gray-600">Warm </div>
-                    <div className="text-2xl font-bold">{stats.warm}</div>
-                </div>
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'retry' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('retry')}
-                >
-                    <div className="text-gray-600">Retry </div>
-                    <div className="text-2xl font-bold">{stats.retry}</div>
-                </div>
-                <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'junk' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('junk')}
-                >
-                    <div className="text-gray-600">Junk</div>
-                    <div className="text-2xl font-bold">{stats.junk}</div>
-                </div> */}
             </section>
 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
