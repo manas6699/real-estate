@@ -51,7 +51,10 @@ interface Props {
 export default function AssignedLeads2({ data }: Props) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
-    const [isBulk, setIsBulk] = useState(false); // Default to single
+
+    // Updated state to handle three types: single, bulk, webhook
+    const [viewType, setViewType] = useState<'single' | 'bulk' | 'webhook'>('single');
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [history, setHistory] = useState<any[]>([]);
     const [showHistory, setShowHistory] = useState(false);
@@ -63,16 +66,20 @@ export default function AssignedLeads2({ data }: Props) {
             case 'assigned': return 'bg-amber-100 text-amber-700 border-amber-200';
             case 'processed': return 'bg-green-100 text-green-700 border-green-200';
             case 'reassigned': return 'bg-purple-100 text-purple-700 border-purple-200';
+            case 'auto-assigned': return 'bg-purple-100 text-pink-700 border-pink-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
     };
 
+    // Updated filtering logic
     const filteredData = useMemo(() => {
-        const targetType = isBulk ? 'bulk' : 'single';
-        return data.filter(item =>
-            (item.lead_details.upload_type || '').toLowerCase() === targetType
-        );
-    }, [data, isBulk]);
+        return data.filter(item => {
+            const itemType = (item.lead_details.upload_type || '').toLowerCase();
+            // Map empty or 'single' to our 'single' view
+            if (viewType === 'single') return itemType === 'single' || itemType === '';
+            return itemType === viewType;
+        });
+    }, [data, viewType]);
 
     const handleCopyId = (id: string) => {
         navigator.clipboard.writeText(id);
@@ -95,18 +102,13 @@ export default function AssignedLeads2({ data }: Props) {
 
     const FilldetailsHandler = (b: string) => {
         const role = WhatsMyRole();
-        console.log(role);
-
         if (role === 'inventory') {
-            // Open inventory in a new tab
             window.open('/telecaller/inventory', '_blank');
         } else {
-            // Open the specific lead change page in a new tab
             window.open(`/telecaller/change/${b}`, '_blank');
         }
     };
 
-    // Extract unique values for dropdown filters
     const uniqueDispositions = useMemo(() =>
         Array.from(new Set(data.map(item => item.lead_details.lead_status).filter(Boolean))),
         [data]);
@@ -119,7 +121,6 @@ export default function AssignedLeads2({ data }: Props) {
         Array.from(new Set(data.map(item => item.status).filter(Boolean))),
         [data]);
 
-    // 1. Column Definitions
     const columns = useMemo<ColumnDef<Assign>[]>(() => [
         {
             header: 'ID',
@@ -163,7 +164,7 @@ export default function AssignedLeads2({ data }: Props) {
                 <div className="text-xs">
                     <div className="font-bold text-gray-900">{row.original.lead_details.name}</div>
                     <div className="inline-block mt-1 px-1.5 py-0.5 bg-gray-100 rounded text-[10px] font-medium uppercase text-gray-600">
-                        {row.original.lead_details.upload_type || "Data Sheet"}
+                        {row.original.lead_details.upload_type || "Single"}
                     </div>
                 </div>
             )
@@ -208,7 +209,6 @@ export default function AssignedLeads2({ data }: Props) {
             cell: ({ row }) => (
                 <div className="flex gap-2">
                     <button
-                        // onClick={() => window.open(`/telecaller/change/${row.original.lead_id}`, '_blank')}
                         onClick={() => FilldetailsHandler(row.original.lead_id)}
                         className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors cursor-pointer"
                         title="Fill Details"
@@ -227,7 +227,7 @@ export default function AssignedLeads2({ data }: Props) {
     ], [copiedId]);
 
     const table = useReactTable({
-        data : filteredData,
+        data: filteredData,
         columns,
         state: { globalFilter, columnFilters },
         onGlobalFilterChange: setGlobalFilter,
@@ -240,41 +240,49 @@ export default function AssignedLeads2({ data }: Props) {
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-            {/* --- Global Header --- */}
-            <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
-                <div className="flex items-center gap-2">
+            <div className="p-4 bg-gray-50 border-b flex flex-wrap justify-between items-center gap-4">
+                <div className="flex items-center gap-3">
                     <h2 className="font-bold text-gray-700">Lead Registry</h2>
                     <div className="bg-black text-white text-xs px-2.5 py-1 rounded-full">{table.getFilteredRowModel().rows.length}</div>
-                    {/* --- The "Cool" Toggle --- */}
+
+                    {/* --- Three-Way Toggle Container --- */}
                     <div className="relative flex p-1 bg-gray-200/80 backdrop-blur-md rounded-xl border border-gray-300 shadow-inner w-fit">
-                        {/* In House Button */}
                         <button
-                            onClick={() => setIsBulk(false)}
-                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${!isBulk ? 'text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                                }`}
+                            onClick={() => setViewType('single')}
+                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${viewType === 'single' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                         >
-                            {!isBulk && <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />}
+                            {viewType === 'single' && <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />}
                             In House
                         </button>
 
-                        {/* Data Sheet Button */}
                         <button
-                            onClick={() => setIsBulk(true)}
-                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${isBulk ? 'text-orange-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                                }`}
+                            onClick={() => setViewType('bulk')}
+                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${viewType === 'bulk' ? 'text-orange-600' : 'text-gray-500 hover:text-gray-700'}`}
                         >
-                            {isBulk && <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-pulse" />}
+                            {viewType === 'bulk' && <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-pulse" />}
                             Data Sheet
+                        </button>
+
+                        <button
+                            onClick={() => setViewType('webhook')}
+                            className={`relative z-10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-2 ${viewType === 'webhook' ? 'text-green-600' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            {viewType === 'webhook' && <div className="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse" />}
+                            Webhook
                         </button>
 
                         {/* Sliding Background Indicator */}
                         <div
-                            className={`absolute top-1 bottom-1 left-1 transition-all duration-300 ease-out bg-white rounded-lg shadow-sm border border-gray-100 ${isBulk ? 'left-[calc(50%+2px)] w-[48%]' : 'left-1 w-[48%]'
-                                }`}
-                            style={{ zIndex: 0 }}
+                            className="absolute top-1 bottom-1 transition-all duration-300 ease-out bg-white rounded-lg shadow-sm border border-gray-100"
+                            style={{
+                                zIndex: 0,
+                                width: '31.5%',
+                                left: viewType === 'single' ? '4px' : viewType === 'bulk' ? '34.5%' : '65.5%'
+                            }}
                         />
                     </div>
                 </div>
+
                 <div className="relative">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                     <input
@@ -296,8 +304,6 @@ export default function AssignedLeads2({ data }: Props) {
                                         <div className="text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-2">
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                         </div>
-
-                                        {/* --- Dynamic Column Filters --- */}
                                         {header.column.getCanFilter() ? (
                                             header.column.id === 'lead_details_lead_status' ? (
                                                 <select
@@ -355,7 +361,6 @@ export default function AssignedLeads2({ data }: Props) {
                 </table>
             </div>
 
-            {/* --- Pagination Footer --- */}
             <div className="p-4 bg-gray-50 border-t flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-gray-600">
                     <span>Show</span>
@@ -382,7 +387,6 @@ export default function AssignedLeads2({ data }: Props) {
                 </div>
             </div>
 
-            {/* --- History Modal --- */}
             {showHistory && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[9999] p-4 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6">
