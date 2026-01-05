@@ -169,8 +169,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 // ✅ Prepare the date range for today's leads
                 const todayRange = getTodayDateRange();
                 const todayLeadsParams = {
-                    startDate: todayRange.startDate,
-                    endDate: todayRange.endDate,
+                    // startDate: todayRange.startDate,
+                    // endDate: todayRange.endDate,
                     status: ['assigned' , "auto-assigned"]
                 };
 
@@ -182,8 +182,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 };
 
                 const todayProcessedParams = {
-                    startDate: todayRange.startDate,
-                    endDate: todayRange.endDate,
+                    // startDate: todayRange.startDate,
+                    // endDate: todayRange.endDate,
                     status: 'processed'
                 };
 
