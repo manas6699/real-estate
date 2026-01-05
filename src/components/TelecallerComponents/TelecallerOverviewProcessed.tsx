@@ -124,13 +124,15 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
 
         const getCount = async (
             id: string,
-            params: Record<string, string>
+            params: Record<string, string | string[] | number | undefined> // Changed this line
         ): Promise<number> => {
-            // Add upload_type to params if it's set
-            const finalParams = { ...params };
+            // 2. Ensure finalParams uses the same flexible type
+            const finalParams: Record<string, string | string[] | number | undefined> = { ...params };
+
             if (uploadType) {
                 finalParams.upload_type = uploadType;
             }
+
             const url = GET_LEAD_BY_ID(id);
             const { data } = await axios.get<AssignsCountResponse>(url, { params: finalParams });
             if (!data?.success) return 0;
@@ -169,7 +171,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 const todayLeadsParams = {
                     startDate: todayRange.startDate,
                     endDate: todayRange.endDate,
-                    status: 'assigned'
+                    status: ['assigned' , "auto-assigned"]
                 };
 
                 const yesterdayRange = getYesterdayDateRange();
@@ -381,7 +383,9 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
             <section className="flex flex-col md:flex-row gap-4 mb-4">
 
                 <div
-                    className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-not-allowed justify-between"
+                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
+                        ${activeTile === 'untouched' ? 'ring-2 ring-blue-500' : ''}`}
+                    onClick={() => onTileClick('untouched')}
                 >
                     <div className="text-gray-600">Untouched</div>
                     <div className="text-2xl font-bold">{stats.todayLeadsCount}</div>
@@ -404,16 +408,6 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                     <div className="text-gray-600">New Leads YD</div>
                     <div className="text-2xl font-bold">{stats.yesterdayLeadsCount}</div>
                 </div>
-                {/* <div
-                    className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between
-                    ${activeTile === 'yesterdayProcessed' ? 'ring-2 ring-blue-500' : ''}`}
-                    onClick={() => onTileClick('yesterdayProcessed')}
-                >
-                    <div className="text-gray-600">Yesterday Processed Leads</div>
-                    <div className="text-2xl font-bold">
-                        {stats.yesterdayProcessedLeadsCount}
-                    </div>
-                </div> */}
 
                 <div
                     className={`flex-1 bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer justify-between

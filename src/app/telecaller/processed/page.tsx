@@ -538,6 +538,14 @@ const TelecallerDashboardPage = () => {
                 updatedEndDate: todayRange.endDate
             };
         }
+        if(activeTile === 'untouched'){
+            const todayRange = getTodayDateRange();
+            return {
+                status: ["assigned" , "auto-assigned"],
+                updatedStartDate: todayRange.startDate,
+                updatedEndDate: todayRange.endDate
+            }
+        }
         return {};
     };
 
