@@ -436,11 +436,11 @@ const TelecallerDashboardPage = () => {
             return { status: 'processed' };
         }
         if (activeTile === 'todayProcessed') {
-            // const todayRange = getTodayDateRange();
+            const todayRange = getTodayDateRange();
             return {
                 status: 'processed',
-                // startDate: todayRange.startDate,
-                // endDate: todayRange.endDate
+                startDate: todayRange.startDate,
+                endDate: todayRange.endDate
             };
         }
         if (activeTile === 'yesterdayProcessed') {

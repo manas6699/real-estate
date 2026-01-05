@@ -182,8 +182,8 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                 };
 
                 const todayProcessedParams = {
-                    // startDate: todayRange.startDate,
-                    // endDate: todayRange.endDate,
+                    startDate: todayRange.startDate,
+                    endDate: todayRange.endDate,
                     status: 'processed'
                 };
 

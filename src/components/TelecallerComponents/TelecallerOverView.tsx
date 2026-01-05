@@ -5,33 +5,15 @@ import ScheduleTracker from '@/components/TelecallerComponents/ScheduleTracker';
 import { GET_LEAD_BY_ID } from '@/config/api';
 
 type Stats = {
-    siteVisitFixed: number;
-    siteVisitDone: number;
-    followUp: number;
-    booked: number;
-    hot: number,
-    cold: number,
-    warm: number,
-    retry: number,
-    junk: number,
-    callPending: number;
-    callBack: number;
-    yesterdayLeadsCount: number;
-    todayLeadsCount: number;
-    todayProcessedLeadsCount: number;
-    yesterdayProcessedLeadsCount: number;
-    inProgressToday: number;
-    followupToday: number;
-    totalProcessed: number;
-    answered: number;
-    svpushToday: number;
-    svpushYesterday: number;
-    svPushCount: number;
-    followUpSvpush: number;
-    svDonepermonth: number;
-    unqualifiedToday: number;
-    total: number;
-    totalCallToday: number;
+    siteVisitFixed: number; siteVisitDone: number; followUp: number; booked: number;
+    hot: number; cold: number; warm: number; retry: number; junk: number;
+    callPending: number; callBack: number; yesterdayLeadsCount: number;
+    todayLeadsCount: number; todayProcessedLeadsCount: number;
+    yesterdayProcessedLeadsCount: number; inProgressToday: number;
+    followupToday: number; totalProcessed: number; answered: number;
+    svpushToday: number; svpushYesterday: number; svPushCount: number;
+    followUpSvpush: number; svDonepermonth: number; unqualifiedToday: number;
+    total: number; totalCallToday: number;
 };
 
 type AssignsCountResponse = {
@@ -53,42 +35,19 @@ const getTodayDateRange = () => {
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-    return {
-        startDate: today.toISOString(),
-        endDate: tomorrow.toISOString(),
-    };
+    return { startDate: today.toISOString(), endDate: tomorrow.toISOString() };
 };
 
 const TelecallerOverView = ({ newLeadCount, uploadType }: TelecallerOverViewProps) => {
     console.log(newLeadCount)
     const [stats, setStats] = useState<Stats>({
-        siteVisitFixed: 0,
-        siteVisitDone: 0,
-        followUp: 0,
-        booked: 0,
-        hot: 0,
-        cold: 0,
-        warm: 0,
-        retry: 0,
-        junk: 0,
-        callPending: 0,
-        callBack: 0,
-        todayLeadsCount: 0,
-        yesterdayLeadsCount: 0,
-        todayProcessedLeadsCount: 0,
-        yesterdayProcessedLeadsCount: 0,
-        inProgressToday: 0,
-        followupToday: 0,
-        totalProcessed: 0,
-        answered: 0,
-        svpushToday: 0,
-        svpushYesterday: 0,
-        svPushCount: 0,
-        followUpSvpush: 0,
-        svDonepermonth: 0,
-        unqualifiedToday: 0,
-        total: 0,
-        totalCallToday: 0,
+        siteVisitFixed: 0, siteVisitDone: 0, followUp: 0, booked: 0, hot: 0,
+        cold: 0, warm: 0, retry: 0, junk: 0, callPending: 0, callBack: 0,
+        todayLeadsCount: 0, yesterdayLeadsCount: 0, todayProcessedLeadsCount: 0,
+        yesterdayProcessedLeadsCount: 0, inProgressToday: 0, followupToday: 0,
+        totalProcessed: 0, answered: 0, svpushToday: 0, svpushYesterday: 0,
+        svPushCount: 0, followUpSvpush: 0, svDonepermonth: 0, unqualifiedToday: 0,
+        total: 0, totalCallToday: 0,
     });
     const [error, setError] = useState<string | null>(null);
 
@@ -106,8 +65,9 @@ const TelecallerOverView = ({ newLeadCount, uploadType }: TelecallerOverViewProp
             } catch { return null; }
         };
 
-        const getCount = async (id: string, params: Record<string, string>): Promise<number> => {
-            const finalParams = { ...params };
+        // FIXED: Updated Record type to handle string arrays
+        const getCount = async (id: string, params: Record<string, string | string[]>): Promise<number> => {
+            const finalParams: Record<string, string | string[]> = { ...params };
             if (uploadType) finalParams.upload_type = uploadType;
             const url = GET_LEAD_BY_ID(id);
             const { data } = await axios.get<AssignsCountResponse>(url, { params: finalParams });
@@ -127,10 +87,7 @@ const TelecallerOverView = ({ newLeadCount, uploadType }: TelecallerOverViewProp
         const fetchStats = async () => {
             try {
                 const userId = getUserIdFromLocalStorage();
-                if (!userId) {
-                    safeSetError('User not found');
-                    return;
-                }
+                if (!userId) { safeSetError('User not found'); return; }
 
                 const todayRange = getTodayDateRange();
                 const yesterdayRange = getYesterdayDateRange();
@@ -153,7 +110,7 @@ const TelecallerOverView = ({ newLeadCount, uploadType }: TelecallerOverViewProp
                     getCount(userId, { lead_type: 'Junk' }),
                     getCount(userId, { status: 'assigned' }),
                     getCount(userId, { lead_status: 'Call Back' }),
-                    getCount(userId, { startDate: todayRange.startDate, endDate: todayRange.endDate, status: 'assigned' }),
+                    getCount(userId, { status: ['assigned', 'auto-assigned'] }), // Works now
                     getCount(userId, { startDate: yesterdayRange.startDate, endDate: yesterdayRange.endDate }),
                     getCount(userId, { startDate: todayRange.startDate, endDate: todayRange.endDate, status: 'processed' }),
                     getCount(userId, { startDate: yesterdayRange.startDate, endDate: yesterdayRange.endDate, status: 'processed' }),
