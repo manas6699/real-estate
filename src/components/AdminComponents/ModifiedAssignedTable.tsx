@@ -176,7 +176,7 @@ export default function AssignCardTable({ data }: Props) {
     return (
         // --- ROOT DIV: `overflow-x-hidden` REMOVED ---
         <div className="space-y-4">
-            <div className="text-2xl font-bold text-gray-800">
+            <div className="font-bold text-gray-800 ml-6 mt-4">
                 Lead Count: {filteredCount}
             </div>
 

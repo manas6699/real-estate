@@ -3,488 +3,224 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    ALL_LEAD_COUNT,
     GET_FILTERED_DATA,
-    SHOW_ALL_ASSIGNS_API,
 } from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 import AssignCardTable from './ModifiedAssignedTable';
-// import DayEndReport from '@/components/AdminComponents/DayEndReport';
 import CreativeLoader from './CreativeLoader';
 import {
-    ExternalLink,
-    Loader2,
-    Users, // Icon for Total Leads
-    UserPlus, // Icon for Today Leads
-    PhoneOff, // Icon for Call Pending
-    PhoneForwarded, // Icon for Today Calls
-    CalendarCheck, // Icon for Site Visit Fixed
-    PackageOpen, // Icon for Cold
-    Flame, // Icon for Hot
-    Sun, // Icon for Warm
-    Trash2, // Icon for Junk
-    RefreshCcw, // Icon for Retry
-    CheckCircle2, // Icon for Booked
-    Building, // Icon for Site Visit Done
-    PhoneCall, // Icon for Call Back
-    CheckCheck, // Icon for Follow Up
-    Replace, // Icon for Reassigned
-    Facebook, // Icon for Meta
-    Landmark, // Icon for MagicBricks
-    Home, // Icon for Housing
-    Briefcase, // Icon for 99 Acers
-    MoreHorizontal, // Icon for Others
+    ExternalLink, Loader2, UserPlus,
+    PhoneForwarded, CalendarCheck, Flame,
+    Sun, RefreshCcw, CheckCircle2,
+    CheckCheck, Clock, Activity, PackageOpen
 } from 'lucide-react';
 
-// --- (COLOR_PALETTE, Type Definitions - Stats, Assign, HistoryEntry - are the same) ---
-const COLOR_PALETTE = [
-    { bg: 'bg-rose-50', text: 'text-rose-800', ring: 'ring-rose-500' },
-    { bg: 'bg-amber-50', text: 'text-amber-800', ring: 'ring-amber-500' },
-    { bg: 'bg-lime-50', text: 'text-lime-800', ring: 'ring-lime-500' },
-    { bg: 'bg-cyan-50', text: 'text-cyan-800', ring: 'ring-cyan-500' },
-    { bg: 'bg-violet-50', text: 'text-violet-800', ring: 'ring-violet-500' },
-    { bg: 'bg-emerald-50', text: 'text-emerald-800', ring: 'ring-emerald-500' },
-    { bg: 'bg-indigo-50', text: 'text-indigo-800', ring: 'ring-indigo-500' },
-    { bg: 'bg-fuchsia-50', text: 'text-fuchsia-800', ring: 'ring-fuchsia-500' },
-    { bg: 'bg-teal-50', text: 'text-teal-800', ring: 'ring-teal-500' },
-    { bg: 'bg-orange-50', text: 'text-orange-800', ring: 'ring-orange-500' },
-    { bg: 'bg-sky-50', text: 'text-sky-800', ring: 'ring-sky-500' },
-    { bg: 'bg-purple-50', text: 'text-purple-800', ring: 'ring-purple-500' },
-    { bg: 'bg-pink-50', text: 'text-pink-800', ring: 'ring-pink-500' },
-    { bg: 'bg-pink-50', text: 'text-pink-800', ring: 'ring-pink-500' },
-    { bg: 'bg-yellow-50', text: 'text-yellow-800', ring: 'ring-yellow-500' },
-    { bg: 'bg-blue-50', text: 'text-blue-800', ring: 'ring-blue-500' },
-];
-
-type HistoryEntry = {
-    lead_id: string;
-    assignee_name: string;
-    updatedAt: string;
-    status: string;
-    remarks: string;
-};
-
-type Assign = {
-    _id: string;
-    lead_id: string;
-    assignee_id: string;
-    assignee_name: string;
-    status: string;
-    remarks: string;
-    dumb_id: string;
-    history: HistoryEntry[];
-    lead_details: {
-        name: string;
-        email: string;
-        phone: string;
-        source: string;
-        projectSource: string;
-        status: string;
-        upload_type: string;
-        upload_by: string;
-        comments: string;
-        location: string;
-        alternate_phone: string;
-        client_budget: string;
-        furnished_status: string;
-        interested_project: string;
-        lead_status: string;
-        lead_type: string;
-        preferred_configuration: string;
-        preferred_floor: string;
-        property_status: string;
-        createdAt: string;
-        updatedAt: string;
-    };
-    createdAt: string;
-    updatedAt: string;
-};
-
-type Stats = Record<
-    | 'totalCount'
-    | 'leadCount'
-    | 'assignCount'
-    | 'callPending'
-    | 'siteVisitFixed'
-    | 'siteVisitDone'
-    | 'hotLeads'
-    | 'coldLeads'
-    | 'warmLeads'
-    | 'junkLeads'
-    | 'retryLeads'
-    | 'booked'
-    | 'overdue'
-    | 'callBack'
-    | 'followUp'
-    | 'reassigned'
-    | 'meta'
-    | 'leadToday'
-    | 'unprocessedToday'
-    | 'processedToday'
-    | 'callToday',
-    number
->;
-
-const initialStats: Stats = {
-    totalCount: 0,
-    leadCount: 0,
-    assignCount: 0,
-    callPending: 0,
-    siteVisitFixed: 0,
-    siteVisitDone: 0,
-    hotLeads: 0,
-    coldLeads: 0,
-    warmLeads: 0,
-    junkLeads: 0,
-    retryLeads: 0,
-    booked: 0,
-    overdue: 0,
-    callBack: 0,
-    followUp: 0,
-    reassigned: 0,
-    meta: 0,
-    leadToday: 0,
-    callToday: 0,
-    processedToday: 0, 
-    unprocessedToday:0
-};
+type Stats = Record<string, number>;
 
 export default function Overview() {
-    const [stats, setStats] = useState<Stats>(initialStats);
-    const [assigns, setAssigns] = useState<Assign[]>([]);
-    const [selectedFilter, setSelectedFilter] = useState<string>('totalCount');
+    const [stats, setStats] = useState<Stats>({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [assigns, setAssigns] = useState<any[]>([]);
+    const [selectedFilter, setSelectedFilter] = useState<string>('total');
     const [uploadType, setUploadType] = useState<string>('all');
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isTableLoading, setIsTableLoading] = useState(false);
 
-    /* --------------------------- 🔍 Fetch Assigns Data -------------------------- */
-    const fetchAssigns = useCallback(
-        async (filter: string = '', uploadTypeParam: string = uploadType) => {
-            if (!filter) setIsLoading(true); // Only for main initial fetch
+    const getDates = () => {
+        const now = new Date();
+        const tdy = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yd = new Date(tdy); yd.setDate(tdy.getDate() - 1);
+        const tmrw = new Date(tdy); tmrw.setDate(tdy.getDate() + 1);
 
-            try {
-                let url = SHOW_ALL_ASSIGNS_API;
-                const today = new Date();
-                const startOfDay = new Date(today.setHours(23, 59, 59, 999));
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const endOfDay = new Date(tomorrow.setHours(23, 59, 59, 999));
-                const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
-                const filters: Record<string, string> = {
-                    assignCount: GET_FILTERED_DATA,
-                    hotLeads: `${GET_FILTERED_DATA}?lead_type=Hot`,
-                    coldLeads: `${GET_FILTERED_DATA}?lead_type=Cold`,
-                    warmLeads: `${GET_FILTERED_DATA}?lead_type=Warm`,
-                    junkLeads: `${GET_FILTERED_DATA}?lead_type=Junk`,
-                    retryLeads: `${GET_FILTERED_DATA}?lead_type=Retry`,
-                    callPending: `${GET_FILTERED_DATA}?status=assigned`,
-                    booked: `${GET_FILTERED_DATA}?subdisposition=Booked With Us`,
-                    siteVisitFixed: `${GET_FILTERED_DATA}?subdisposition=SV Appointed Fixed`,
-                    siteVisitDone: `${GET_FILTERED_DATA}?subdisposition=Site Visit Done`,
-                    callBack: `${GET_FILTERED_DATA}?subdisposition=Call Back`,
-                    followUp: `${GET_FILTERED_DATA}?lead_status=Follow Up`,
-                    reassigned: `${GET_FILTERED_DATA}?status=reassigned`,
-                    meta: `${GET_FILTERED_DATA}?projectSource=Meta-Mmr`,
-                    leadToday: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}`,
-                    callToday: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}`,
-                };
-
-                url = filters[filter] || SHOW_ALL_ASSIGNS_API;
-
-                if (uploadTypeParam !== 'all') {
-                    const connector = url.includes('?') ? '&' : '?';
-                    url = `${url}${connector}upload_type=${uploadTypeParam}`;
-                }
-
-                setSelectedFilter(filter);
-                const res = await axios.get(url);
-                if (res.data.success) setAssigns([...res.data.data].reverse());
-                else setAssigns([]);
-            } catch (err) {
-                console.error('Error fetching assigns:', err);
-                setAssigns([]);
-            } finally {
-                if (!filter) setIsLoading(false);
-            }
-        },
-        [uploadType]
-    );
-
-    /* --------------------------- 📊 Fetch Stats Data --------------------------- */
-    const fetchStats = useCallback(
-        async (uploadTypeParam: string = uploadType) => {
-            setIsLoading(true);
-            try {
-                const uploadQuery =
-                    uploadTypeParam !== 'all' ? `?upload_type=${uploadTypeParam}` : '';
-
-                const res = await axios.get(`${ALL_LEAD_COUNT}${uploadQuery}`);
-                if (res.data.success)
-                    setStats((prev) => ({ ...prev, ...res.data.counts }));
-
-                const today = new Date();
-                const startOfDay = new Date(today.setHours(23, 59, 59, 999));
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const endOfDay = new Date(tomorrow.setHours(23, 59, 59, 999));
-                const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
-                const queries = [
-                    { key: 'assignCount', url: `${GET_FILTERED_DATA}` },
-                    { key: 'leadToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}` },
-                    { key: 'callToday', url: `${GET_FILTERED_DATA}?updatedStartDate=${formatDate(startOfDay)}&updatedEndDate=${formatDate(endOfDay)}` },
-                    {
-                        key: 'unprocessedToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}&status=assigned`
-                    },
-                    {
-                        key: 'processedToday', url: `${GET_FILTERED_DATA}?startDate=${formatDate(startOfDay)}&endDate=${formatDate(endOfDay)}&status=processed&status=reassigned`
-                    },
-                    { key: 'callPending', url: `${GET_FILTERED_DATA}?status=assigned` },
-                    { key: 'reassigned', url: `${GET_FILTERED_DATA}?status=reassigned` },
-                    { key: 'siteVisitFixed', url: `${GET_FILTERED_DATA}?subdisposition=SV Appointed Fixed` },
-                    { key: 'siteVisitDone', url: `${GET_FILTERED_DATA}?subdisposition=Site Visit Done` },
-                    { key: 'callBack', url: `${GET_FILTERED_DATA}?subdisposition=Call Back` },
-                    { key: 'booked', url: `${GET_FILTERED_DATA}?subdisposition=Booked With Us` },
-                    { key: 'followUp', url: `${GET_FILTERED_DATA}?lead_status=Follow Up` },
-                    { key: 'hotLeads', url: `${GET_FILTERED_DATA}?lead_type=Hot` },
-                    { key: 'meta', url: `${GET_FILTERED_DATA}?projectSource=Meta-Mmr` },
-                    { key: 'coldLeads', url: `${GET_FILTERED_DATA}?lead_type=Cold` },
-                    { key: 'warmLeads', url: `${GET_FILTERED_DATA}?lead_type=Warm` },
-                    { key: 'retryLeads', url: `${GET_FILTERED_DATA}?lead_type=Retry` },
-                    { key: 'junkLeads', url: `${GET_FILTERED_DATA}?lead_type=Junk` },
-                ];
-
-                await Promise.all(
-                    queries.map(async ({ key, url }) => {
-                        const connector = url.includes('?') ? '&' : '?';
-                        const fullUrl =
-                            uploadTypeParam !== 'all'
-                                ? `${url}${connector}upload_type=${uploadTypeParam}`
-                                : url;
-                        const r = await axios.get(fullUrl);
-                        if (r.data.success)
-                            setStats((prev) => ({ ...prev, [key]: r.data.count }));
-                    })
-                );
-            } catch (error) {
-                console.error('Error fetching stats:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        [uploadType]
-    );
-
-    /* --------------------------- ⚙️ Auto Fetch --------------------------- */
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchStats(uploadType);
-            // We await fetchStats, which sets loading to true/false
-            // Then we fetch the default table data.
-            await fetchAssigns('assignCount', uploadType);
-        }
-        fetchData();
-    }, [fetchStats, fetchAssigns, uploadType]); // Removed fetchAssigns to prevent potential loops if not memoized correctly
-
-    // --- (Card Sections - NOW WITH ICONS!) ---
-    const sections = [
-        [
-            { label: 'Total Leads', key: 'assignCount', icon: Users },
-            { label: 'Today Leads', key: 'leadToday', icon: UserPlus },
-            { label: 'Call Pending', key: 'callPending', icon: PhoneOff },
-            { label: 'Today Calls', key: 'callToday', icon: PhoneForwarded },
-            { label: 'Site Visit Fixed', key: 'siteVisitFixed', icon: CalendarCheck }
-        ],
-        [
-            { label: 'Cold', key: 'coldLeads', icon: PackageOpen },
-            { label: 'Warm', key: 'warmLeads', icon: Sun },
-            { label: 'Hot', key: 'hotLeads', icon: Flame },
-            { label: 'Junk', key: 'junkLeads', icon: Trash2 },
-            { label: 'Retry', key: 'retryLeads', icon: RefreshCcw }
-        ],
-        [
-            { label: 'Booked', key: 'booked', icon: CheckCircle2 },
-            { label: 'Site Visit Done', key: 'siteVisitDone', icon: Building },
-            { label: 'Call Back', key: 'callBack', icon: PhoneCall },
-            { label: 'Follow Up', key: 'followUp', icon: CheckCheck },
-            { label: 'Reassign Leads', key: 'reassigned', icon: Replace }
-        ],
-        [
-            { label: 'Meta', key: 'meta', icon: Facebook },
-            { label: 'MagicBricks', key: 'c', icon: Landmark },
-            { label: 'Housing', key: 'k', icon: Home },
-            { label: '99 Acers', key: 'x', icon: Briefcase },
-            { label: 'Others', key: 'y', icon: MoreHorizontal }
-        ],
-    ];
-
-    let colorIndex = 0;
-
-    const handleCardClick = async (key: string) => {
-        const realFilters = [
-            'assignCount', 'leadToday', 'callPending', 'callToday', 'siteVisitFixed',
-            'coldLeads', 'hotLeads', 'warmLeads', 'junkLeads', 'retryLeads',
-            'booked', 'siteVisitDone', 'callBack', 'followUp', 'reassigned', 'meta'
-        ];
-
-        if (realFilters.includes(key)) {
-            setIsTableLoading(true);
-            try {
-                await fetchAssigns(key);
-            } finally {
-                setIsTableLoading(false);
-            }
-        } else {
-            setSelectedFilter(key);
-            // Optionally clear the table if these cards aren't supposed to show data
-            // setAssigns([]); 
-        }
+        return {
+            today: tdy.toISOString().split('T')[0],
+            yesterday: yd.toISOString().split('T')[0],
+            tomorrow: tmrw.toISOString().split('T')[0]
+        };
     };
 
+    const fetchAssigns = useCallback(async (filter: string) => {
+        setIsTableLoading(true);
+        try {
+            const { today, yesterday, tomorrow } = getDates();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let params: any = {};
 
-    if (isLoading) {
-        return (
-            <CreativeLoader />
-        );
-    }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const filterMap: any = {
+                untouched: { status: ['assigned', 'auto-assigned'] },
+                touched: { updatedStartDate: today, updatedEndDate: tomorrow, status: 'processed' },
+                newLeadsYD: { startDate: yesterday, endDate: today },
+                inProgToday: { schedule_date: today, lead_status: 'IN Progress' },
+                fuToday: { schedule_date: today, lead_status: 'Follow Up' },
+                totalCall: { updatedStartDate: today, updatedEndDate: tomorrow, status: 'processed' },
+                svPushTdy: { updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push' },
+                fuSvFixed: { lead_status: 'Follow Up', subdisposition: 'SV Fixed' },
+                svPushYD: { updatedStartDate: yesterday, updatedEndDate: today, lead_status: 'SV Push' },
+                warm: { lead_type: 'Warm' },
+                hot: { lead_type: 'Hot' },
+                bookedMTD: { subdisposition: 'Booked With Us' },
+                total: {}
+            };
+
+            params = filterMap[filter] || {};
+            if (uploadType !== 'all') params.upload_type = uploadType;
+
+            const res = await axios.get(GET_FILTERED_DATA, { params });
+            if (res.data.success) setAssigns([...res.data.data].reverse());
+            setSelectedFilter(filter);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsTableLoading(false);
+        }
+    }, [uploadType]);
+
+    const fetchStats = useCallback(async () => {
+        try {
+            const { today, yesterday, tomorrow } = getDates();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const getC = async (p: any) => {
+                const finalP = { ...p };
+                if (uploadType !== 'all') finalP.upload_type = uploadType;
+                const r = await axios.get(GET_FILTERED_DATA, { params: finalP });
+                return r.data.count || 0;
+            };
+
+            const [untouched, touched, ydLeads, inProg, fuTdy, svTdy, svYD, fuSV, warm, hot, booked] = await Promise.all([
+                getC({ status: ['assigned', 'auto-assigned'] }),
+                getC({ updatedStartDate: today, updatedEndDate: tomorrow, status: 'processed' }),
+                getC({ startDate: yesterday, endDate: today }),
+                getC({ schedule_date: today, lead_status: 'IN Progress' }),
+                getC({ schedule_date: today, lead_status: 'Follow Up' }),
+                getC({ updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push' }),
+                getC({ updatedStartDate: yesterday, updatedEndDate: today, lead_status: 'SV Push' }),
+                getC({ lead_status: 'Follow Up', subdisposition: 'SV Fixed' }),
+                getC({ lead_type: 'Warm' }),
+                getC({ lead_type: 'Hot' }),
+                getC({ subdisposition: 'Booked With Us' })
+            ]);
+
+            setStats({
+                untouched, touched, newLeadsYD: ydLeads, inProgToday: inProg,
+                fuToday: fuTdy, totalCall: touched, svPushTdy: svTdy,
+                fuSvFixed: fuSV, svPushYD: svYD, warm, hot, bookedMTD: booked
+            });
+        } catch (err) { console.error(err); }
+    }, [uploadType]);
+
+    useEffect(() => {
+        const load = async () => {
+            setIsLoading(true);
+            await fetchStats();
+            await fetchAssigns('total');
+            setIsLoading(false);
+        };
+        load();
+    }, [uploadType, fetchStats, fetchAssigns]);
+
+    if (isLoading) return <CreativeLoader />;
 
     return (
-        <div className="p-4 sm:p-6 bg-gray-50 min-h-screen font-inter overflow-x-hidden">
+        <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2 p-2">
+                    <Activity className="text-blue-600" /> Admin Dashboard
+                </h1>
 
-            {/* --- Page Title --- */}
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">CRM Dashboard</h1>
-
-            {/* <DayEndReport /> */}
-            {/* --- 🔘 Upload Type Buttons (NOW RESPONSIVE) --- */}
-            <div className="flex flex-wrap items-center gap-2 mb-6">
-                {['all', 'single', 'Bulk'].map((type) => (
-                    <button
-                        key={type}
-                        onClick={() => {
-                            setUploadType(type);
-                            // useEffect handles the refetch
-                        }}
-                        className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 cursor-pointer shadow-md
-                        ${uploadType === type
-                                ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg'
-                                : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow-lg'
-                            }`}
-                    >
-                        {type === 'all'
-                            ? 'All'
-                            : type.charAt(0).toUpperCase() + type.slice(1)}
-                    </button>
-                ))}
+                <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-200">
+                    {['all', 'single', 'Bulk'].map((t) => (
+                        <button key={t} onClick={() => setUploadType(t)}
+                            className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${uploadType === t ? 'bg-blue-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}>
+                            {t.toUpperCase()}
+                        </button>
+                    ))}
+                </div>
             </div>
 
-            {/* --- 📦 Lead Status Cards (NOW RESPONSIVE & SEXY) --- */}
-            {sections.map((group, i) => (
-                <section
-                    key={i}
-                    // RESPONSIVE FIX: Changed grid-cols-2 to grid-cols-1
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-4 min-w-0"
-                >
-                    {group.map((item) => {
-                        const { bg, text, ring } =
-                            COLOR_PALETTE[colorIndex++ % COLOR_PALETTE.length];
-                        const isSelected = selectedFilter === item.key;
-                        const Icon = item.icon; // Get the icon component
-                        const cardClasses = `${bg} rounded-xl p-5 shadow-lg transition-all duration-300 cursor-pointer
-                        flex flex-col justify-between h-32 // <-- Modern card layout
-                        hover:scale-[1.03] hover:shadow-xl
-                        ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`;
-                        // --- Custom Rendering for Today Leads ---
-                        if (item.key === 'leadToday') {
-                            const totalToday = stats.leadToday || 0;
-                            const processed = stats.processedToday || 0;
-                            const unprocessed = stats.unprocessedToday || 0;
-                            return (
-                                <div
-                                    key={item.key}
-                                    onClick={() => handleCardClick(item.key)}
-                                    className={cardClasses}
-                                >
-                                    {/* Header with Icon */}
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-semibold text-gray-700">{item.label} 
-                                            </span>
-                                        {/* <Icon className={`${text} w-5 h-5`} /> */}
-                                        <span className='text-xl font-extrabold bg-purple-200 rounded-full px-2'>
-                                            {totalToday}
-                                        </span>
-                                    </div>
-                                    {/* Split Values */}
-                                    <div className="flex justify-between items-end gap-2 pt-2">
-                                        <div className="flex flex-col">
-                                            <span className={`text-2xl font-extrabold text-emerald-600`}>
-                                                {processed}
-                                            </span>
-                                            <span className="text-xs text-gray-500 font-medium">Processed</span>
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <span className={`text-2xl font-extrabold text-red-600`}>
-                                                {unprocessed}
-                                            </span>
-                                            <span className="text-xs text-gray-500 font-medium">Pending</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        }
-                        return (
-                            <div
-                                key={item.key}
-                                onClick={() => handleCardClick(item.key)}
-                                className={`${bg} rounded-xl p-5 shadow-lg transition-all duration-300 cursor-pointer
-                                flex flex-col justify-between h-32 // <-- Modern card layout
-                                hover:scale-[1.03] hover:shadow-xl
-                                ${isSelected ? `ring-4 ${ring} border-4 border-white` : 'border border-transparent'}`}
-                            >
-                                {/* Header with Icon */}
-                                <div className="flex items-start justify-between">
-                                    <span className="text-sm font-semibold text-gray-700">{item.label}</span>
-                                    <Icon className={`${text} w-5 h-5`} />
-                                </div>
-                                {/* Value */}
-                                <div className={`text-3xl ${text} font-extrabold`}>
-                                    {stats[item.key as keyof Stats] || 0}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </section>
-            ))}
+            {/* Row 1: Core Activity */}
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+                <Card label="Untouched" val={stats.untouched} icon={UserPlus} color="blue" active={selectedFilter === 'untouched'} onClick={() => fetchAssigns('untouched')} />
+                <Card label="Touched" val={stats.touched} icon={Activity} color="emerald" active={selectedFilter === 'touched'} onClick={() => fetchAssigns('touched')} />
+                <Card label="New Leads YD" val={stats.newLeadsYD} icon={Clock} color="amber" active={selectedFilter === 'newLeadsYD'} onClick={() => fetchAssigns('newLeadsYD')} />
+                <Card label="In-Prog Tdy" val={stats.inProgToday} icon={RefreshCcw} color="indigo" active={selectedFilter === 'inProgToday'} onClick={() => fetchAssigns('inProgToday')} />
+                <Card label="FU Today" val={stats.fuToday} icon={CheckCheck} color="purple" active={selectedFilter === 'fuToday'} onClick={() => fetchAssigns('fuToday')} />
+            </div>
 
-            {/* --- 📅 Schedule Tracker --- */}
-            <section className="flex flex-col md:flex-row gap-4 mb-8 min-w-0">
-                <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex items-center justify-between gap-6 border-l-8 border-red-500 hover:shadow-xl hover:shadow-red-100 transition-all">
+
+
+            {/* Row 3: Call & Push Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <Card label="Total Calls" val={stats.totalCall} icon={PhoneForwarded} color="sky" active={selectedFilter === 'totalCall'} onClick={() => fetchAssigns('totalCall')} />
+                <Card label="SV Push Tdy" val={stats.svPushTdy} icon={Flame} color="orange" active={selectedFilter === 'svPushTdy'} onClick={() => fetchAssigns('svPushTdy')} />
+                <Card label="FU SV Fixed" val={stats.fuSvFixed} icon={CalendarCheck} color="cyan" active={selectedFilter === 'fuSvFixed'} onClick={() => fetchAssigns('fuSvFixed')} />
+                <Card label="SV Push YD" val={stats.svPushYD} icon={Clock} color="pink" active={selectedFilter === 'svPushYD'} onClick={() => fetchAssigns('svPushYD')} />
+            </div>
+
+            {/* Row 4: Segments */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <Card label="Warm" val={stats.warm} icon={Sun} color="yellow" active={selectedFilter === 'warm'} onClick={() => fetchAssigns('warm')} />
+                <Card label="Hot" val={stats.hot} icon={Flame} color="red" active={selectedFilter === 'hot'} onClick={() => fetchAssigns('hot')} />
+                <Card label="Booked MTD" val={stats.bookedMTD} icon={CheckCircle2} color="emerald" active={selectedFilter === 'bookedMTD'} onClick={() => fetchAssigns('bookedMTD')} />
+                <Card label="Booked YTD" val={stats.bookedMTD} icon={PackageOpen} color="blue" active={selectedFilter === 'bookedYTD'} onClick={() => fetchAssigns('bookedMTD')} />
+            </div>
+
+            {/* Row 2: Overdue Tracker Section (Preserved) */}
+            <section className="flex flex-col md:flex-row gap-4 mb-4 min-w-0">
+                <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex items-center justify-between gap-6 border-l-8 border-red-500 hover:shadow-xl transition-all">
                     <div className="flex-1">
                         <ScheduleTracker />
-                        <p className="text-lg text-red-600 font-medium">
-                            Action required immediately
-                        </p>
+                        <p className="text-sm text-red-600 font-medium mt-1 uppercase tracking-tighter">Action required immediately</p>
                     </div>
-                    <a href="/admin/Dashboard/overdue" aria-label="View overdue tasks">
-                        <div className="p-4 rounded-full bg-gradient-to-br from-red-500 to-orange-400 shadow-lg hover:shadow-red-300/50 transform hover:scale-110 transition-all">
-                            <ExternalLink size={28} className="text-white" />
+                    <a href="/admin/Dashboard/overdue">
+                        <div className="p-4 rounded-full bg-gradient-to-br from-red-500 to-orange-400 shadow-lg transform hover:scale-110 transition-all">
+                            <ExternalLink size={24} className="text-white" />
                         </div>
                     </a>
                 </div>
             </section>
 
-            {/* --- 📋 Assign Table (Improved Loading State) --- */}
-            <div className="w-full overflow-x-auto">
+            {/* Table Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 {isTableLoading ? (
-                    <div className="flex flex-col items-center justify-center p-16 bg-white rounded-xl shadow-lg">
-                        <Loader2 className="h-12 w-12 animate-spin text-orange-500" />
-                        <p className="mt-4 text-lg font-semibold text-gray-700">Loading Assigned Leads...</p>
-                        <p className="text-sm text-gray-500">Just a moment, we&apos;re fetching the data.</p>
+                    <div className="p-20 flex flex-col items-center">
+                        <Loader2 className="animate-spin text-blue-600 mb-2" />
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Refreshing...</p>
                     </div>
                 ) : (
                     <AssignCardTable data={assigns} />
                 )}
             </div>
+        </div>
+    );
+}
+
+// Reusable Card Component
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Card({ label, val, icon: Icon, color, onClick, active }: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const colors: any = {
+        blue: 'bg-blue-50 text-blue-700 border-blue-100 ring-blue-500',
+        emerald: 'bg-emerald-50 text-emerald-700 border-emerald-100 ring-emerald-500',
+        amber: 'bg-amber-50 text-amber-700 border-amber-100 ring-amber-500',
+        indigo: 'bg-indigo-50 text-indigo-700 border-indigo-100 ring-indigo-500',
+        purple: 'bg-purple-50 text-purple-700 border-purple-100 ring-purple-500',
+        sky: 'bg-sky-50 text-sky-700 border-sky-100 ring-sky-500',
+        orange: 'bg-orange-50 text-orange-700 border-orange-100 ring-orange-500',
+        cyan: 'bg-cyan-50 text-cyan-700 border-cyan-100 ring-cyan-500',
+        pink: 'bg-pink-50 text-pink-700 border-pink-100 ring-pink-500',
+        yellow: 'bg-yellow-50 text-yellow-700 border-yellow-100 ring-yellow-500',
+        red: 'bg-red-50 text-red-700 border-red-100 ring-red-500',
+    };
+
+    return (
+        <div onClick={onClick} className={`${colors[color]} border p-4 rounded-xl shadow-sm cursor-pointer transition-all hover:scale-[1.03] flex flex-col justify-between h-28 ${active ? 'ring-2 ring-offset-2' : ''}`}>
+            <div className="flex justify-between items-start p-2">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-80">{label}</span>
+                <Icon size={18} className="opacity-60" />
+            </div>
+            <span className="text-3xl font-black tracking-tighter">{val || 0}</span>
         </div>
     );
 }
