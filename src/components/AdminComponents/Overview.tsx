@@ -2,17 +2,13 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-    GET_FILTERED_DATA,
-} from '@/config/api';
+import { GET_FILTERED_DATA } from '@/config/api';
 import ScheduleTracker from '@/components/AdminComponents/ScheduleTracker';
 import AssignCardTable from './ModifiedAssignedTable';
 import CreativeLoader from './CreativeLoader';
 import {
-    ExternalLink, Loader2, UserPlus,
-    PhoneForwarded, CalendarCheck, Flame,
-    Sun, RefreshCcw, CheckCircle2,
-    CheckCheck, Clock, Activity, PackageOpen
+    ExternalLink, Loader2, UserPlus, PhoneForwarded, CalendarCheck,
+    Flame, Sun, RefreshCcw, CheckCircle2, CheckCheck, Clock, Activity, PackageOpen
 } from 'lucide-react';
 
 type Stats = Record<string, number>;
@@ -28,38 +24,54 @@ export default function Overview() {
 
     const getDates = () => {
         const now = new Date();
-        const tdy = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const yd = new Date(tdy); yd.setDate(tdy.getDate() - 1);
-        const tmrw = new Date(tdy); tmrw.setDate(tdy.getDate() + 1);
+        const formatLocal = (date: Date) => {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        };
+
+        const tdy = new Date(now);
+        const yd = new Date(now); yd.setDate(now.getDate() - 1);
+        const tmrw = new Date(now); tmrw.setDate(now.getDate() + 1);
+        const mStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const yStart = new Date(now.getFullYear(), 0, 1);
 
         return {
-            today: tdy.toISOString().split('T')[0],
-            yesterday: yd.toISOString().split('T')[0],
-            tomorrow: tmrw.toISOString().split('T')[0]
+            today: formatLocal(tdy),
+            yesterday: formatLocal(yd),
+            tomorrow: formatLocal(tmrw),
+            monthStart: formatLocal(mStart),
+            yearStart: formatLocal(yStart)
         };
     };
 
     const fetchAssigns = useCallback(async (filter: string) => {
         setIsTableLoading(true);
         try {
-            const { today, yesterday, tomorrow } = getDates();
+            const { today, yesterday, tomorrow, monthStart, yearStart } = getDates();
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let params: any = {};
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const filterMap: any = {
                 untouched: { status: ['assigned', 'auto-assigned'] },
-                touched: { updatedStartDate: today, updatedEndDate: tomorrow, status: 'processed' },
+                touched: { updatedStartDate: today, updatedEndDate: today, status: 'processed' },
                 newLeadsYD: { startDate: yesterday, endDate: today },
                 inProgToday: { schedule_date: today, lead_status: 'IN Progress' },
                 fuToday: { schedule_date: today, lead_status: 'Follow Up' },
-                totalCall: { updatedStartDate: today, updatedEndDate: tomorrow, status: 'processed' },
+                totalCall: { startDate: yesterday, endDate: today, status: 'processed' },
+                answered: { lead_status: ['SV Push', 'Unqualified', 'Follow Up'], updatedStartDate: today, updatedEndDate: today },
+                notAnswered: { lead_status: 'IN Progress', updatedStartDate: today, updatedEndDate: today },
                 svPushTdy: { updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push' },
                 fuSvFixed: { lead_status: 'Follow Up', subdisposition: 'SV Fixed' },
                 svPushYD: { updatedStartDate: yesterday, updatedEndDate: today, lead_status: 'SV Push' },
                 warm: { lead_type: 'Warm' },
                 hot: { lead_type: 'Hot' },
-                bookedMTD: { subdisposition: 'Booked With Us' },
+                bookedMTD: { subdisposition: 'Booked With Us', startDate: monthStart },
+                bookedYTD: { subdisposition: 'Booked With Us', startDate: yearStart },
+                svPushMTD: { startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push' },
+                svDoneMTD: { startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push', subdisposition: 'Site Visit Done' },
                 total: {}
             };
 
@@ -78,7 +90,7 @@ export default function Overview() {
 
     const fetchStats = useCallback(async () => {
         try {
-            const { today, yesterday, tomorrow } = getDates();
+            const { today, yesterday, tomorrow, monthStart, yearStart } = getDates();
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const getC = async (p: any) => {
                 const finalP = { ...p };
@@ -87,26 +99,40 @@ export default function Overview() {
                 return r.data.count || 0;
             };
 
-            const [untouched, touched, ydLeads, inProg, fuTdy, svTdy, svYD, fuSV, warm, hot, booked] = await Promise.all([
+            const results = await Promise.all([
                 getC({ status: ['assigned', 'auto-assigned'] }),
-                getC({ updatedStartDate: today, updatedEndDate: tomorrow, status: 'processed' }),
+                getC({ updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
                 getC({ startDate: yesterday, endDate: today }),
                 getC({ schedule_date: today, lead_status: 'IN Progress' }),
                 getC({ schedule_date: today, lead_status: 'Follow Up' }),
-                getC({ updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push' }),
+                getC({ startDate: yesterday, endDate: today, status: 'processed' }),
+                getC({ startDate: today, endDate: tomorrow, lead_status: 'SV Push' }),
+                getC({ lead_status: ['SV Push', 'Unqualified', 'Follow Up'], updatedStartDate: today, updatedEndDate: today }),
+                getC({ lead_status: 'IN Progress', updatedStartDate: today, updatedEndDate: today }),
                 getC({ updatedStartDate: yesterday, updatedEndDate: today, lead_status: 'SV Push' }),
                 getC({ lead_status: 'Follow Up', subdisposition: 'SV Fixed' }),
                 getC({ lead_type: 'Warm' }),
                 getC({ lead_type: 'Hot' }),
-                getC({ subdisposition: 'Booked With Us' })
+                getC({ subdisposition: 'Booked With Us', startDate: monthStart }),
+                getC({ subdisposition: 'Booked With Us', startDate: yearStart }),
+                getC({ startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push' }),
+                getC({ startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push', subdisposition: 'Site Visit Done' })
             ]);
 
+            const [
+                untouched, touched, ydLeads, inProg, fuTdy, totalTdy, svTdy, ans, nAns,
+                svYD, fuSV, warm, hot, bookedMTD, bookedYTD, svPushMTD, svDoneMTD
+            ] = results;
+
             setStats({
-                untouched, touched, newLeadsYD: ydLeads, inProgToday: inProg,
-                fuToday: fuTdy, totalCall: touched, svPushTdy: svTdy,
-                fuSvFixed: fuSV, svPushYD: svYD, warm, hot, bookedMTD: booked
+                untouched, touched, newLeadsYD: ydLeads, inProgToday: inProg, fuToday: fuTdy,
+                totalCall: totalTdy, svPushTdy: svTdy, answered: ans, notAnswered: nAns,
+                fuSvFixed: fuSV, svPushYD: svYD, warm, hot, bookedMTD, bookedYTD,
+                svPushMTD, svDoneMTD
             });
-        } catch (err) { console.error(err); }
+        } catch (err) {
+            console.error(err);
+        }
     }, [uploadType]);
 
     useEffect(() => {
@@ -123,12 +149,10 @@ export default function Overview() {
 
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-            {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2 p-2">
                     <Activity className="text-blue-600" /> Admin Dashboard
                 </h1>
-
                 <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-200">
                     {['all', 'single', 'Bulk'].map((t) => (
                         <button key={t} onClick={() => setUploadType(t)}
@@ -139,7 +163,6 @@ export default function Overview() {
                 </div>
             </div>
 
-            {/* Row 1: Core Activity */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
                 <Card label="Untouched" val={stats.untouched} icon={UserPlus} color="blue" active={selectedFilter === 'untouched'} onClick={() => fetchAssigns('untouched')} />
                 <Card label="Touched" val={stats.touched} icon={Activity} color="emerald" active={selectedFilter === 'touched'} onClick={() => fetchAssigns('touched')} />
@@ -148,25 +171,24 @@ export default function Overview() {
                 <Card label="FU Today" val={stats.fuToday} icon={CheckCheck} color="purple" active={selectedFilter === 'fuToday'} onClick={() => fetchAssigns('fuToday')} />
             </div>
 
-
-
-            {/* Row 3: Call & Push Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <Card label="Total Calls" val={stats.totalCall} icon={PhoneForwarded} color="sky" active={selectedFilter === 'totalCall'} onClick={() => fetchAssigns('totalCall')} />
+                <Card label="Answered" val={stats.answered} icon={CheckCircle2} color="emerald" active={selectedFilter === 'answered'} onClick={() => fetchAssigns('answered')} />
+                <Card label="Not Answered" val={stats.notAnswered} icon={Clock} color="red" active={selectedFilter === 'notAnswered'} onClick={() => fetchAssigns('notAnswered')} />
                 <Card label="SV Push Tdy" val={stats.svPushTdy} icon={Flame} color="orange" active={selectedFilter === 'svPushTdy'} onClick={() => fetchAssigns('svPushTdy')} />
                 <Card label="FU SV Fixed" val={stats.fuSvFixed} icon={CalendarCheck} color="cyan" active={selectedFilter === 'fuSvFixed'} onClick={() => fetchAssigns('fuSvFixed')} />
                 <Card label="SV Push YD" val={stats.svPushYD} icon={Clock} color="pink" active={selectedFilter === 'svPushYD'} onClick={() => fetchAssigns('svPushYD')} />
+                <Card label="SV Push MTD" val={stats.svPushMTD} icon={Activity} color="indigo" active={selectedFilter === 'svPushMTD'} onClick={() => fetchAssigns('svPushMTD')} />
+                <Card label="SV Done MTD" val={stats.svDoneMTD} icon={CheckCheck} color="emerald" active={selectedFilter === 'svDoneMTD'} onClick={() => fetchAssigns('svDoneMTD')} />
             </div>
 
-            {/* Row 4: Segments */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <Card label="Warm" val={stats.warm} icon={Sun} color="yellow" active={selectedFilter === 'warm'} onClick={() => fetchAssigns('warm')} />
                 <Card label="Hot" val={stats.hot} icon={Flame} color="red" active={selectedFilter === 'hot'} onClick={() => fetchAssigns('hot')} />
                 <Card label="Booked MTD" val={stats.bookedMTD} icon={CheckCircle2} color="emerald" active={selectedFilter === 'bookedMTD'} onClick={() => fetchAssigns('bookedMTD')} />
-                <Card label="Booked YTD" val={stats.bookedMTD} icon={PackageOpen} color="blue" active={selectedFilter === 'bookedYTD'} onClick={() => fetchAssigns('bookedMTD')} />
+                <Card label="Booked YTD" val={stats.bookedYTD} icon={PackageOpen} color="blue" active={selectedFilter === 'bookedYTD'} onClick={() => fetchAssigns('bookedYTD')} />
             </div>
 
-            {/* Row 2: Overdue Tracker Section (Preserved) */}
             <section className="flex flex-col md:flex-row gap-4 mb-4 min-w-0">
                 <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex items-center justify-between gap-6 border-l-8 border-red-500 hover:shadow-xl transition-all">
                     <div className="flex-1">
@@ -181,7 +203,6 @@ export default function Overview() {
                 </div>
             </section>
 
-            {/* Table Section */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 {isTableLoading ? (
                     <div className="p-20 flex flex-col items-center">
@@ -196,7 +217,6 @@ export default function Overview() {
     );
 }
 
-// Reusable Card Component
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Card({ label, val, icon: Icon, color, onClick, active }: any) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
