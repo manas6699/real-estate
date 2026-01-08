@@ -13,7 +13,7 @@ export const STATUS_MAPPING: Record<string, { disposition: string; category: str
     "Follow Up for feedback": { "disposition": "Follow Up", "category": "Cold" },
     "Interested in the project": { "disposition": "Follow Up", "category": "Cold" },
     "No Answer/Number is busy": { "disposition": "Follow Up", "category": "Retry" },
-    "SV Fixed": { "disposition": "Follow Up", "category": "Warm" },
+    "SV Prospect": { "disposition": "Follow Up", "category": "Warm" },
     "Already Booked somewhere": { "disposition": "Unqualified", "category": "Junk" },
     "Bad Data": { "disposition": "Unqualified", "category": "Junk" },
     // "Booked with us": { "disposition": "Unqualified", "category": "Junk" },
