@@ -205,7 +205,7 @@ const TelecallerOverView = ({ newLeadCount, uploadType }: TelecallerOverViewProp
                     <div className="text-2xl font-bold">{stats.svpushToday}</div>
                 </div>
                 <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">
-                    <div className="text-gray-600">FU SV Fixed</div>
+                    <div className="text-gray-600">FU SV Prospect</div>
                     <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
                 </div>
                 <div className="flex-1 bg-white rounded-lg shadow p-4 flex flex-col">

@@ -176,7 +176,7 @@ export default function Overview() {
                 <Card label="Answered" val={stats.answered} icon={CheckCircle2} color="emerald" active={selectedFilter === 'answered'} onClick={() => fetchAssigns('answered')} />
                 <Card label="Not Answered" val={stats.notAnswered} icon={Clock} color="red" active={selectedFilter === 'notAnswered'} onClick={() => fetchAssigns('notAnswered')} />
                 <Card label="SV Push Tdy" val={stats.svPushTdy} icon={Flame} color="orange" active={selectedFilter === 'svPushTdy'} onClick={() => fetchAssigns('svPushTdy')} />
-                <Card label="FU SV Fixed" val={stats.fuSvFixed} icon={CalendarCheck} color="cyan" active={selectedFilter === 'fuSvFixed'} onClick={() => fetchAssigns('fuSvFixed')} />
+                <Card label="FU SV Prospect" val={stats.fuSvFixed} icon={CalendarCheck} color="cyan" active={selectedFilter === 'fuSvFixed'} onClick={() => fetchAssigns('fuSvFixed')} />
                 <Card label="SV Push YD" val={stats.svPushYD} icon={Clock} color="pink" active={selectedFilter === 'svPushYD'} onClick={() => fetchAssigns('svPushYD')} />
                 <Card label="SV Push MTD" val={stats.svPushMTD} icon={Activity} color="indigo" active={selectedFilter === 'svPushMTD'} onClick={() => fetchAssigns('svPushMTD')} />
                 <Card label="SV Done MTD" val={stats.svDoneMTD} icon={CheckCheck} color="emerald" active={selectedFilter === 'svDoneMTD'} onClick={() => fetchAssigns('svDoneMTD')} />

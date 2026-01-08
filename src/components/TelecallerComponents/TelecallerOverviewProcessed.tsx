@@ -479,7 +479,7 @@ const TelecallerOverView = ({ newLeadCount, onTileClick, activeTile, uploadType 
                         ${activeTile === 'fusv' ? 'ring-2 ring-blue-500' : ''}`}
                     onClick={() => onTileClick('fusv')}
                 >
-                    <div className="text-gray-600">FU SV Fixed</div>
+                    <div className="text-gray-600">FU SV Prospect</div>
                     <div className="text-2xl font-bold">{stats.followUpSvpush}</div>
                 </div>
                 <div
