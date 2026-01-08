@@ -70,7 +70,7 @@ export default function Overview() {
                 hot: { lead_type: 'Hot' },
                 bookedMTD: { subdisposition: 'Booked With Us', startDate: monthStart },
                 bookedYTD: { subdisposition: 'Booked With Us', startDate: yearStart },
-                svPushMTD: { startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push' },
+                svPushMTD: { updatedStartDate: monthStart, updatedEndDate: tomorrow, lead_status: 'SV Push' },
                 svDoneMTD: { startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push', subdisposition: 'Site Visit Done' },
                 total: {}
             };
@@ -115,7 +115,7 @@ export default function Overview() {
                 getC({ lead_type: 'Hot' }),
                 getC({ subdisposition: 'Booked With Us', startDate: monthStart }),
                 getC({ subdisposition: 'Booked With Us', startDate: yearStart }),
-                getC({ startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push' }),
+                getC({ updatedStartDate: monthStart, updatedEndDate: tomorrow, lead_status: 'SV Push' }),
                 getC({ startDate: monthStart, endDate: tomorrow, lead_status: 'SV Push', subdisposition: 'Site Visit Done' })
             ]);
 
