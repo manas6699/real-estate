@@ -56,7 +56,7 @@ export default function Overview() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const filterMap: any = {
                 untouched: { status: ['assigned', 'auto-assigned'] },
-                touched: { updatedStartDate: today, updatedEndDate: today, status: 'processed' },
+                touched: { startDate: today, endDate: today, status: 'processed' },
                 newLeadsYD: { startDate: yesterday, endDate: yesterday },
                 inProgToday: { schedule_date: today, lead_status: 'IN Progress' },
                 fuToday: { schedule_date: today, lead_status: 'Follow Up' },
@@ -101,7 +101,7 @@ export default function Overview() {
 
             const results = await Promise.all([
                 getC({ status: ['assigned', 'auto-assigned'] }),
-                getC({ updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
+                getC({ startDate: today, endDate: today, status: 'processed' }),
                 getC({ startDate: yesterday, endDate: yesterday }),
                 getC({ schedule_date: today, lead_status: 'IN Progress' }),
                 getC({ schedule_date: today, lead_status: 'Follow Up' }),
