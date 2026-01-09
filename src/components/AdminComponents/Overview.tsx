@@ -94,7 +94,12 @@ export default function Overview() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const getC = async (p: any) => {
                 const finalP = { ...p };
-                if (uploadType !== 'all') finalP.upload_type = uploadType;
+                // if (uploadType !== 'all') finalP.upload_type = uploadType;
+                if (uploadType === 'single') {
+                    finalP.upload_type = ['single', 'webhook'];
+                } else if (uploadType !== 'all') {
+                    finalP.upload_type = uploadType;
+                }
                 const r = await axios.get(GET_FILTERED_DATA, { params: finalP });
                 return r.data.count || 0;
             };
