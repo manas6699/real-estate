@@ -63,7 +63,7 @@ export default function Overview() {
                 totalCall: { updatedStartDate: today, updatedEndDate: today, status: 'processed' },
                 answered: { lead_status: ['SV Push', 'Unqualified', 'Follow Up'], updatedStartDate: today, updatedEndDate: today, status: 'processed' },
                 notAnswered: { lead_status: 'IN Progress', updatedStartDate: today, updatedEndDate: today, status: 'processed' },
-                svPushTdy: { updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push' },
+                svPushTdy: { updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push', subdisposition: 'SV Appointed Fixed' },
                 fuSvFixed: { lead_status: 'Follow Up', subdisposition: 'SV Fixed', updatedStartDate: today, updatedEndDate: tomorrow },
                 svPushYD: { updatedStartDate: yesterday, updatedEndDate: yesterday, lead_status: 'SV Push' },
                 warm: { lead_type: 'Warm' },
@@ -111,7 +111,7 @@ export default function Overview() {
                 getC({ schedule_date: today, lead_status: 'IN Progress' }),
                 getC({ schedule_date: today, lead_status: 'Follow Up' }),
                 getC({ updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
-                getC({ startDate: today, endDate: tomorrow, lead_status: 'SV Push' }), // sv push today
+                getC({ updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push', subdisposition: 'SV Appointed Fixed' }), // sv push today
                 getC({ lead_status: ['SV Push', 'Unqualified', 'Follow Up'], updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
                 getC({ lead_status: 'IN Progress', updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
                 getC({ updatedStartDate: yesterday, updatedEndDate: yesterday, lead_status: 'SV Push' }), // sv push yd
