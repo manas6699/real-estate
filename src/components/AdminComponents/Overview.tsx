@@ -64,7 +64,7 @@ export default function Overview() {
                 answered: { lead_status: ['SV Push', 'Unqualified', 'Follow Up'], updatedStartDate: today, updatedEndDate: today, status: 'processed' },
                 notAnswered: { lead_status: 'IN Progress', updatedStartDate: today, updatedEndDate: today, status: 'processed' },
                 svPushTdy: { updatedStartDate: today, updatedEndDate: tomorrow, lead_status: 'SV Push' },
-                fuSvFixed: { lead_status: 'Follow Up', subdisposition: 'SV Fixed' },
+                fuSvFixed: { lead_status: 'Follow Up', subdisposition: 'SV Fixed', updatedStartDate: today, updatedEndDate: tomorrow },
                 svPushYD: { updatedStartDate: yesterday, updatedEndDate: yesterday, lead_status: 'SV Push' },
                 warm: { lead_type: 'Warm' },
                 hot: { lead_type: 'Hot' },
@@ -115,7 +115,7 @@ export default function Overview() {
                 getC({ lead_status: ['SV Push', 'Unqualified', 'Follow Up'], updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
                 getC({ lead_status: 'IN Progress', updatedStartDate: today, updatedEndDate: today, status: 'processed' }),
                 getC({ updatedStartDate: yesterday, updatedEndDate: yesterday, lead_status: 'SV Push' }), // sv push yd
-                getC({ lead_status: 'Follow Up', subdisposition: 'SV Fixed' }),
+                getC({ lead_status: 'Follow Up', subdisposition: 'SV Fixed', updatedStartDate: today, updatedEndDate: tomorrow }),
                 getC({ lead_type: 'Warm' }),
                 getC({ lead_type: 'Hot' }),
                 getC({ subdisposition: 'Booked With Us', startDate: monthStart }),
