@@ -115,7 +115,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
             return;
         }
 
-        const telecaller = telecallerList.find((t) => t._id === selectTelecaller);
+        const telecaller = telecallerList.find((t) => t.name === selectTelecaller);
 
         if (!telecaller) {
             alert("Selected telecaller not found.");
@@ -126,7 +126,7 @@ export default function LeadTable({ assignbtn }: assignbtntype) {
 
         const payload = {
             lead_ids: selectedIds,
-            assignee_id: telecaller._id,
+            assignee_id: telecaller.id,
             assignee_name: telecaller.name || "Unknown",
             history: [historyMessage],
             remarks,
